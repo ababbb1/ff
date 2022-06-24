@@ -1,25 +1,24 @@
 module.exports = {
-  root: true,
-  parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint", "prettier"],
-  parserOptions: {
-    project: "./tsconfig.json",
-  },
   env: {
+    browser: true,
+    es2021: true,
     node: true,
   },
-  extends: [
-    "eslint:recommended",
-    "next",
-    "plugin:@next/next/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "airbnb",
-    "airbnb-typescript",
-    "plugin:prettier/recommended",
-  ],
-  rules: {
-    "react/react-in-jsx-scope": "off",
-    "react/jsx-props-no-spreading": "off",
-    "react/jsx-filename-extension": [1, { extensions: [".ts", ".tsx"] }],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 'latest',
+    sourceType: 'module',
   },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'next',
+    'next/core-web-vitals',
+    'plugin:prettier/recommended',
+  ],
+  plugins: ['@typescript-eslint'],
+  rules: {},
 };
