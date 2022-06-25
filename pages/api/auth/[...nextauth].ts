@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 import GoogleProvider from 'next-auth/providers/google';
+import FacebookProvider from 'next-auth/providers/facebook';
 
 export default NextAuth({
   secret: process.env.SECRET,
@@ -20,6 +21,11 @@ export default NextAuth({
       name: 'google',
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    }),
+    FacebookProvider({
+      name: 'facebook',
+      clientId: process.env.FACEBOOK_CLIENT_ID || '',
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || '',
     }),
   ],
 });

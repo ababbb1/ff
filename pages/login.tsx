@@ -1,6 +1,6 @@
 import { signIn } from 'next-auth/react';
 
-type OAuthName = 'kakao' | 'naver' | 'google';
+type OAuthName = 'kakao' | 'naver' | 'google' | 'facebook';
 
 export default function Login() {
   const loginHandler = (name: OAuthName) => {
@@ -26,6 +26,12 @@ export default function Login() {
         className="border border-black"
       >
         구글 로그인
+      </button>
+      <button
+        onClick={() => loginHandler('facebook')}
+        className="border border-black"
+      >
+        페이스북 로그인
       </button>
     </div>
   );
