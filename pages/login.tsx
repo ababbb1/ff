@@ -1,6 +1,6 @@
 import { signIn } from 'next-auth/react';
 
-type OAuthName = 'kakao';
+type OAuthName = 'kakao' | 'naver';
 
 export default function Login() {
   const loginHandler = (name: OAuthName) => {
@@ -14,6 +14,12 @@ export default function Login() {
         className="border border-black"
       >
         카카오 로그인
+      </button>
+      <button
+        onClick={() => loginHandler('naver')}
+        className="border border-black"
+      >
+        네이버 로그인
       </button>
     </div>
   );
