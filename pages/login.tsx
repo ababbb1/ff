@@ -17,7 +17,7 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginForm>({ mode: 'onChange' });
+  } = useForm<LoginForm>({ mode: 'onSubmit' });
 
   const onValid: SubmitHandler<LoginForm> = (data: LoginForm) => {
     signIn('credentials', {

@@ -9,9 +9,11 @@ export default function Room() {
   const socket = io('http://localhost:3001');
 
   useEffect(() => {
+    console.log(router.query.roomNum);
     socket.emit('room:enter', router.query.roomNum, (msg: string) => {
       console.log(msg);
     });
+    socket.on('welcome', () => console.log('someone entered'));
   }, []);
 
   return <div>{router.query.roomNum}</div>;

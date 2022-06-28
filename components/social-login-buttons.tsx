@@ -20,8 +20,8 @@ export default function SocialLoginButtons() {
         onClick={() => loginHandler('naver')}
         className="flex items-center hover:cursor-pointer"
       >
-        <div className="w-[40px] h-[40px] flex items-center justify-center overflow-hidden rounded-full">
-          <Image src={'/Naver.svg'} alt="naver" width={40} height={40} />
+        <div className="w-[40px] h-[40px] flex items-center justify-center overflow-hidden rounded-full relative">
+          <Image src={'/Naver.svg'} alt="naver" width={41} height={40} />
         </div>
       </button>
       <button
