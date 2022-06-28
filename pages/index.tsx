@@ -1,12 +1,11 @@
 import { getSession, useSession, signOut } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 
-export default function Home(props: any) {
+export default function Home() {
   const session = useSession();
   const router = useRouter();
-  const [roomList, setRoomList] = useState([]);
 
   useEffect(() => {
     if (session) {
@@ -39,11 +38,7 @@ export default function Home(props: any) {
       </div>
       <div>
         <div>방목록</div>
-        <div>
-          {roomList?.map(x => (
-            <div key={x}>{x}</div>
-          ))}
-        </div>
+        <div></div>
       </div>
       <form onSubmit={createRoom}>
         <button>방만들기</button>
