@@ -20,7 +20,9 @@ export default function Room() {
   return (
     <div>
       <div>{router.query.roomNum}</div>
-      <Link href={'/room/start'} shallow><button>이동</button></Link>
+      <Link href={'/room/start'} shallow>
+        <button>이동</button>
+      </Link>
     </div>
   );
 }

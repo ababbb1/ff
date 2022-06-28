@@ -2,7 +2,6 @@ import { getSession, useSession, signOut } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { FormEventHandler, useEffect, useState } from 'react';
-import io, { Socket } from 'socket.io-client';
 
 export default function Home(props: any) {
   const session = useSession();

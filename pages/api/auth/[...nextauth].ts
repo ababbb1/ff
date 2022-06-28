@@ -20,7 +20,7 @@ export default NextAuth({
           placeholder: 'password',
         },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const res = await axios({
           method: 'post',
           url: `${API_DOMAIN}/api/login`,
