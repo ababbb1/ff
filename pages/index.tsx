@@ -4,20 +4,19 @@ import { useRouter } from 'next/router';
 import { FormEventHandler, useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
-export default function Home() {
+export default function Home(props: any) {
   const session = useSession();
   const router = useRouter();
-  const socket = io('http://localhost:3001');
   const [roomList, setRoomList] = useState([]);
 
   useEffect(() => {
     if (session) {
       console.log(session);
 
-      socket?.emit('room:list', (data: any) => {
-        console.log(data);
-        // setRoomList(data);
-      });
+      // socket?.emit('room:list', (data: any) => {
+      //   console.log(data);
+      // setRoomList(data);
+      // });
     }
   }, []);
 
@@ -29,22 +28,14 @@ export default function Home() {
 
   const createRoom: FormEventHandler = e => {
     e.preventDefault();
-    socket?.emit(
-      'room:create',
-      { master: session?.data?.user?.name },
-      (num: number) => {
-        router.push(
-          { pathname: `/room/${num}`, query: { roomNum: num } },
-          `/room/${num}`,
-        );
-      },
-    );
+    router.push(`/room/${1}`);
   };
 
   return (
     <div>
       <div>
         <span>{session?.data?.user?.name}</span>
+        <span>{session?.data?.user?.email}</span>
         <button onClick={logoutHandler}>로그아웃</button>
       </div>
       <div>
@@ -73,8 +64,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       },
     };
   }
-
-  console.log(session);
 
   return {
     props: {

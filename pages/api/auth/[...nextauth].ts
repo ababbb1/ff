@@ -56,8 +56,12 @@ export default NextAuth({
   ],
   callbacks: {
     async signIn(params) {
-      console.log(params);
       return true;
     },
+    // async session(params) {
+    //   const session = {...params.session, aa: 'aa'};
+    //   console.log(session);
+    //   return session;
+    // },
   },
 });

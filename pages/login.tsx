@@ -6,6 +6,7 @@ import SocialLoginButtons from '../components/social-login-buttons';
 import { cls, emailCheck } from '../libs/client/utils';
 import ErrorMessage from '../components/errorMessage';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export interface LoginForm {
   email: string;
@@ -13,6 +14,7 @@ export interface LoginForm {
 }
 
 export default function Login() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -22,10 +24,10 @@ export default function Login() {
   const onValid: SubmitHandler<LoginForm> = (data: LoginForm) => {
     signIn('credentials', {
       callbackUrl: '/',
-      redirect: false,
+      redirect: true,
       email: data.email,
       password: data.password,
-    });
+    }).then(() => router.replace('/'));
   };
 
   return (
