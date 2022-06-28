@@ -8,14 +8,12 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (session) {
-      console.log(session);
+    console.log(session);
 
-      // socket?.emit('room:list', (data: any) => {
-      //   console.log(data);
-      // setRoomList(data);
-      // });
-    }
+    // socket?.emit('room:list', (data: any) => {
+    //   console.log(data);
+    // setRoomList(data);
+    // });
   }, []);
 
   const logoutHandler = () => {
