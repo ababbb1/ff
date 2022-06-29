@@ -54,5 +54,10 @@ export default NextAuth({
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET || '',
     }),
   ],
-  callbacks: {},
+  callbacks: {
+    async signIn(params) {
+      console.log(params);
+      return true;
+    },
+  },
 });
