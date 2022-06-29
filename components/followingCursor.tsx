@@ -10,12 +10,15 @@ export default function FollowingCursor({ visible }: { visible: boolean }) {
       const mouseMove$ = fromEvent<MouseEvent>(document, 'mousemove');
       const documentMouseOn$ = fromEvent<MouseEvent>(document, 'mouseon');
       const documentMouseOut$ = fromEvent<MouseEvent>(document, 'mouseout');
+      const documentLoad$ = fromEvent<UIEvent>(document, 'onload');
 
-      merge(documentMouseOn$, mouseMove$).subscribe(({ clientX, clientY }) => {
+      documentLoad$.subscribe(console.log);
+
+      merge(documentMouseOn$, mouseMove$).subscribe(({ pageX, pageY }) => {
         if (circle.current) {
           circle.current.style.visibility = 'visible';
-          circle.current.style.left = `${clientX}px`;
-          circle.current.style.top = `${clientY}px`;
+          circle.current.style.left = `${pageX}px`;
+          circle.current.style.top = `${pageY}px`;
         }
       });
 
@@ -32,7 +35,7 @@ export default function FollowingCursor({ visible }: { visible: boolean }) {
       ref={circle}
       className={cls(
         visible ? 'block' : 'hidden',
-        'absolute w-16 h-16 rounded-full bg-slate-600 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50',
+        'absolute w-16 h-16 rounded-full bg-slate-600 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50 invisible',
       )}
     ></div>
   );
