@@ -1,26 +1,13 @@
-import { getSession, useSession, signOut } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { FormEventHandler, useEffect } from 'react';
+import { FormEventHandler } from 'react';
+import Layout from '../components/layout';
+import AnimatedTextLayout from '../components/animatedTextLayout';
+import Link from 'next/link';
 
 export default function Home() {
-  const session = useSession();
   const router = useRouter();
-
-  useEffect(() => {
-    console.log(session);
-
-    // socket?.emit('room:list', (data: any) => {
-    //   console.log(data);
-    // setRoomList(data);
-    // });
-  }, []);
-
-  const logoutHandler = () => {
-    alert('로그아웃 되었습니다.');
-    signOut();
-    router.replace('/');
-  };
 
   const createRoom: FormEventHandler = e => {
     e.preventDefault();
@@ -28,20 +15,24 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <div>
-        <span>{session?.data?.user?.name}</span>
-        <span>{session?.data?.user?.email}</span>
-        <button onClick={logoutHandler}>로그아웃</button>
-      </div>
-      <div>
-        <div>방목록</div>
-        <div></div>
-      </div>
-      <form onSubmit={createRoom}>
-        <button>방만들기</button>
-      </form>
-    </div>
+    <Layout>
+      <AnimatedTextLayout>
+        <div>
+          <Link href={'/mypage'}>
+            <button>마이페이지</button>
+          </Link>
+          <div>
+            <div>방목록</div>
+            <div></div>
+          </div>
+          <form onSubmit={createRoom}>
+            <Link href={'/room/create'}>
+              <button>방만들기</button>
+            </Link>
+          </form>
+        </div>
+      </AnimatedTextLayout>
+    </Layout>
   );
 }
 

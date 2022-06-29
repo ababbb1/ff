@@ -10,9 +10,6 @@ export default function FollowingCursor({ visible }: { visible: boolean }) {
       const mouseMove$ = fromEvent<MouseEvent>(document, 'mousemove');
       const documentMouseOn$ = fromEvent<MouseEvent>(document, 'mouseon');
       const documentMouseOut$ = fromEvent<MouseEvent>(document, 'mouseout');
-      const documentLoad$ = fromEvent<UIEvent>(document, 'onload');
-
-      documentLoad$.subscribe(console.log);
 
       merge(documentMouseOn$, mouseMove$).subscribe(({ pageX, pageY }) => {
         if (circle.current) {
