@@ -32,7 +32,7 @@ export default function FollowingCursor({ visible }: { visible: boolean }) {
       ref={circle}
       className={cls(
         visible ? 'block' : 'hidden',
-        'absolute w-16 h-16 rounded-full bg-slate-600 -translate-x-1/2 -translate-y-1/2 pointer-events-none',
+        'absolute w-16 h-16 rounded-full bg-slate-600 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50',
       )}
     ></div>
   );
