@@ -1,5 +1,3 @@
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import SocialLoginButtons from '../components/social-login-buttons';
@@ -8,26 +6,32 @@ import ErrorMessage from '../components/errorMessage';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-export interface LoginForm {
+export interface LoginFormData {
   email: string;
   password: string;
 }
 
 export default function Login() {
   const router = useRouter();
+  const query = router.query;
+
+  useEffect(() => {
+    if (query) console.log(query);
+  }, []);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginForm>({ mode: 'onSubmit' });
+  } = useForm<LoginFormData>({ mode: 'onSubmit' });
 
-  const onValid: SubmitHandler<LoginForm> = (data: LoginForm) => {
+  const onValid: SubmitHandler<LoginFormData> = async (data: LoginFormData) => {
     signIn('credentials', {
       callbackUrl: '/',
       redirect: true,
       email: data.email,
       password: data.password,
-    }).then(() => router.replace('/'));
+    });
   };
 
   return (
@@ -83,6 +87,9 @@ export default function Login() {
   );
 }
 
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
+import { useEffect } from 'react';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
 

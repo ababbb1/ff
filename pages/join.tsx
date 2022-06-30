@@ -1,5 +1,3 @@
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { API_DOMAIN, contentTypeHeaders } from '../libs/client/api';
 import axios from 'axios';
@@ -7,7 +5,7 @@ import { useRouter } from 'next/router';
 import ErrorMessage from '../components/errorMessage';
 import { cls, emailCheck } from '../libs/client/utils';
 
-export interface JoinForm {
+export interface JoinFormData {
   email: string;
   nickname: string;
   password: string;
@@ -20,9 +18,9 @@ export default function Join() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<JoinForm>({ mode: 'onBlur' });
+  } = useForm<JoinFormData>({ mode: 'onBlur' });
 
-  const onValid: SubmitHandler<JoinForm> = (data: JoinForm) => {
+  const onValid: SubmitHandler<JoinFormData> = (data: JoinFormData) => {
     axios({
       method: 'post',
       url: `${API_DOMAIN}/api/signup`,
@@ -119,6 +117,8 @@ export default function Join() {
   );
 }
 
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
 

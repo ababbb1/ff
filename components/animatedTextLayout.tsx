@@ -25,12 +25,8 @@ export default function AnimatedTextLayout({ children }: Props) {
     window.addEventListener('resize', setCount);
   }, []);
 
-  useEffect(() => {
-    console.log(horizontalItemCount, verticalItemCount);
-  }, [horizontalItemCount, verticalItemCount]);
-
   return (
-    <div className="w-full h-screen p-7 bg-gray-400 flex justify-center items-center relative overflow-hidden">
+    <div className="w-full min-h-screen bg-gray-400 flex justify-center items-center relative overflow-hidden">
       {/* top */}
       <div className="absolute flex top-0 left-[-100vw] z-10 whitespace-nowrap animate-[text-move-right_16s_infinite_linear]">
         {['example', 'example'].map((v, i) => (
@@ -124,7 +120,9 @@ export default function AnimatedTextLayout({ children }: Props) {
       <div className="absolute bottom-0 right-0 w-7 h-7 bg-gray-400 z-20"></div>
       <div className="absolute bottom-0 left-0 w-7 h-7 bg-gray-400 z-20"></div>
 
-      <section className="w-full h-full bg-white">{children}</section>
+      <section className="w-full h-fit lg:h-screen min-h-screen p-7">
+        {children}
+      </section>
     </div>
   );
 }
