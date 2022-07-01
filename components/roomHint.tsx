@@ -1,10 +1,39 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import CaptureCursor from './captureCursor';
+import axios from 'axios';
+import { base64ToFile } from '../libs/client/utils';
 
 export default function RoomHint() {
-  const cameraState = useState<boolean>(false);
-  const imageListState = useState<HTMLImageElement[]>([]);
+  const [camera, setCamera] = useState<boolean>(false);
+  const [imageList, setImageList] = useState<string[]>([]);
+
+  const onCapture = async (imgURL: string) => {
+    setCamera(false);
+    setImageList([...imageList, imgURL]);
+
+    if (imgURL) {
+      const file = base64ToFile(imgURL, 'image');
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const getUploadURLResponse = await axios({
+        method: 'get',
+        url: '/api/files',
+      });
+
+      const res = await axios({
+        method: 'post',
+        url: getUploadURLResponse.data.uploadURL,
+        data: formData,
+      });
+
+      if (!res.data.success) {
+        alert('이미지 등록에 실패했습니다.');
+        setImageList(imageList.slice(0, imageList.length - 1));
+      }
+    }
+  };
 
   return (
     <>
@@ -13,23 +42,23 @@ export default function RoomHint() {
       </div>
       <button
         onClick={() => {
-          cameraState[1](true);
+          setCamera(true);
         }}
       >
         카메라
       </button>
       <div>
-        {imageListState[0].map((img, i) => (
+        {imageList.map((imgUrl, i) => (
           <Image
             key={`hint${i}`}
-            src={img.src}
-            width={img.width / 2}
-            height={img.height / 2}
+            src={imgUrl}
+            width={120}
+            height={120}
             alt={`hint${i}`}
           />
         ))}
       </div>
-      <CaptureCursor {...{ cameraState, imageListState }} />
+      <CaptureCursor {...{ isActive: camera, onCapture }} />
     </>
   );
 }

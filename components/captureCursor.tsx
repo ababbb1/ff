@@ -1,35 +1,16 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { fromEvent, merge } from 'rxjs';
-import { cls } from '../libs/client/utils';
+import { cls, imagedataToImageUrl } from '../libs/client/utils';
 import html2canvas from 'html2canvas';
 
 const BOX_SIZE = 250;
 
-const imagedataToImage = (imagedata?: ImageData) => {
-  if (!imagedata) return;
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = imagedata.width;
-  canvas.height = imagedata.height;
-  ctx?.putImageData(imagedata, 0, 0);
-
-  const image = new Image();
-  image.src = canvas.toDataURL();
-  return image;
-};
-
 interface Props {
-  cameraState: [boolean, Dispatch<SetStateAction<boolean>>];
-  imageListState: [
-    HTMLImageElement[],
-    Dispatch<SetStateAction<HTMLImageElement[]>>,
-  ];
+  onCapture: (imgUrl: string) => any | void;
+  isActive: boolean;
 }
 
-export default function CaptureCursor({
-  cameraState: [isActive, setIsActive],
-  imageListState: [imageList, setImageList],
-}: Props) {
+export default function CaptureCursor({ onCapture, isActive }: Props) {
   const bg = useRef<HTMLDivElement>(null);
   const flash = useRef<HTMLDivElement>(null);
 
@@ -60,24 +41,21 @@ export default function CaptureCursor({
 
     const captureEvent = (e: MouseEvent) => {
       if (flash.current) flash.current.style.display = 'block';
-
-      setTimeout(() => {
+      setTimeout(async () => {
         if (flash.current) flash.current.style.display = 'none';
-        html2canvas(document.body).then(canvas => {
-          const img = imagedataToImage(
-            canvas
-              .getContext('2d')
-              ?.getImageData(
-                e.pageX - BOX_SIZE / 2,
-                e.pageY - BOX_SIZE / 2,
-                BOX_SIZE,
-                BOX_SIZE,
-              ),
-          );
+        const canvas = await html2canvas(document.body);
+        const imgUrl = imagedataToImageUrl(
+          canvas
+            .getContext('2d')
+            ?.getImageData(
+              e.pageX - BOX_SIZE / 2,
+              e.pageY - BOX_SIZE / 2,
+              BOX_SIZE,
+              BOX_SIZE,
+            ),
+        );
 
-          if (img) setImageList([...imageList, img]);
-          setIsActive(false);
-        });
+        if (imgUrl) onCapture(imgUrl);
       }, 120);
     };
 
@@ -88,7 +66,7 @@ export default function CaptureCursor({
     return () => {
       bg.current?.removeEventListener('click', captureEvent);
     };
-  }, [isActive, imageList]);
+  }, [isActive]);
 
   return (
     <>
