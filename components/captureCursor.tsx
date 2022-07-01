@@ -7,13 +7,13 @@ const BOX_SIZE = 250;
 
 const imagedataToImage = (imagedata?: ImageData) => {
   if (!imagedata) return;
-  var canvas = document.createElement('canvas');
-  var ctx = canvas.getContext('2d');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
   canvas.width = imagedata.width;
   canvas.height = imagedata.height;
   ctx?.putImageData(imagedata, 0, 0);
 
-  var image = new Image();
+  const image = new Image();
   image.src = canvas.toDataURL();
   return image;
 };
@@ -88,7 +88,7 @@ export default function CaptureCursor({
     return () => {
       bg.current?.removeEventListener('click', captureEvent);
     };
-  }, [isActive]);
+  }, [isActive, imageList]);
 
   return (
     <>

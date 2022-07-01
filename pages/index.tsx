@@ -1,3 +1,6 @@
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
+import RoomSearchForm from '../components/roomSearchForm';
 import { useRouter } from 'next/router';
 import Layout from '../components/layout';
 import AnimatedTextLayout from '../components/animatedTextLayout';
@@ -44,10 +47,6 @@ export default function Home({ user }: { user: Session }) {
   );
 }
 
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
-import RoomSearchForm from '../components/roomSearchForm';
-import CaptureCursor from '../components/captureCursor';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
 
