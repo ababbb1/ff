@@ -91,5 +91,5 @@ const options = {
   },
 };
 
-const NextAuthHandler = (res, res) => NextAuth(req, res, options);
+const NextAuthHandler = (req, res) => NextAuth(req, res, options);
 export default NextAuthHandler;
