@@ -2,8 +2,18 @@ import { useEffect, useRef } from 'react';
 import { fromEvent, merge } from 'rxjs';
 import { cls } from '../libs/client/utils';
 
-export default function FollowingCursor({ visible }: { visible: boolean }) {
-  const circle = useRef<HTMLDivElement>(null);
+interface Props {
+  visible: boolean;
+  children: React.ReactNode;
+  cursor?: boolean;
+}
+
+export default function FollowingCursor({
+  visible,
+  children,
+  cursor = true,
+}: Props) {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (visible) {
@@ -12,16 +22,16 @@ export default function FollowingCursor({ visible }: { visible: boolean }) {
       const documentMouseOut$ = fromEvent<MouseEvent>(document, 'mouseout');
 
       merge(documentMouseOn$, mouseMove$).subscribe(({ pageX, pageY }) => {
-        if (circle.current) {
-          circle.current.style.visibility = 'visible';
-          circle.current.style.left = `${pageX}px`;
-          circle.current.style.top = `${pageY}px`;
+        if (ref.current) {
+          ref.current.style.visibility = 'visible';
+          ref.current.style.left = `${pageX}px`;
+          ref.current.style.top = `${pageY}px`;
         }
       });
 
       documentMouseOut$.subscribe(() => {
-        if (circle.current) {
-          circle.current.style.visibility = 'hidden';
+        if (ref.current) {
+          ref.current.style.visibility = 'hidden';
         }
       });
     }
@@ -29,11 +39,14 @@ export default function FollowingCursor({ visible }: { visible: boolean }) {
 
   return (
     <div
-      ref={circle}
+      ref={ref}
       className={cls(
         visible ? 'block' : 'hidden',
-        'absolute w-16 h-16 rounded-full bg-slate-600 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50 invisible',
+        cursor ? '' : 'hover:cursor-none',
+        'fixed z-50 -translate-x-1/2 -translate-y-1/2',
       )}
-    ></div>
+    >
+      {children}
+    </div>
   );
 }

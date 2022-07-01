@@ -44,14 +44,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  // const res = await axios({
-  //   method: 'post',
-  //   url: `${API_DOMAIN}/api/mypage`,
-  //   data: { token: session.token },
-  //   headers: contentTypeHeaders,
-  // });
+  const res = await axios({
+    method: 'post',
+    url: `${API_DOMAIN}/api/mypage`,
+    data: { token: session.token },
+    headers: contentTypeHeaders,
+  });
 
-  // console.log(res.data);
+  console.log(res.data);
 
   return {
     props: {

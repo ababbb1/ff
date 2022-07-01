@@ -5,7 +5,7 @@ import 'swiper/css/navigation';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 import { NavigationOptions } from 'swiper/types';
 import { useForm } from 'react-hook-form';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { cls } from '../libs/client/utils';
 
 interface Props {
@@ -34,13 +34,9 @@ export default function RoomForm({
   const navigationPrevRef = useRef(null);
   const navigationNextRef = useRef(null);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<RoomFormData>({ mode: 'onSubmit' });
+  const { register, handleSubmit, setValue, watch } = useForm<RoomFormData>({
+    mode: 'onSubmit',
+  });
 
   useEffect(() => {
     console.log(initData);

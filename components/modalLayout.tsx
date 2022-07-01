@@ -13,8 +13,6 @@ export default function ModalLayout({
   background = 'none',
   onClose,
 }: Props) {
-  const router = useRouter();
-
   useEffect(() => {
     document.body.style.cssText = `
       position: fixed;

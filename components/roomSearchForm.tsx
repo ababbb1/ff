@@ -9,11 +9,9 @@ export interface SearchFormData {
 
 export default function RoomSearchForm() {
   const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SearchFormData>({ mode: 'onSubmit' });
+  const { register, handleSubmit } = useForm<SearchFormData>({
+    mode: 'onSubmit',
+  });
 
   const onValid: SubmitHandler<SearchFormData> = (data: SearchFormData) => {
     console.log(data);
@@ -37,31 +35,14 @@ export default function RoomSearchForm() {
           />
         </div>
 
-        <div className="w-full flex flex-col gap-1">
-          <input {...register('type')} type="text" />
-        </div>
-
         <div className="flex justify-center">
           <div className="mb-3 xl:w-96">
             <select
-              className="form-select appearance-none
-      block
-      w-full
-      px-3
-      py-1.5
-      text-base
-      font-normal
-      text-gray-700
-      bg-white bg-clip-padding bg-no-repeat
-      border border-solid border-gray-300
-      rounded
-      transition
-      ease-in-out
-      m-0
-      focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+              {...register('type')}
+              className="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
               aria-label="Default select example"
             >
-              <option value="title" selected>
+              <option value="title" defaultChecked>
                 방 제목
               </option>
               <option value="nickname">방장</option>

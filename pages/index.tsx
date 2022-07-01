@@ -19,7 +19,7 @@ export default function Home({ user }: { user: Session }) {
           <div>
             <div>방목록</div>
           </div>
-          <Link href={'/?search=1'} as={'/room/search'} scroll={false}>
+          <Link href={'/?search=1'} as={'/search'} scroll={false}>
             <button>방찾기</button>
           </Link>
           <Link href={'/room/create'}>
@@ -34,7 +34,9 @@ export default function Home({ user }: { user: Session }) {
               router.back();
             }}
           >
-            <div className="bg-white w-[50rem] h-[40rem]">search</div>
+            <div className="bg-white w-[50rem] h-[40rem]">
+              <RoomSearchForm />
+            </div>
           </ModalLayout>
         )}
       </AnimatedTextLayout>
@@ -44,6 +46,8 @@ export default function Home({ user }: { user: Session }) {
 
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
+import RoomSearchForm from '../components/roomSearchForm';
+import CaptureCursor from '../components/captureCursor';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
 
