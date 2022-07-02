@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import CaptureCursor from './captureCursor';
 import axios from 'axios';
 import { base64ToFile } from '../libs/client/utils';
@@ -7,6 +7,10 @@ import { base64ToFile } from '../libs/client/utils';
 export default function RoomHint() {
   const [camera, setCamera] = useState<boolean>(false);
   const [imageList, setImageList] = useState<string[]>([]);
+  const [cameraVisible, setCameraVisible] = useState<'block' | 'hidden'>(
+    'hidden',
+  );
+  const mapRef = useRef<HTMLDivElement>(null);
 
   const onCapture = async (imgURL: string) => {
     setCamera(false);
@@ -37,12 +41,14 @@ export default function RoomHint() {
 
   return (
     <>
-      <div>
-        <div className="bg-red-300 w-[50rem] h-[40rem]">map</div>
+      <div className="p-10">
+        <div ref={mapRef} className="bg-red-300 w-[50rem] h-[40rem]">
+          map
+        </div>
       </div>
       <button
         onClick={() => {
-          setCamera(true);
+          setCamera(!camera);
         }}
       >
         카메라
@@ -58,7 +64,15 @@ export default function RoomHint() {
           />
         ))}
       </div>
-      <CaptureCursor {...{ isActive: camera, onCapture }} />
+      <CaptureCursor
+        {...{
+          width: 180,
+          height: 180,
+          target: mapRef,
+          onCapture,
+          isActive: camera,
+        }}
+      />
     </>
   );
 }
