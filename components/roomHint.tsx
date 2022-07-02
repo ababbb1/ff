@@ -7,9 +7,6 @@ import { base64ToFile } from '../libs/client/utils';
 export default function RoomHint() {
   const [camera, setCamera] = useState<boolean>(false);
   const [imageList, setImageList] = useState<string[]>([]);
-  const [cameraVisible, setCameraVisible] = useState<'block' | 'hidden'>(
-    'hidden',
-  );
   const mapRef = useRef<HTMLDivElement>(null);
 
   const onCapture = async (imgURL: string) => {
