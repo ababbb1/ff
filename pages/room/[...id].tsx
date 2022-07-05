@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import ModalLayout from '../../components/modalLayout';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import RoomHint from '../../components/roomHint';
 import RoomReasoning from '../../components/roomReasoning';
 
