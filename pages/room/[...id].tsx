@@ -10,8 +10,6 @@ export default function Room() {
   const router = useRouter();
   const [isSetting, setIsSetting] = useState<boolean>(false);
 
-  useEffect(() => {}, []);
-
   if (router.query.id?.includes('hint')) return <RoomHint />;
   if (router.query.id?.includes('reasoning')) return <RoomReasoning />;
 
@@ -52,10 +50,7 @@ export default function Room() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
 
   if (!session) {

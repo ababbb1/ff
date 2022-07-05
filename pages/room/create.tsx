@@ -1,7 +1,6 @@
 import AnimatedTextLayout from '../../components/animatedTextLayout';
 import Layout from '../../components/layout';
 import RoomForm, { RoomFormData } from '../../components/roomForm';
-import { Session } from 'next-auth';
 import axios from 'axios';
 
 export default function CreateRoom({ user }: { user: UserSession }) {
