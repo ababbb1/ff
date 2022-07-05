@@ -29,6 +29,8 @@ export default function RoomHint() {
         data: formData,
       });
 
+      console.log(res.data);
+
       if (!res.data.success) {
         alert('이미지 등록에 실패했습니다.');
         setImageList(imageList.slice(0, imageList.length - 1));
