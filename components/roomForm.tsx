@@ -20,7 +20,7 @@ export interface RoomFormData {
   password: string;
   episode: string;
   hintTime: string;
-  resoningTime: string;
+  reasoningTime: string;
   master: string;
   isRandom: boolean;
 }
@@ -49,8 +49,8 @@ export default function RoomForm({
       onSubmit={handleSubmit(onValid)}
       className="w-full h-full flex flex-col lg:flex-row"
     >
-      <div className="bg-red-300 w-full py-8 lg:w-1/2 flex flex-col justify-center items-center gap-8">
-        <div className="w-1/2 aspect-square bg-white">
+      <div className="bg-red-300 w-full h-full lg:w-1/2 flex flex-col justify-center items-center">
+        <div className="w-full h-full bg-white">
           <Swiper
             modules={[Navigation]}
             navigation={{
@@ -67,28 +67,23 @@ export default function RoomForm({
             onSlideChange={swiper => {
               setValue('episode', episodes[swiper.realIndex]);
             }}
-            className="h-full"
+            className="w-full h-full"
           >
             <SwiperSlide className="bg-teal-300"></SwiperSlide>
             <SwiperSlide className="bg-purple-300"></SwiperSlide>
             <div
               ref={navigationPrevRef}
-              className="absolute -left-0 top-1/2 z-10 -translate-y-1/2 hover:cursor-pointer"
+              className="absolute left-2 bottom-4 z-10 hover:cursor-pointer"
             >
               <ChevronLeftIcon className="w-8 h-8" />
             </div>
             <div
               ref={navigationNextRef}
-              className="absolute -right-0 top-1/2 z-10 -translate-y-1/2 hover:cursor-pointer"
+              className="absolute right-2 bottom-4 z-10 hover:cursor-pointer"
             >
               <ChevronRightIcon className="w-8 h-8" />
             </div>
           </Swiper>
-        </div>
-        <div className="w-1/2 px-4">
-          <p className="break-words text-sm lg:text-base">
-            가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
-          </p>
         </div>
       </div>
 
@@ -100,12 +95,14 @@ export default function RoomForm({
           placeholder="title"
           type="text"
           className={`${cls('w-full h-12 border rounded-md p-2')}`}
+          autoComplete="off"
         />
         <input
           {...register('password')}
           placeholder="password"
           type="password"
           className={`${cls('w-full h-12 border rounded-md p-2')}`}
+          autoComplete="off"
         />
 
         <span>{watch('episode') || '해당 에피소드는 준비중입니다.'}</span>
@@ -122,7 +119,7 @@ export default function RoomForm({
         />
 
         <input
-          {...register('resoningTime', {
+          {...register('reasoningTime', {
             required: '추리시간을 선택해주세요.',
             validate: {
               lessThan: v => parseInt(v) < 60 || '60이하의 숫자만 가능합니다.',

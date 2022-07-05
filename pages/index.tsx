@@ -6,16 +6,16 @@ import Layout from '../components/layout';
 import AnimatedTextLayout from '../components/animatedTextLayout';
 import Link from 'next/link';
 import ModalLayout from '../components/modalLayout';
-import { Session } from 'next-auth';
+import { UserSession } from '../libs/types/user';
 
-export default function Home({ user }: { user: Session }) {
+export default function Home({ user }: { user: UserSession }) {
   const router = useRouter();
 
   return (
     <Layout>
       <AnimatedTextLayout>
         <div>
-          <span>{user.nickname as string} 님</span>
+          <span>{user.nickname} 님</span>
           <Link href={'/mypage'}>
             <button>마이페이지</button>
           </Link>
@@ -27,6 +27,9 @@ export default function Home({ user }: { user: Session }) {
           </Link>
           <Link href={'/room/create'}>
             <button>방만들기</button>
+          </Link>
+          <Link href={'/room/1'}>
+            <button>/room/1</button>
           </Link>
         </div>
 

@@ -2,14 +2,16 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import ModalLayout from '../../components/modalLayout';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RoomHint from '../../components/roomHint';
+import RoomReasoning from '../../components/roomReasoning';
 
 export default function Room() {
   const router = useRouter();
   const [isSetting, setIsSetting] = useState<boolean>(false);
 
   if (router.query.id?.includes('hint')) return <RoomHint />;
+  if (router.query.id?.includes('reasoning')) return <RoomReasoning />;
 
   return (
     <div>
@@ -60,9 +62,18 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
+  if (!req.headers.referer) {
+    return {
+      redirect: {
+        destination: '/error/access_denied',
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
-      session,
+      user: session,
     },
   };
 };
