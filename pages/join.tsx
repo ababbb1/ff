@@ -1,3 +1,5 @@
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { API_DOMAIN, contentTypeHeaders } from '../libs/client/api';
 import axios from 'axios';
@@ -117,8 +119,6 @@ export default function Join() {
   );
 }
 
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
 
@@ -131,11 +131,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  console.log(session);
-
   return {
-    props: {
-      session,
-    },
+    props: {},
   };
 };

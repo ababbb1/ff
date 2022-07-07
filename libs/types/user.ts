@@ -6,6 +6,7 @@ export type Provider =
   | 'facebook';
 
 export interface UserSession {
+  id: number;
   email: string;
   exp: number;
   expires: string;
@@ -15,4 +16,16 @@ export interface UserSession {
   provider: Provider;
   social: boolean;
   token: string;
+}
+
+export interface RoomData {
+  count: number;
+  hintTime: string;
+  id: number;
+  isRandom: string;
+  master: string;
+  password: string;
+  reasoningTime: string;
+  roomUniqueId: string;
+  title: string;
 }
