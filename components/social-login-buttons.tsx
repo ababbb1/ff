@@ -2,17 +2,12 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
 import LoadingScreen from './loadingScreen';
-import kakao from '../public/kakao.png';
-import naver from '../public/naver.png';
-import google from '../public/google.png';
-import facebook from '../public/facebook.png';
-
-type OAuthName = 'kakao' | 'naver' | 'google' | 'facebook';
+import { Provider } from '../libs/types/user';
 
 export default function SocialLoginButtons() {
   const [loadingScreenState, setLoadingScreenState] = useState(false);
 
-  const loginHandler = (name: OAuthName) => {
+  const loginHandler = (name: Provider) => {
     setLoadingScreenState(true);
     signIn(name, { callbackUrl: '/' });
   };
@@ -26,7 +21,7 @@ export default function SocialLoginButtons() {
         >
           <div className="w-8 h-8 relative">
             <Image
-              src={kakao}
+              src="/kakao.png"
               alt="kakao"
               layout="fill"
               quality={100}
@@ -40,7 +35,7 @@ export default function SocialLoginButtons() {
         >
           <div className="w-8 h-8 relative">
             <Image
-              src={naver}
+              src="/naver.png"
               alt="naver"
               layout="fill"
               quality={100}
@@ -54,7 +49,7 @@ export default function SocialLoginButtons() {
         >
           <div className="w-8 h-8 relative">
             <Image
-              src={google}
+              src="/google.png"
               alt="google"
               layout="fill"
               quality={100}
@@ -68,7 +63,7 @@ export default function SocialLoginButtons() {
         >
           <div className="w-8 h-8 relative">
             <Image
-              src={facebook}
+              src="/facebook.png"
               alt="facebook"
               layout="fill"
               quality={100}

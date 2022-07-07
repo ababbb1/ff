@@ -24,10 +24,10 @@ export default function Room({ user }: { user: UserSession }) {
 
   const socket = io(API_DOMAIN, { transports: ['websocket'] });
 
-  const preventUnload = (e: BeforeUnloadEvent) => {
-    e.preventDefault();
-    e.returnValue = '';
-  };
+  // const preventUnload = (e: BeforeUnloadEvent) => {
+  //   e.preventDefault();
+  //   e.returnValue = '';
+  // };
 
   const submitMessage = () => {
     socket.emit('submit_chat', {

@@ -6,7 +6,6 @@ import SocialLoginButtons from '../components/social-login-buttons';
 import { cls, emailCheck } from '../libs/client/utils';
 import ErrorMessage from '../components/errorMessage';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 export interface LoginFormData {
   email: string;
@@ -14,8 +13,6 @@ export interface LoginFormData {
 }
 
 export default function Login() {
-  const router = useRouter();
-
   const {
     register,
     handleSubmit,
