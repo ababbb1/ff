@@ -1,27 +1,29 @@
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
+import { UserSession } from '../../libs/types/user';
 import AnimatedTextLayout from '../../components/animatedTextLayout';
 import Layout from '../../components/layout';
-import { useSession, signOut } from 'next-auth/react';
-import axios from 'axios';
+import { signOut } from 'next-auth/react';
+// import {
+//   API_DOMAIN,
+//   contentTypeHeaders,
+//   authHeaders,
+// } from '../../libs/client/api';
+// import axios from 'axios';
 
-export default function Mypage() {
-  const session = useSession();
-  console.log(session);
-
+export default function Mypage({ user }: { user: UserSession }) {
   const logoutHandler = () => {
     alert('로그아웃 되었습니다.');
-    signOut({
-      callbackUrl: '/',
-      redirect: true,
-    });
+    signOut();
   };
 
   return (
     <Layout>
       <AnimatedTextLayout>
         <div>
-          <span>{session?.data?.nickname as string}</span>
-          <span>{session?.data?.email as string}</span>
-          <span>{(session?.data?.social as boolean) ? 'social' : 'local'}</span>
+          <span>{user.nickname}</span>
+          <span>{user.email}</span>
+          <span>{user.social ? 'social' : 'local'}</span>
           <button onClick={logoutHandler}>로그아웃</button>
         </div>
       </AnimatedTextLayout>
@@ -29,9 +31,6 @@ export default function Mypage() {
   );
 }
 
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
-import { API_DOMAIN, contentTypeHeaders } from '../../libs/client/api';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
 
@@ -44,18 +43,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  const res = await axios({
-    method: 'post',
-    url: `${API_DOMAIN}/api/mypage`,
-    data: { token: session.token },
-    headers: contentTypeHeaders,
-  });
-
-  console.log(res.data);
+  // const res = await axios({
+  //   method: 'get',
+  //   url: `${API_DOMAIN}/api/mypage`,
+  //   headers: { ...contentTypeHeaders, ...authHeaders(session.token as string) },
+  // });
 
   return {
     props: {
-      session,
+      user: session,
     },
   };
 };

@@ -2,6 +2,10 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
 import LoadingScreen from './loadingScreen';
+import kakao from '../public/kakao.png';
+import naver from '../public/naver.png';
+import google from '../public/google.png';
+import facebook from '../public/facebook.png';
 
 type OAuthName = 'kakao' | 'naver' | 'google' | 'facebook';
 
@@ -15,33 +19,63 @@ export default function SocialLoginButtons() {
 
   return (
     <>
-      <div className="flex items-center gap-4">
-        <button
+      <div className="flex items-center gap-3">
+        <a
           onClick={() => loginHandler('kakao')}
           className="flex items-center hover:cursor-pointer"
         >
-          <Image src={'/Kakao.png'} alt="kakao" width={40} height={40} />
-        </button>
-        <button
+          <div className="w-8 h-8 relative">
+            <Image
+              src={kakao}
+              alt="kakao"
+              layout="fill"
+              quality={100}
+              priority
+            />
+          </div>
+        </a>
+        <a
           onClick={() => loginHandler('naver')}
           className="flex items-center hover:cursor-pointer"
         >
-          <div className="w-[40px] h-[40px] flex items-center justify-center overflow-hidden rounded-full relative">
-            <Image src={'/Naver.svg'} alt="naver" width={41} height={40} />
+          <div className="w-8 h-8 relative">
+            <Image
+              src={naver}
+              alt="naver"
+              layout="fill"
+              quality={100}
+              priority
+            />
           </div>
-        </button>
-        <button
+        </a>
+        <a
           onClick={() => loginHandler('google')}
           className="flex items-center hover:cursor-pointer"
         >
-          <Image src={'/Google.svg'} alt="google" width={40} height={40} />
-        </button>
-        <button
+          <div className="w-8 h-8 relative">
+            <Image
+              src={google}
+              alt="google"
+              layout="fill"
+              quality={100}
+              priority
+            />
+          </div>
+        </a>
+        <a
           onClick={() => loginHandler('facebook')}
           className="flex items-center hover:cursor-pointer"
         >
-          <Image src={'/Facebook.svg'} alt="facebook" width={40} height={40} />
-        </button>
+          <div className="w-8 h-8 relative">
+            <Image
+              src={facebook}
+              alt="facebook"
+              layout="fill"
+              quality={100}
+              priority
+            />
+          </div>
+        </a>
       </div>
       <LoadingScreen visible={loadingScreenState} />
     </>

@@ -6,9 +6,16 @@ import Layout from '../components/layout';
 import AnimatedTextLayout from '../components/animatedTextLayout';
 import Link from 'next/link';
 import ModalLayout from '../components/modalLayout';
-import { UserSession } from '../libs/types/user';
+import { RoomData, UserSession } from '../libs/types/user';
+import axios from 'axios';
+import { API_DOMAIN, authHeaders } from '../libs/client/api';
 
-export default function Home({ user }: { user: UserSession }) {
+interface Props {
+  user: UserSession;
+  roomList: RoomData[];
+}
+
+export default function Home({ user, roomList }: Props) {
   const router = useRouter();
 
   return (
@@ -21,6 +28,16 @@ export default function Home({ user }: { user: UserSession }) {
           </Link>
           <div>
             <div>방목록</div>
+            <ul>
+              {roomList.map(v => (
+                <li key={`room${v.id}`} className="w-30 h-20 bg-red-300">
+                  <span>{v.title}</span>
+                  <Link href={`/room/${v.id}`}>
+                    <a>입장</a>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
           <Link href={'/?search=1'} as={'/search'} scroll={false}>
             <button>방찾기</button>
@@ -62,9 +79,16 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
+  const getRoomsResponse = await axios({
+    method: 'get',
+    url: `${API_DOMAIN}/api/rooms`,
+    headers: { ...authHeaders(session.token as string) },
+  });
+
   return {
     props: {
       user: session,
+      roomList: getRoomsResponse.data.result.roomList || [],
     },
   };
 };

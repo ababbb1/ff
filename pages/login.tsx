@@ -1,3 +1,5 @@
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import SocialLoginButtons from '../components/social-login-buttons';
@@ -13,11 +15,6 @@ export interface LoginFormData {
 
 export default function Login() {
   const router = useRouter();
-  const query = router.query;
-
-  useEffect(() => {
-    if (query) console.log(query);
-  }, []);
 
   const {
     register,
@@ -28,7 +25,6 @@ export default function Login() {
   const onValid: SubmitHandler<LoginFormData> = async (data: LoginFormData) => {
     signIn('credentials', {
       callbackUrl: '/',
-      redirect: true,
       email: data.email,
       password: data.password,
     });
@@ -87,9 +83,6 @@ export default function Login() {
   );
 }
 
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
-import { useEffect } from 'react';
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
 
@@ -102,11 +95,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  console.log(session);
-
   return {
-    props: {
-      session,
-    },
+    props: {},
   };
 };
