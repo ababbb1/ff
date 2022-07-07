@@ -7,14 +7,17 @@ import FacebookProvider from 'next-auth/providers/facebook';
 import axios from 'axios';
 import { API_DOMAIN, contentTypeHeaders } from '../../../libs/client/api';
 import jwt_decode from 'jwt-decode';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { UserSession } from '../../../libs/types/user';
 
-export default async function auth(req, res) {
+export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   return await NextAuth(req, res, {
     secret: process.env.SECRET,
     providers: [
       CredentialsProvider({
+        credentials: {},
         name: 'Credentials',
-        authorize: async credentials => {
+        authorize: async (credentials: Record<string, string> | undefined) => {
           const res = await axios({
             method: 'post',
             url: `${API_DOMAIN}/api/local/login`,
@@ -63,7 +66,7 @@ export default async function auth(req, res) {
             nickname: user.nickname || user.name,
             social: user.social,
             provider: account.provider,
-          }
+          };
         else return token;
       },
 
@@ -76,8 +79,8 @@ export default async function auth(req, res) {
               data: { email: token.email, nickname: token.nickname },
               headers: contentTypeHeaders,
             });
-            const _token = res.data.result.token
-            const user = jwt_decode(_token);
+            const _token = res.data.result.token;
+            const user: UserSession = jwt_decode(_token);
             return { ...session, ...token, token: _token, id: user.id };
           }
           return { ...session, ...token };
