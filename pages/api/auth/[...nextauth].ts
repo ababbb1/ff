@@ -76,9 +76,13 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             const res = await axios({
               method: 'post',
               url: `${API_DOMAIN}/api/login`,
-              data: { email: token.email, nickname: token.nickname },
+              data: {
+                email: `${token.email}:${token.provider}`,
+                nickname: `${token.nickname}:${token.provider}`,
+              },
               headers: contentTypeHeaders,
             });
+            console.log(res.data);
             const _token = res.data.result.token;
             const user: UserSession = jwt_decode(_token);
             return { ...session, ...token, token: _token, id: user.id };

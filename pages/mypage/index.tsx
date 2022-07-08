@@ -49,6 +49,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   //   headers: { ...contentTypeHeaders, ...authHeaders(session.token as string) },
   // });
 
+  // console.log(res.data);
+
   return {
     props: {
       user: session,

@@ -5,10 +5,11 @@ import ModalLayout from '../../components/modalLayout';
 import { Suspense, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { API_DOMAIN } from '../../libs/client/api';
-import { UserSession } from '../../libs/types/user';
+import { RoomData, UserSession } from '../../libs/types/user';
 import RoomReady from '../../components/roomReady';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../components/loadingScreen';
+import RoomForm, { RoomFormData } from '../../components/roomForm';
 
 const RoomHint = dynamic(() => import('../../components/roomHint'));
 const RoomReasoning = dynamic(() => import('../../components/roomReasoning'));
@@ -18,6 +19,8 @@ export default function Room({ user }: { user: UserSession }) {
   const [isSetting, setIsSetting] = useState(false);
   const [messageList, setMessageList] = useState<string[]>([]);
   const [message, setMessage] = useState('');
+  const [roomInfo, setRoomInfo] = useState<RoomData>();
+  const isMaster = roomInfo?.master === user.nickname;
 
   const roomUniqueId = router.query.roomUniqueId;
   const queryParams = router.query.params as string[];
@@ -39,8 +42,9 @@ export default function Room({ user }: { user: UserSession }) {
     setMessage('');
   };
 
-  const receiveMessage = ({ message }: { message: string }) => {
+  const receiveMessage = ({ message, roomInfo }: any) => {
     console.log(message);
+    setRoomInfo(roomInfo);
     setMessageList(prev => [...prev, message]);
   };
 
@@ -48,23 +52,38 @@ export default function Room({ user }: { user: UserSession }) {
     setIsSetting(true);
   };
 
+  const updateRoomInfo = (data: any) => {
+    console.log('data:', data);
+    console.log('create message:', data.message);
+    setRoomInfo(data.roomInfo);
+  };
+
+  const onSettingFormValid = async (data: RoomFormData) => {
+    console.log(data);
+    socket.emit('update_room', { data });
+    setIsSetting(false);
+  };
+
   useEffect(() => {
-    console.log(roomUniqueId);
+    console.log(router.query);
+    console.log(roomInfo);
     // window.addEventListener('beforeunload', preventUnload);
 
     if (socket) {
       if (roomUniqueId) {
-        socket.emit('create_room', { roomUniqueId });
+        socket.emit('create_room', { roomId: queryParams[0], roomUniqueId });
       } else {
         socket.emit('join_room', {
           userId: user.id,
           roomId: queryParams[0],
           email: user.email,
           nickname: user.nickname,
+          master: user.nickname,
         });
       }
 
       socket.on('new_chat', receiveMessage);
+      socket.on('update_room', updateRoomInfo);
     }
 
     return () => {
@@ -96,6 +115,7 @@ export default function Room({ user }: { user: UserSession }) {
           message,
           setMessage,
           submitMessage,
+          isMaster,
         }}
       />
       {isSetting && (
@@ -105,7 +125,13 @@ export default function Room({ user }: { user: UserSession }) {
             setIsSetting(false);
           }}
         >
-          <div className="bg-white w-[50rem] h-[40rem]">setting</div>
+          <div className="w-[80%] h-[80%]">
+            <RoomForm
+              initData={roomInfo}
+              master={user.nickname}
+              onValid={onSettingFormValid}
+            />
+          </div>
         </ModalLayout>
       )}
     </>

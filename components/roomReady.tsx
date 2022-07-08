@@ -8,6 +8,7 @@ interface Props {
   message: string;
   setMessage: Dispatch<SetStateAction<string>>;
   submitMessage: () => void;
+  isMaster: boolean;
 }
 
 export default function RoomReady({
@@ -17,22 +18,30 @@ export default function RoomReady({
   message,
   setMessage,
   submitMessage,
+  isMaster,
 }: Props) {
   const router = useRouter();
 
   return (
     <div>
-      <button onClick={settingButtonHandler}>세팅</button>
-      <button
-        onClick={() => {
-          router.replace(
-            `/room/${queryParams[0]}/?hint=1`,
-            `/room/${queryParams[0]}/hint`,
-          );
-        }}
-      >
-        게임시작
-      </button>
+      {isMaster ? (
+        <div>
+          <button onClick={settingButtonHandler}>세팅</button>
+          <button
+            onClick={() => {
+              router.replace(
+                `/room/${queryParams[0]}/?hint=1`,
+                `/room/${queryParams[0]}/hint`,
+              );
+            }}
+          >
+            게임시작
+          </button>
+        </div>
+      ) : (
+        <button>준비</button>
+      )}
+
       <div>
         <div>채팅</div>
         <ul>

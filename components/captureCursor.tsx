@@ -6,7 +6,7 @@ interface Props {
   width: number;
   height: number;
   target?: RefObject<HTMLElement>;
-  onCapture: (imgUrl: string) => any | void;
+  onCapture: (imgUrl: string) => unknown | void;
   isActive: boolean;
 }
 
@@ -40,36 +40,36 @@ export default function CaptureCursor({
     }, 120);
   };
 
-  const isOnTarget = (pageX: number, pageY: number): boolean => {
+  const isOnTarget = (clientX: number, clientY: number): boolean => {
     if (target && target.current) {
       const targetTop = target.current.offsetTop;
       const targetRight =
-        target.current.offsetLeft + target.current.offsetWidth;
+        target.current.offsetLeft + target.current.offsetWidth - window.scrollX;
       const targetBottom =
-        target.current.offsetTop + target.current.offsetHeight;
+        target.current.offsetTop + target.current.offsetHeight - window.scrollY;
       const targetLeft = target.current.offsetLeft;
 
       return (
-        pageX > targetLeft &&
-        pageX < targetRight &&
-        pageY > targetTop &&
-        pageY < targetBottom
+        clientX > targetLeft &&
+        clientX < targetRight &&
+        clientY > targetTop &&
+        clientY < targetBottom
       );
     } else return false;
   };
 
   const mouseMove = (e: MouseEvent) => {
     if (bg.current) {
-      if (isActive && isOnTarget(e.pageX, e.pageY)) {
+      if (isActive && isOnTarget(e.clientX, e.clientY)) {
         bg.current.style.display = 'block';
-        bg.current.style.borderTopWidth = `${e.pageY - height / 2}px`;
+        bg.current.style.borderTopWidth = `${e.clientY - height / 2}px`;
         bg.current.style.borderRightWidth = `${
-          window.innerWidth - e.pageX - width / 2
+          window.innerWidth - e.clientX - width / 2
         }px`;
         bg.current.style.borderBottomWidth = `${
-          window.innerHeight - e.pageY - height / 2
+          window.innerHeight - e.clientY - height / 2
         }px`;
-        bg.current.style.borderLeftWidth = `${e.pageX - width / 2}px`;
+        bg.current.style.borderLeftWidth = `${e.clientX - width / 2}px`;
       } else {
         bg.current.style.display = 'none';
       }
@@ -77,14 +77,19 @@ export default function CaptureCursor({
   };
 
   useEffect(() => {
-    document.addEventListener('mousemove', mouseMove);
-    bg.current?.addEventListener('click', captureEvent);
+    const captureScreen = bg.current;
+    if (captureScreen) {
+      document.addEventListener('mousemove', mouseMove);
+      captureScreen.addEventListener('click', captureEvent);
+    }
 
     return () => {
-      document.removeEventListener('mousemove', mouseMove);
-      bg.current?.removeEventListener('click', captureEvent);
+      if (captureScreen) {
+        document.removeEventListener('mousemove', mouseMove);
+        captureScreen.removeEventListener('click', captureEvent);
+      }
     };
-  }, [isActive]);
+  });
 
   return (
     <>
