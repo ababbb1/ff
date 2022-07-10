@@ -7,16 +7,27 @@ import AnimatedTextLayout from '../components/animatedTextLayout';
 import Link from 'next/link';
 import ModalLayout from '../components/modalLayout';
 import { RoomData, UserSession } from '../libs/types/user';
-import axios from 'axios';
-import { API_DOMAIN, authHeaders } from '../libs/client/api';
+import { getRoomListRequest } from '../libs/client/api';
+import { useQuery } from 'react-query';
+import LoadingScreen from '../components/loadingScreen';
 
 interface Props {
   user: UserSession;
-  roomList: RoomData[];
+  initRoomList: RoomData[];
 }
 
-export default function Home({ user, roomList }: Props) {
+export default function Home({ user }: Props) {
   const router = useRouter();
+  const { isLoading, data } = useQuery(
+    'getRoomListAll',
+    () => getRoomListRequest({ token: user.token }),
+    {
+      refetchOnWindowFocus: true,
+    },
+  );
+  const roomList = data?.data.result.roomList;
+
+  if (isLoading) return <LoadingScreen visible />;
 
   return (
     <Layout>
@@ -29,14 +40,18 @@ export default function Home({ user, roomList }: Props) {
           <div>
             <div>방목록</div>
             <ul>
-              {roomList.map(v => (
-                <li key={`room${v.id}`} className="w-30 h-20 bg-red-300">
-                  <span>{v.title}</span>
-                  <Link href={`/room/${v.id}`}>
-                    <a>입장</a>
-                  </Link>
-                </li>
-              ))}
+              {!roomList ? (
+                <div>아직 방이 없습니다.</div>
+              ) : (
+                roomList.map((v: RoomData) => (
+                  <li key={`room${v.id}`} className="w-30 h-20 bg-red-300">
+                    <span>{v.title}</span>
+                    <Link href={`/room/${v.id}`}>
+                      <a>입장</a>
+                    </Link>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
           <Link href={'/?search=1'} as={'/search'} scroll={false}>
@@ -58,7 +73,7 @@ export default function Home({ user, roomList }: Props) {
             }}
           >
             <div className="bg-white w-[50rem] h-[40rem]">
-              <RoomSearchForm />
+              <RoomSearchForm {...{ user }} />
             </div>
           </ModalLayout>
         )}
@@ -79,18 +94,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  const getRoomsResponse = await axios({
-    method: 'get',
-    url: `${API_DOMAIN}/api/rooms`,
-    headers: { ...authHeaders(session.token as string) },
-  });
-
-  console.log(getRoomsResponse.data);
-
   return {
     props: {
       user: session,
-      roomList: getRoomsResponse.data.result.roomList || [],
     },
   };
 };

@@ -1,8 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { API_DOMAIN, contentTypeHeaders } from '../libs/client/api';
-import axios from 'axios';
+import { joinRequest } from '../libs/client/api';
 import { useRouter } from 'next/router';
 import ErrorMessage from '../components/errorMessage';
 import { cls, emailCheck } from '../libs/client/utils';
@@ -23,19 +22,10 @@ export default function Join() {
   } = useForm<JoinFormData>({ mode: 'onBlur' });
 
   const onValid: SubmitHandler<JoinFormData> = (data: JoinFormData) => {
-    axios({
-      method: 'post',
-      url: `${API_DOMAIN}/api/signup`,
-      data,
-      headers: contentTypeHeaders,
-    })
-      .then(() => {
-        alert('회원가입에 성공했습니다.');
-        router.replace('/login');
-      })
-      .catch(e => {
-        console.log(e);
-      });
+    joinRequest({ data }).then(() => {
+      alert('회원가입에 성공했습니다.');
+      router.replace('/login');
+    });
   };
 
   return (

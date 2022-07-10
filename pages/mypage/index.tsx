@@ -4,12 +4,6 @@ import { UserSession } from '../../libs/types/user';
 import AnimatedTextLayout from '../../components/animatedTextLayout';
 import Layout from '../../components/layout';
 import { signOut } from 'next-auth/react';
-// import {
-//   API_DOMAIN,
-//   contentTypeHeaders,
-//   authHeaders,
-// } from '../../libs/client/api';
-// import axios from 'axios';
 
 export default function Mypage({ user }: { user: UserSession }) {
   const logoutHandler = () => {
@@ -43,13 +37,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  // const res = await axios({
-  //   method: 'get',
-  //   url: `${API_DOMAIN}/api/mypage`,
-  //   headers: { ...contentTypeHeaders, ...authHeaders(session.token as string) },
-  // });
-
-  // console.log(res.data);
+  // const res = await mypageRequest({ token: session.token as string });
 
   return {
     props: {

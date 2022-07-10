@@ -1,20 +1,30 @@
 import { useRouter } from 'next/router';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { roomSearchRequest } from '../libs/client/api';
 import { cls } from '../libs/client/utils';
+import { UserSession } from '../libs/types/user';
 
-export interface SearchFormData {
-  value: string;
-  type: 'title' | 'nickname';
+interface Props {
+  user: UserSession;
 }
 
-export default function RoomSearchForm() {
+export interface SearchFormData {
+  inputValue: string;
+  type: 'TITLE' | 'NICKNAME';
+}
+
+export default function RoomSearchForm({ user }: Props) {
   const router = useRouter();
   const { register, handleSubmit } = useForm<SearchFormData>({
     mode: 'onSubmit',
   });
 
-  const onValid: SubmitHandler<SearchFormData> = (data: SearchFormData) => {
-    console.log(data);
+  const onValid: SubmitHandler<SearchFormData> = async (
+    data: SearchFormData,
+  ) => {
+    const res = await roomSearchRequest({ data, token: user.token });
+
+    console.log(res.data.result);
     router.back();
   };
 
@@ -26,7 +36,7 @@ export default function RoomSearchForm() {
       >
         <div className="w-full flex flex-col gap-1">
           <input
-            {...register('value', {
+            {...register('inputValue', {
               required: '검색 키워드를 입력해주세요.',
             })}
             placeholder="방장 닉네임 또는 방 제목"
@@ -42,10 +52,10 @@ export default function RoomSearchForm() {
               className="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
               aria-label="Default select example"
             >
-              <option value="title" defaultChecked>
+              <option value="TITLE" defaultChecked>
                 방 제목
               </option>
-              <option value="nickname">방장</option>
+              <option value="NICKNAME">방장</option>
             </select>
           </div>
         </div>

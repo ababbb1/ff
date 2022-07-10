@@ -24,27 +24,27 @@ export default function Room({ user }: { user: UserSession }) {
 
   const roomUniqueId = router.query.roomUniqueId;
   const queryParams = router.query.params as string[];
+  const roomId = queryParams[0];
+  const roomState = queryParams[1];
 
   const socket = io(API_DOMAIN, { transports: ['websocket'] });
 
-  // const preventUnload = (e: BeforeUnloadEvent) => {
-  //   e.preventDefault();
-  //   e.returnValue = '';
-  // };
+  const preventUnload = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    e.returnValue = '';
+  };
 
   const submitMessage = () => {
     socket.emit('submit_chat', {
       message,
       nickname: user.nickname,
-      roomId: queryParams[0],
+      roomId,
     });
 
     setMessage('');
   };
 
-  const receiveMessage = ({ message, roomInfo }: any) => {
-    console.log(message);
-    setRoomInfo(roomInfo);
+  const receiveMessage = ({ message }: any) => {
     setMessageList(prev => [...prev, message]);
   };
 
@@ -54,31 +54,26 @@ export default function Room({ user }: { user: UserSession }) {
 
   const updateRoomInfo = (data: any) => {
     console.log('data:', data);
-    console.log('create message:', data.message);
     setRoomInfo(data.roomInfo);
   };
 
   const onSettingFormValid = async (data: RoomFormData) => {
-    console.log(data);
     socket.emit('update_room', { data });
     setIsSetting(false);
   };
 
   useEffect(() => {
-    console.log(router.query);
-    console.log(roomInfo);
-    // window.addEventListener('beforeunload', preventUnload);
+    window.addEventListener('beforeunload', preventUnload);
 
     if (socket) {
       if (roomUniqueId) {
-        socket.emit('create_room', { roomId: queryParams[0], roomUniqueId });
+        socket.emit('create_room', { roomId, roomUniqueId });
       } else {
         socket.emit('join_room', {
           userId: user.id,
-          roomId: queryParams[0],
+          roomId,
           email: user.email,
           nickname: user.nickname,
-          master: user.nickname,
         });
       }
 
@@ -87,18 +82,19 @@ export default function Room({ user }: { user: UserSession }) {
     }
 
     return () => {
-      // window.removeEventListener('beforeunload', preventUnload);
+      window.removeEventListener('beforeunload', preventUnload);
       socket.off('new_chat', receiveMessage);
+      socket.off('update_room', updateRoomInfo);
     };
   }, []);
 
-  if (queryParams[1] === 'hint')
+  if (roomState === 'hint')
     return (
       <Suspense fallback={<LoadingScreen visible />}>
         <RoomHint />
       </Suspense>
     );
-  if (queryParams[1] === 'reasoning')
+  if (roomState === 'reasoning')
     return (
       <Suspense fallback={<LoadingScreen visible />}>
         <RoomReasoning />
@@ -110,7 +106,7 @@ export default function Room({ user }: { user: UserSession }) {
       <RoomReady
         {...{
           settingButtonHandler,
-          queryParams,
+          roomId,
           messageList,
           message,
           setMessage,
@@ -150,14 +146,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  if (!req.headers.referer) {
-    return {
-      redirect: {
-        destination: '/error/access_denied',
-        permanent: false,
-      },
-    };
-  }
+  // if (!req.headers.referer) {
+  //   return {
+  //     redirect: {
+  //       destination: '/error/access_denied',
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   return {
     props: {

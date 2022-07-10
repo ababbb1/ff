@@ -13,7 +13,9 @@ module.exports = {
           '100%': { transform: 'translateX(100vw)' },
         },
         'text-move-down': {
-          '0%': { transform: 'rotate(90deg) translateY(0.875rem) translateX(0px)' },
+          '0%': {
+            transform: 'rotate(90deg) translateY(0.875rem) translateX(0px)',
+          },
           '100%': { transform: 'rotate(90deg) translateY(0.875rem) translateX(100vh)' },
         },
         'text-move-left': {

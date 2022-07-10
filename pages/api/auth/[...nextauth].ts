@@ -5,7 +5,12 @@ import NaverProvider from 'next-auth/providers/naver';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
 import axios from 'axios';
-import { API_DOMAIN, contentTypeHeaders } from '../../../libs/client/api';
+import {
+  API_DOMAIN,
+  contentTypeHeaders,
+  localLoginRequest,
+  socialLoginRequest,
+} from '../../../libs/client/api';
 import jwt_decode from 'jwt-decode';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { UserSession } from '../../../libs/types/user';
@@ -18,15 +23,10 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         credentials: {},
         name: 'Credentials',
         authorize: async (credentials: Record<string, string> | undefined) => {
-          const res = await axios({
-            method: 'post',
-            url: `${API_DOMAIN}/api/local/login`,
-            data: {
-              email: credentials?.email,
-              password: credentials?.password,
-            },
-            headers: contentTypeHeaders,
+          const res = await localLoginRequest({
+            data: credentials,
           });
+
           const token = res.data.token;
           if (token) {
             return { ...jwt_decode(token), token };
@@ -73,19 +73,23 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       async session({ session, token }) {
         if (token) {
           if (token.provider !== 'credentials') {
-            const res = await axios({
-              method: 'post',
-              url: `${API_DOMAIN}/api/login`,
-              data: {
-                email: `${token.email}:${token.provider}`,
-                nickname: `${token.nickname}:${token.provider}`,
-              },
-              headers: contentTypeHeaders,
-            });
-            console.log(res.data);
+            const data = {
+              email: `${token.email}:${token.provider}`,
+              nickname: `${token.nickname}:${token.provider}`,
+            };
+            const res = await socialLoginRequest({ data });
+
             const _token = res.data.result.token;
             const user: UserSession = jwt_decode(_token);
-            return { ...session, ...token, token: _token, id: user.id };
+
+            return {
+              ...session,
+              ...token,
+              token: _token,
+              id: user.id,
+              nickname: user.nickname,
+              email: user.email,
+            };
           }
           return { ...session, ...token };
         } else return session;

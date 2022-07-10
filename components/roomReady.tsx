@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 interface Props {
   settingButtonHandler: () => void;
-  queryParams: string[];
+  roomId: string;
   messageList: string[];
   message: string;
   setMessage: Dispatch<SetStateAction<string>>;
@@ -13,7 +13,7 @@ interface Props {
 
 export default function RoomReady({
   settingButtonHandler,
-  queryParams,
+  roomId,
   messageList,
   message,
   setMessage,
@@ -29,10 +29,7 @@ export default function RoomReady({
           <button onClick={settingButtonHandler}>세팅</button>
           <button
             onClick={() => {
-              router.replace(
-                `/room/${queryParams[0]}/?hint=1`,
-                `/room/${queryParams[0]}/hint`,
-              );
+              router.replace(`/room/${roomId}/hint`);
             }}
           >
             게임시작

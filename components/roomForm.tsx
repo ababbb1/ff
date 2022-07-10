@@ -36,7 +36,6 @@ export default function RoomForm({ onValid, initData, master }: Props) {
   });
 
   useEffect(() => {
-    console.log(initData);
     setValue('title', initData?.title || '');
     setValue('password', initData?.password || '');
     setValue('episode', initData?.episode || episodes[0]);
