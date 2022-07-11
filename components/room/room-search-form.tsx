@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { roomSearchRequest } from '../libs/client/api';
-import { cls } from '../libs/client/utils';
-import { UserSession } from '../libs/types/user';
+import { roomSearchRequest } from '../../libs/client/api';
+import { cls } from '../../libs/client/utils';
+import { UserSession } from '../../libs/types/user';
 
 interface Props {
   user: UserSession;

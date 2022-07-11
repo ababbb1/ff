@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import CaptureCursor from './captureCursor';
+import CaptureCursor from '../capture-cursor';
 import axios from 'axios';
-import { base64ToFile } from '../libs/client/utils';
+import { base64ToFile } from '../../libs/client/utils';
 
 export default function RoomHint() {
   const [camera, setCamera] = useState<boolean>(false);

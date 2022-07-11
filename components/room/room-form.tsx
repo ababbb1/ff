@@ -6,8 +6,8 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 import { NavigationOptions } from 'swiper/types';
 import { useForm } from 'react-hook-form';
 import { useEffect, useRef } from 'react';
-import { cls } from '../libs/client/utils';
-import { RoomData } from '../libs/types/user';
+import { cls } from '../../libs/client/utils';
+import { RoomData } from '../../libs/types/user';
 
 interface Props {
   onValid: (data: RoomFormData) => void | any;

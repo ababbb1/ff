@@ -1,15 +1,15 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import RoomSearchForm from '../components/roomSearchForm';
+import RoomSearchForm from '../components/room/room-search-form';
 import { useRouter } from 'next/router';
 import Layout from '../components/layout';
-import AnimatedTextLayout from '../components/animatedTextLayout';
+import AnimatedTextLayout from '../components/animated-text-layout';
 import Link from 'next/link';
-import ModalLayout from '../components/modalLayout';
+import ModalLayout from '../components/modal-layout';
 import { RoomData, UserSession } from '../libs/types/user';
 import { getRoomListRequest } from '../libs/client/api';
 import { useQuery } from 'react-query';
-import LoadingScreen from '../components/loadingScreen';
+import LoadingScreen from '../components/loading-screen';
 
 interface Props {
   user: UserSession;
@@ -23,6 +23,7 @@ export default function Home({ user }: Props) {
     () => getRoomListRequest({ token: user.token }),
     {
       refetchOnWindowFocus: true,
+      refetchIntervalInBackground: true,
     },
   );
   const roomList = data?.data.result.roomList;
@@ -46,7 +47,7 @@ export default function Home({ user }: Props) {
                 roomList.map((v: RoomData) => (
                   <li key={`room${v.id}`} className="w-30 h-20 bg-red-300">
                     <span>{v.title}</span>
-                    <Link href={`/room/${v.id}`}>
+                    <Link href={`/room/${v.id}/lobby`}>
                       <a>입장</a>
                     </Link>
                   </li>

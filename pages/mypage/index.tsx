@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { UserSession } from '../../libs/types/user';
-import AnimatedTextLayout from '../../components/animatedTextLayout';
+import AnimatedTextLayout from '../../components/animated-text-layout';
 import Layout from '../../components/layout';
 import { signOut } from 'next-auth/react';
 
