@@ -12,6 +12,7 @@ export default function CreateRoom({ user }: { user: UserSession }) {
   const router = useRouter();
 
   const onValid = async (data: RoomFormData) => {
+    console.log('create');
     const res = await API.post('room/create', data, {
       headers: authHeaders(user.token),
     });

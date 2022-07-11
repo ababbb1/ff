@@ -5,6 +5,11 @@ import axios from 'axios';
 import { base64ToFile } from '../../libs/client/utils';
 
 export default function RoomHint() {
+  const CAMERA_WIDTH = 180;
+  const CAMERA_HEIGHT = 180;
+  const IMAGE_WIDTH = 120;
+  const IMAGE_HEIGHT = 120;
+
   const [camera, setCamera] = useState<boolean>(false);
   const [imageList, setImageList] = useState<string[]>([]);
   const mapRef = useRef<HTMLDivElement>(null);
@@ -18,10 +23,7 @@ export default function RoomHint() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const getUploadURLResponse = await axios({
-        method: 'get',
-        url: '/api/files',
-      });
+      const getUploadURLResponse = await axios.get('/api/files');
 
       const res = await axios({
         method: 'post',
@@ -57,16 +59,16 @@ export default function RoomHint() {
           <Image
             key={`hint${i}`}
             src={imgUrl}
-            width={120}
-            height={120}
+            width={IMAGE_WIDTH}
+            height={IMAGE_HEIGHT}
             alt={`hint${i}`}
           />
         ))}
       </div>
       <CaptureCursor
         {...{
-          width: 180,
-          height: 180,
+          width: CAMERA_WIDTH,
+          height: CAMERA_HEIGHT,
           target: mapRef,
           onCapture,
           isActive: camera,

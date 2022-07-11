@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
+import { contentTypeHeaders, authHeaders } from '../../libs/client/api';
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,13 +10,13 @@ export default async function handler(
     method: 'post',
     url: `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/images/v2/direct_upload`,
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.HH_IMAGES_TOKEN}`,
+      ...contentTypeHeaders,
+      ...authHeaders(process.env.HH_IMAGES_TOKEN as string),
     },
   });
 
   res.json({
-    ok: true,
+    success: true,
     ...response.data.result,
   });
 }

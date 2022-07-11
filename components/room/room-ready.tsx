@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { RoomData, UserSession } from '../../libs/types/user';
 import LoadingScreen from '../loading-screen';
@@ -42,7 +42,8 @@ export default function RoomReady({ user, roomInfo, socket }: Props) {
   };
 
   const onSettingFormValid = async (data: RoomFormData) => {
-    socket.emit('update_room', { data });
+    console.log('update form data', data);
+    socket.emit('update_room', { ...data, roomId: roomInfo?.id });
     setIsSetting(false);
   };
 

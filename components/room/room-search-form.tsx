@@ -1,13 +1,14 @@
-import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import API, { authHeaders } from '../../libs/client/api';
 import { cls } from '../../libs/client/utils';
-import { RoomData, UserSession } from '../../libs/types/user';
+import { UserSession } from '../../libs/types/user';
+import { RoomSearchApiResponse } from './room-search';
 
 interface Props {
   user: UserSession;
-  setSearchResultList: Dispatch<SetStateAction<RoomData[]>>;
+  setSearchResult: Dispatch<SetStateAction<RoomSearchApiResponse | undefined>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface SearchFormData {
@@ -15,21 +16,23 @@ export interface SearchFormData {
   type: 'TITLE' | 'NICKNAME';
 }
 
-export default function RoomSearchForm({ user, setSearchResultList }: Props) {
-  const router = useRouter();
+export default function RoomSearchForm({
+  user,
+  setSearchResult,
+  setIsLoading,
+}: Props) {
   const { register, handleSubmit } = useForm<SearchFormData>({
     mode: 'onSubmit',
   });
 
-  const onValid: SubmitHandler<SearchFormData> = async (
-    data: SearchFormData,
-  ) => {
+  const onValid = async (params: SearchFormData) => {
+    setIsLoading(true);
     const res = await API.get('room/search', {
-      params: data,
+      params,
       headers: authHeaders(user.token),
     });
-
-    setSearchResultList(res.data.result.roomList);
+    setSearchResult(res.data.result);
+    setIsLoading(false);
   };
 
   return (

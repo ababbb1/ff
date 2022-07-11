@@ -1,11 +1,17 @@
 import { cls } from '../libs/client/utils';
 import ClipLoader from 'react-spinners/ClipLoader';
 
-export default function LoadingScreen({ visible }: { visible: boolean }) {
+interface Props {
+  visible: boolean;
+  isFull?: boolean;
+}
+
+export default function LoadingScreen({ visible, isFull = true }: Props) {
   return (
     <div
       className={cls(
-        'fixed top-0 left-0 w-full h-screen z-50 bg-white flex justify-center items-center',
+        isFull ? 'fixed' : 'absolute',
+        'top-0 left-0 w-full h-full z-50 bg-white flex justify-center items-center',
         visible ? 'block' : 'hidden',
       )}
     >

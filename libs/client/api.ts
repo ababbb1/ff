@@ -21,29 +21,3 @@ const API = axios.create({
 });
 
 export default API;
-
-const apiRequest =
-  (method: ApiRequestMethod) =>
-  (pathname: string) =>
-  (obj?: ApiRequestObject) => {
-    const headers =
-      method === 'post'
-        ? obj?.token
-          ? Object.assign(contentTypeHeaders, authHeaders(obj.token))
-          : contentTypeHeaders
-        : obj?.token
-        ? authHeaders(obj.token)
-        : {};
-
-    return axios({
-      method,
-      url: `${API_DOMAIN}${pathname}`,
-      params: obj?.params,
-      data: obj?.data,
-      headers,
-    });
-  };
-const apiGetRequest = apiRequest('get');
-const apiPostRequest = apiRequest('post');
-
-export const roomSearchRequest = apiGetRequest('/api/room/search');
