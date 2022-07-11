@@ -28,11 +28,6 @@ export default function Room({ user }: { user: UserSession }) {
     setRoomInfo(data.roomInfo);
   };
 
-  const historyBackHandler = () => {
-    socket.emit('exit_room', { roomId: roomInfo?.id, userId: user.id });
-    socket.disconnect();
-  };
-
   useEffect(() => {
     console.log(router.query);
     // window.addEventListener('beforeunload', preventUnload);

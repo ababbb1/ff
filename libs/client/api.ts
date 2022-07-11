@@ -2,6 +2,7 @@ import axios, { AxiosRequestHeaders } from 'axios';
 
 type ApiRequestMethod = 'get' | 'post';
 interface ApiRequestObject {
+  params?: { [k: string]: any };
   data?: { [k: string]: any };
   token?: string;
 }
@@ -14,17 +15,30 @@ export const authHeaders = (token: string): AxiosRequestHeaders => ({
   Authorization: `Bearer ${token}`,
 });
 
+const API = axios.create({
+  baseURL: `${API_DOMAIN}/api/`,
+  headers: contentTypeHeaders,
+});
+
+export default API;
+
 const apiRequest =
   (method: ApiRequestMethod) =>
   (pathname: string) =>
   (obj?: ApiRequestObject) => {
-    const headers = obj?.token
-      ? Object.assign(contentTypeHeaders, authHeaders(obj.token))
-      : contentTypeHeaders;
+    const headers =
+      method === 'post'
+        ? obj?.token
+          ? Object.assign(contentTypeHeaders, authHeaders(obj.token))
+          : contentTypeHeaders
+        : obj?.token
+        ? authHeaders(obj.token)
+        : {};
 
     return axios({
       method,
       url: `${API_DOMAIN}${pathname}`,
+      params: obj?.params,
       data: obj?.data,
       headers,
     });
@@ -32,11 +46,4 @@ const apiRequest =
 const apiGetRequest = apiRequest('get');
 const apiPostRequest = apiRequest('post');
 
-export const localLoginRequest = apiPostRequest('/api/local/login');
-export const socialLoginRequest = apiPostRequest('/api/login');
-export const joinRequest = apiPostRequest('/api/signup');
-export const mypageRequest = apiGetRequest('/api/mypage');
-
-export const getRoomListRequest = apiGetRequest('/api/rooms');
 export const roomSearchRequest = apiGetRequest('/api/room/search');
-export const createRoomRequest = apiPostRequest('/api/room/create');

@@ -37,8 +37,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  // const res = await mypageRequest({ token: session.token as string });
-
   return {
     props: {
       user: session,

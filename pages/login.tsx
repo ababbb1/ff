@@ -72,9 +72,7 @@ export default function Login() {
 
           <div className="mt-6 flex flex-col gap-2 w-full">
             <button type="submit">로그인</button>
-            <Link href="/join">
-              <button>회원가입</button>
-            </Link>
+            <Link href="/join">회원가입</Link>
           </div>
           <SocialLoginButtons />
         </form>

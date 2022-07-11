@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import { createRoomRequest } from '../../libs/client/api';
+import API, { authHeaders } from '../../libs/client/api';
 import { useRouter } from 'next/router';
 import { UserSession } from '../../libs/types/user';
 import AnimatedTextLayout from '../../components/animated-text-layout';
@@ -12,7 +12,9 @@ export default function CreateRoom({ user }: { user: UserSession }) {
   const router = useRouter();
 
   const onValid = async (data: RoomFormData) => {
-    const res = await createRoomRequest({ data, token: user.token });
+    const res = await API.post('room/create', data, {
+      headers: authHeaders(user.token),
+    });
 
     if (res.data.result.success) {
       router.replace(

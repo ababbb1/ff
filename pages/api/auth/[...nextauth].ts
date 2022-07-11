@@ -4,13 +4,7 @@ import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
-import axios from 'axios';
-import {
-  API_DOMAIN,
-  contentTypeHeaders,
-  localLoginRequest,
-  socialLoginRequest,
-} from '../../../libs/client/api';
+import API from '../../../libs/client/api';
 import jwt_decode from 'jwt-decode';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { UserSession } from '../../../libs/types/user';
@@ -23,9 +17,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         credentials: {},
         name: 'Credentials',
         authorize: async (credentials: Record<string, string> | undefined) => {
-          const res = await localLoginRequest({
-            data: credentials,
-          });
+          const res = await API.post('local/login', credentials);
 
           const token = res.data.token;
           if (token) {
@@ -77,7 +69,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
               email: `${token.email}:${token.provider}`,
               nickname: `${token.nickname}:${token.provider}`,
             };
-            const res = await socialLoginRequest({ data });
+            const res = await API.post('login', data);
 
             const _token = res.data.result.token;
             const user: UserSession = jwt_decode(_token);

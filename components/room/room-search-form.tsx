@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
+import { Dispatch, SetStateAction } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { roomSearchRequest } from '../../libs/client/api';
+import API, { authHeaders } from '../../libs/client/api';
 import { cls } from '../../libs/client/utils';
-import { UserSession } from '../../libs/types/user';
+import { RoomData, UserSession } from '../../libs/types/user';
 
 interface Props {
   user: UserSession;
+  setSearchResultList: Dispatch<SetStateAction<RoomData[]>>;
 }
 
 export interface SearchFormData {
@@ -13,7 +15,7 @@ export interface SearchFormData {
   type: 'TITLE' | 'NICKNAME';
 }
 
-export default function RoomSearchForm({ user }: Props) {
+export default function RoomSearchForm({ user, setSearchResultList }: Props) {
   const router = useRouter();
   const { register, handleSubmit } = useForm<SearchFormData>({
     mode: 'onSubmit',
@@ -22,17 +24,19 @@ export default function RoomSearchForm({ user }: Props) {
   const onValid: SubmitHandler<SearchFormData> = async (
     data: SearchFormData,
   ) => {
-    const res = await roomSearchRequest({ data, token: user.token });
+    const res = await API.get('room/search', {
+      params: data,
+      headers: authHeaders(user.token),
+    });
 
-    console.log(res.data.result);
-    router.back();
+    setSearchResultList(res.data.result.roomList);
   };
 
   return (
-    <div className="w-full justify-center items-center h-screen flex">
+    <div className="w-full justify-center items-center flex">
       <form
         onSubmit={handleSubmit(onValid)}
-        className="flex flex-col items-center h-screen gap-4 px-4 pt-24 w-full max-w-sm"
+        className="flex flex-col items-center gap-4 px-4 pt-24 w-full max-w-sm"
       >
         <div className="w-full flex flex-col gap-1">
           <input
