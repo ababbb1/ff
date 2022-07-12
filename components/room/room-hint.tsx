@@ -5,6 +5,7 @@ import axios from 'axios';
 import { base64ToFile } from '../../libs/client/utils';
 import LoadingScreen from '../loading-screen';
 import { RoomData } from '../../libs/types/user';
+import Timer from '../timer';
 
 interface Props {
   roomInfo?: RoomData;
@@ -53,6 +54,7 @@ export default function RoomHint({ roomInfo }: Props) {
   return (
     <>
       <div className="p-10">
+        <Timer seconds={roomInfo?.hintTime ? +roomInfo?.hintTime * 60 : 0} />
         <div ref={mapRef} className="bg-red-300 w-[50rem] h-[40rem]">
           map
         </div>
