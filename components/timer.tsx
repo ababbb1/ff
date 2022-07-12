@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { interval, map, range, take } from 'rxjs';
+import { interval, map, take } from 'rxjs';
 
 interface Props {
   seconds?: number;
