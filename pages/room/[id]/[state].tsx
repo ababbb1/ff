@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { Suspense, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { API_DOMAIN } from '../../../libs/client/api';
-import { RoomData, UserSession } from '../../../libs/types/user';
+import { CurrentUser, RoomData, UserSession } from '../../../libs/types/user';
 import RoomLobby from '../../../components/room/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
@@ -18,9 +18,15 @@ const RoomReasoning = dynamic(
   { ssr: false },
 );
 
+export interface UpdateRoomResponse {
+  roomInfo: RoomData;
+  currentUser: CurrentUser[];
+}
+
 export default function Room({ user }: { user: UserSession }) {
   const router = useRouter();
   const [roomInfo, setRoomInfo] = useState<RoomData>();
+  const [currentUsers, setCurrentUsers] = useState<CurrentUser[]>();
   const { id: roomId, state: roomState, roomUniqueId } = router.query;
 
   const socket = io(API_DOMAIN, {
@@ -28,7 +34,8 @@ export default function Room({ user }: { user: UserSession }) {
     closeOnBeforeunload: false,
   });
 
-  const updateRoomInfoHandler = (data: { roomInfo: RoomData }) => {
+  const onUpdateRoom = (data: UpdateRoomResponse) => {
+    setCurrentUsers(data.currentUser);
     setRoomInfo(data.roomInfo);
   };
 
@@ -55,10 +62,10 @@ export default function Room({ user }: { user: UserSession }) {
       });
     }
 
-    socket.on('update_room', updateRoomInfoHandler);
+    socket.on('update_room', onUpdateRoom);
 
     return () => {
-      socket.off('update_room', updateRoomInfoHandler);
+      socket.off('update_room', onUpdateRoom);
       window.removeEventListener('beforeunload', onBeforeUnload);
     };
   }, []);
@@ -77,6 +84,7 @@ export default function Room({ user }: { user: UserSession }) {
         <RoomLobby
           {...{
             user,
+            currentUsers,
             roomInfo,
             socket,
           }}

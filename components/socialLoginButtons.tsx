@@ -7,7 +7,7 @@ import { Provider } from '../libs/types/user';
 export default function SocialLoginButtons() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const loginHandler = (name: Provider) => {
+  const handleLogin = (name: Provider) => {
     setIsLoading(true);
     signIn(name, { callbackUrl: '/' });
   };
@@ -16,7 +16,7 @@ export default function SocialLoginButtons() {
     <>
       <div className="flex items-center gap-3">
         <a
-          onClick={() => loginHandler('kakao')}
+          onClick={() => handleLogin('kakao')}
           className="flex items-center hover:cursor-pointer"
         >
           <div className="w-8 h-8 relative">
@@ -30,7 +30,7 @@ export default function SocialLoginButtons() {
           </div>
         </a>
         <a
-          onClick={() => loginHandler('naver')}
+          onClick={() => handleLogin('naver')}
           className="flex items-center hover:cursor-pointer"
         >
           <div className="w-8 h-8 relative">
@@ -44,7 +44,7 @@ export default function SocialLoginButtons() {
           </div>
         </a>
         <a
-          onClick={() => loginHandler('google')}
+          onClick={() => handleLogin('google')}
           className="flex items-center hover:cursor-pointer"
         >
           <div className="w-8 h-8 relative">
@@ -58,7 +58,7 @@ export default function SocialLoginButtons() {
           </div>
         </a>
         <a
-          onClick={() => loginHandler('facebook')}
+          onClick={() => handleLogin('facebook')}
           className="flex items-center hover:cursor-pointer"
         >
           <div className="w-8 h-8 relative">

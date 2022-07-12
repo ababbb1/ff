@@ -6,7 +6,13 @@ export const emailCheck = (value: string) => {
   // eslint-disable-next-line
   const regExp =
     /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-  return regExp.test(value) || '이메일 형식이 올바르지 않습니다';
+  return regExp.test(value) || '이메일 형식이 올바르지 않습니다.';
+};
+
+export const nicknameCheck = (value: string) => {
+  // eslint-disable-next-line
+  const regExp = /[^\w가-힣0-9]|[\_]/g;
+  return !regExp.test(value) || '특수문자는 사용할 수 없습니다.';
 };
 
 export const imagedataToImageUrl = (imagedata?: ImageData) => {
@@ -34,3 +40,6 @@ export const base64ToFile = (dataurl: string, fileName: string) => {
 
   return new File([u8arr], fileName, { type: mime });
 };
+
+export const splitByColon = (s: string, t: 'name' | 'platform') =>
+  s.includes(':') ? (t === 'name' ? s.split(':')[0] : s.split(':')[1]) : s;

@@ -59,7 +59,7 @@ export default function Home({ user }: Props) {
         {searchModal && (
           <ModalLayout
             background="dark"
-            closeHandler={() => {
+            handleClose={() => {
               setSearchModal(!searchModal);
             }}
           >

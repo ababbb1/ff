@@ -4,8 +4,9 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import API from '../libs/client/api';
 import { useRouter } from 'next/router';
 import ErrorMessage from '../components/error-message';
-import { emailCheck } from '../libs/client/utils';
+import { emailCheck, nicknameCheck } from '../libs/client/utils';
 import Layout from '../components/layout';
+import { ChangeEvent, useEffect } from 'react';
 
 export interface JoinFormData {
   email: string;
@@ -19,6 +20,7 @@ export default function Join() {
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
   } = useForm<JoinFormData>({ mode: 'onChange' });
@@ -31,6 +33,20 @@ export default function Join() {
       })
       .catch(e => alert(e.response.data.error));
   };
+
+  // useEffect(() => {
+  //   const s = watch('nickname');
+  //   console.log(s);
+  //   if (!/[^\w]/g.test(s)) {
+  //     if (s.length > 12) {
+  //       setValue('nickname', s.substring(0, 12));
+  //     }
+  //   } else {
+  //     if (s.length > 8) {
+  //       setValue('nickname', s.substring(0, 8));
+  //     }
+  //   }
+  // }, [watch('nickname')]);
 
   return (
     <Layout>
@@ -56,6 +72,8 @@ export default function Join() {
             <input
               {...register('nickname', {
                 required: '닉네임을 입력해주세요.',
+                validate: { nicknameCheck },
+                maxLength: 8,
               })}
               placeholder="닉네임"
               type="text"

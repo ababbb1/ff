@@ -6,7 +6,7 @@ import Layout from '../../components/layout';
 import { signOut } from 'next-auth/react';
 
 export default function Mypage({ user }: { user: UserSession }) {
-  const logoutHandler = () => {
+  const handleLogout = () => {
     alert('로그아웃 되었습니다.');
     signOut();
   };
@@ -18,7 +18,7 @@ export default function Mypage({ user }: { user: UserSession }) {
           <span>{user.nickname}</span>
           <span>{user.email}</span>
           <span>{user.social ? 'social' : 'local'}</span>
-          <button onClick={logoutHandler}>로그아웃</button>
+          <button onClick={handleLogout}>로그아웃</button>
         </div>
       </AnimatedTextLayout>
     </Layout>

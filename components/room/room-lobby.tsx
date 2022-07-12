@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { RoomData, UserSession } from '../../libs/types/user';
+import { splitByColon } from '../../libs/client/utils';
+import { CurrentUser, RoomData, UserSession } from '../../libs/types/user';
 import LoadingScreen from '../loading-screen';
 import ModalLayout from '../modal-layout';
 import RoomForm, { RoomFormData } from './room-form';
@@ -11,9 +12,15 @@ interface Props {
   user: UserSession;
   roomInfo?: RoomData;
   socket: Socket;
+  currentUsers?: CurrentUser[];
 }
 
-export default function RoomLobby({ user, roomInfo, socket }: Props) {
+export default function RoomLobby({
+  user,
+  roomInfo,
+  socket,
+  currentUsers,
+}: Props) {
   const router = useRouter();
   const isMaster = user.nickname === roomInfo?.master;
 
@@ -21,12 +28,12 @@ export default function RoomLobby({ user, roomInfo, socket }: Props) {
   const [messageList, setMessageList] = useState<string[]>([]);
   const [message, setMessage] = useState('');
 
-  const exitButtonHandler = () => {
+  const handleExitButton = () => {
     socket.emit('exit_room', { roomId: roomInfo?.id, userId: user.id });
     router.back();
   };
 
-  const submitMessageHandler = () => {
+  const handleSubmitMessage = () => {
     socket.emit('submit_chat', {
       message,
       nickname: user.nickname,
@@ -34,6 +41,10 @@ export default function RoomLobby({ user, roomInfo, socket }: Props) {
     });
 
     setMessage('');
+  };
+
+  const handleReadyButton = () => {
+    socket.emit('ready_state', { roomId: roomInfo?.id, userId: user.id });
   };
 
   const onReceiveMessage = ({ message }: { message: string }) => {
@@ -60,18 +71,16 @@ export default function RoomLobby({ user, roomInfo, socket }: Props) {
         {isMaster ? (
           <div>
             <button onClick={() => setIsSetting(true)}>세팅</button>
-            <Link href={`/room/${roomInfo.id}/hint`} replace>
-              게임시작
-            </Link>
+            <button>게임시작</button>
           </div>
         ) : (
-          <button>준비</button>
+          <button onClick={handleReadyButton}>준비</button>
         )}
 
-        <button onClick={exitButtonHandler}>나가기</button>
+        <button onClick={handleExitButton}>나가기</button>
 
-        <div>
-          <div>채팅</div>
+        <div className="border border-black">
+          <span>채팅</span>
           <ul>
             {messageList.map((v, i) => (
               <li key={`message${i}`}>
@@ -89,7 +98,16 @@ export default function RoomLobby({ user, roomInfo, socket }: Props) {
               placeholder="메시지 입력"
               value={message}
             />
-            <button onClick={submitMessageHandler}>전송</button>
+            <button onClick={handleSubmitMessage}>전송</button>
+          </div>
+        </div>
+
+        <div>
+          <span>유저</span>
+          <div>
+            {currentUsers?.map((v, i) => (
+              <div key={`user${i}`}>{splitByColon(v.nickname, 'name')}</div>
+            ))}
           </div>
         </div>
       </div>
@@ -97,7 +115,7 @@ export default function RoomLobby({ user, roomInfo, socket }: Props) {
       {isSetting && (
         <ModalLayout
           background="dark"
-          onClose={() => {
+          handleClose={() => {
             setIsSetting(false);
           }}
         >

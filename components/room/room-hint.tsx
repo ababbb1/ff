@@ -6,6 +6,7 @@ import { base64ToFile } from '../../libs/client/utils';
 import LoadingScreen from '../loading-screen';
 import { RoomData } from '../../libs/types/user';
 import Timer from '../timer';
+import { useRouter } from 'next/router';
 
 interface Props {
   roomInfo?: RoomData;
@@ -17,6 +18,7 @@ export default function RoomHint({ roomInfo }: Props) {
   const IMAGE_WIDTH = 120;
   const IMAGE_HEIGHT = 120;
 
+  const router = useRouter();
   const [camera, setCamera] = useState<boolean>(false);
   const [imageList, setImageList] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -48,13 +50,16 @@ export default function RoomHint({ roomInfo }: Props) {
   };
 
   useEffect(() => {
-    console.log(roomInfo?.hintTime);
+    if (roomInfo?.hintTime)
+      setTimeout(() => {
+        router.replace(`/room/${roomInfo.id}/reasoning`);
+      }, +roomInfo.hintTime * 60 * 1000);
   }, []);
 
   return (
     <>
       <div className="p-10">
-        <Timer seconds={roomInfo?.hintTime ? +roomInfo?.hintTime * 60 : 0} />
+        <Timer seconds={roomInfo?.hintTime ? +roomInfo.hintTime * 60 : 0} />
         <div ref={mapRef} className="bg-red-300 w-[50rem] h-[40rem]">
           map
         </div>
