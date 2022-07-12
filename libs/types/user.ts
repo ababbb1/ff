@@ -22,10 +22,21 @@ export interface RoomData {
   count: number;
   hintTime: string;
   id: number;
-  isRandom: string;
+  isRandom: boolean;
   master: string;
   password: string;
   reasoningTime: string;
   roomUniqueId: string;
   title: string;
+  episode: string;
+}
+
+export interface CurrentUser {
+  email: string;
+  id: number;
+  imageUrl: string;
+  nickname: string;
+  password: string;
+  platform: string;
+  social: boolean;
 }

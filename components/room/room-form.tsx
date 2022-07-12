@@ -6,12 +6,12 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 import { NavigationOptions } from 'swiper/types';
 import { useForm } from 'react-hook-form';
 import { useEffect, useRef } from 'react';
-import { cls } from '../libs/client/utils';
+import { cls } from '../../libs/client/utils';
+import { RoomData } from '../../libs/types/user';
 
 interface Props {
-  episodes: string[];
-  onValid: (data: RoomFormData) => void | any;
-  initData?: RoomFormData;
+  onValid: (data: RoomFormData) => void | unknown;
+  initData?: RoomData;
   master?: string;
 }
 
@@ -25,12 +25,9 @@ export interface RoomFormData {
   isRandom: boolean;
 }
 
-export default function RoomForm({
-  episodes,
-  onValid,
-  initData,
-  master,
-}: Props) {
+export default function RoomForm({ onValid, initData, master }: Props) {
+  const episodes = ['대저택 살인사건'];
+
   const navigationPrevRef = useRef(null);
   const navigationNextRef = useRef(null);
 
@@ -39,9 +36,13 @@ export default function RoomForm({
   });
 
   useEffect(() => {
-    console.log(initData);
-    setValue('episode', episodes[0]);
-    setValue('master', master || '');
+    setValue('title', initData?.title || '');
+    setValue('password', initData?.password || '');
+    setValue('episode', initData?.episode || episodes[0]);
+    setValue('hintTime', initData?.hintTime || '');
+    setValue('reasoningTime', initData?.reasoningTime || '');
+    setValue('master', master || initData?.master || '');
+    setValue('isRandom', Boolean(initData?.isRandom) || false);
   }, []);
 
   return (

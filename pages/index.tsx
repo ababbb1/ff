@@ -1,65 +1,69 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import RoomSearchForm from '../components/roomSearchForm';
-import { useRouter } from 'next/router';
 import Layout from '../components/layout';
-import AnimatedTextLayout from '../components/animatedTextLayout';
+import AnimatedTextLayout from '../components/animated-text-layout';
 import Link from 'next/link';
-import ModalLayout from '../components/modalLayout';
+import ModalLayout from '../components/modal-layout';
 import { RoomData, UserSession } from '../libs/types/user';
-import axios from 'axios';
-import { API_DOMAIN, authHeaders } from '../libs/client/api';
+import API, { authHeaders } from '../libs/client/api';
+import { useQuery } from 'react-query';
+import LoadingScreen from '../components/loading-screen';
+import RoomSearch from '../components/room/room-search';
+import { useState } from 'react';
 
 interface Props {
   user: UserSession;
-  roomList: RoomData[];
+  initRoomList: RoomData[];
 }
 
-export default function Home({ user, roomList }: Props) {
-  const router = useRouter();
+export default function Home({ user }: Props) {
+  const { isLoading, data } = useQuery(
+    'getRoomListAll',
+    () => API.get('rooms', { headers: authHeaders(user.token) }),
+    {
+      refetchOnWindowFocus: true,
+      refetchIntervalInBackground: true,
+    },
+  );
+  const roomList = data?.data.result.roomList;
+
+  const [searchModal, setSearchModal] = useState<boolean>(false);
+
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <Layout>
       <AnimatedTextLayout>
         <div>
           <span>{user.nickname} 님</span>
-          <Link href={'/mypage'}>
-            <button>마이페이지</button>
-          </Link>
+          <Link href={'/mypage'}>마이페이지</Link>
           <div>
             <div>방목록</div>
             <ul>
-              {roomList.map(v => (
-                <li key={`room${v.id}`} className="w-30 h-20 bg-red-300">
-                  <span>{v.title}</span>
-                  <Link href={`/room/${v.id}`}>
-                    <a>입장</a>
-                  </Link>
-                </li>
-              ))}
+              {!roomList ? (
+                <div>아직 방이 없습니다.</div>
+              ) : (
+                roomList.map((v: RoomData) => (
+                  <li key={`room${v.id}`} className="w-30 h-20 bg-red-300">
+                    <span>{v.title}</span>
+                    <Link href={`/room/${v.id}/lobby`}>입장</Link>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
-          <Link href={'/?search=1'} as={'/search'} scroll={false}>
-            <button>방찾기</button>
-          </Link>
-          <Link href={'/room/create'}>
-            <button>방만들기</button>
-          </Link>
-          <Link href={'/room/1'}>
-            <button>/room/1</button>
-          </Link>
+          <button onClick={() => setSearchModal(!searchModal)}>방찾기</button>
+          <Link href={'/room/create'}>방만들기</Link>
         </div>
 
-        {router.query.search && (
+        {searchModal && (
           <ModalLayout
             background="dark"
-            onClose={() => {
-              router.back();
+            handleClose={() => {
+              setSearchModal(!searchModal);
             }}
           >
-            <div className="bg-white w-[50rem] h-[40rem]">
-              <RoomSearchForm />
-            </div>
+            <RoomSearch {...{ user }} />
           </ModalLayout>
         )}
       </AnimatedTextLayout>
@@ -79,16 +83,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  const getRoomsResponse = await axios({
-    method: 'get',
-    url: `${API_DOMAIN}/api/rooms`,
-    headers: { ...authHeaders(session.token as string) },
-  });
-
   return {
     props: {
       user: session,
-      roomList: getRoomsResponse.data.result.roomList || [],
     },
   };
 };
