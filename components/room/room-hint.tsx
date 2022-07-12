@@ -1,10 +1,16 @@
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import CaptureCursor from '../capture-cursor';
 import axios from 'axios';
 import { base64ToFile } from '../../libs/client/utils';
+import LoadingScreen from '../loading-screen';
+import { RoomData } from '../../libs/types/user';
 
-export default function RoomHint() {
+interface Props {
+  roomInfo?: RoomData;
+}
+
+export default function RoomHint({ roomInfo }: Props) {
   const CAMERA_WIDTH = 180;
   const CAMERA_HEIGHT = 180;
   const IMAGE_WIDTH = 120;
@@ -12,33 +18,37 @@ export default function RoomHint() {
 
   const [camera, setCamera] = useState<boolean>(false);
   const [imageList, setImageList] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const mapRef = useRef<HTMLDivElement>(null);
 
   const onCapture = async (imgURL: string) => {
-    setCamera(false);
-    setImageList([...imageList, imgURL]);
+    if (imageList.length < 10 && !isLoading) {
+      setCamera(false);
 
-    if (imgURL) {
-      const file = base64ToFile(imgURL, 'image');
-      const formData = new FormData();
-      formData.append('file', file);
+      if (imgURL) {
+        setIsLoading(true);
+        const file = base64ToFile(imgURL, 'image');
+        const formData = new FormData();
+        formData.append('file', file);
 
-      const getUploadURLResponse = await axios.get('/api/files');
+        const getUploadURLResponse = await axios.get('/api/files');
 
-      const res = await axios({
-        method: 'post',
-        url: getUploadURLResponse.data.uploadURL,
-        data: formData,
-      });
+        const res = await axios({
+          method: 'post',
+          url: getUploadURLResponse.data.uploadURL,
+          data: formData,
+        });
 
-      console.log(res.data);
-
-      if (!res.data.success) {
-        alert('이미지 등록에 실패했습니다.');
-        setImageList(imageList.slice(0, imageList.length - 1));
+        if (res.data.success) setImageList([...imageList, imgURL]);
+        else alert('이미지 등록에 실패했습니다.');
       }
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log(roomInfo?.hintTime);
+  }, []);
 
   return (
     <>
@@ -55,15 +65,25 @@ export default function RoomHint() {
         카메라
       </button>
       <div>
-        {imageList.map((imgUrl, i) => (
-          <Image
-            key={`hint${i}`}
-            src={imgUrl}
-            width={IMAGE_WIDTH}
-            height={IMAGE_HEIGHT}
-            alt={`hint${i}`}
-          />
-        ))}
+        <ul className="flex">
+          {imageList.map((imgUrl, i) => (
+            <li key={`hint${i}`}>
+              <Image
+                src={imgUrl}
+                width={IMAGE_WIDTH}
+                height={IMAGE_HEIGHT}
+                alt={`hint${i}`}
+              />
+            </li>
+          ))}
+          {isLoading && (
+            <li>
+              <div style={{ width: IMAGE_WIDTH, height: IMAGE_HEIGHT }}>
+                <LoadingScreen isFull={false} size={25} />
+              </div>
+            </li>
+          )}
+        </ul>
       </div>
       <CaptureCursor
         {...{

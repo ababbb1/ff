@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import API from '../libs/client/api';
 import { useRouter } from 'next/router';
 import ErrorMessage from '../components/error-message';
-import { cls, emailCheck } from '../libs/client/utils';
+import { emailCheck } from '../libs/client/utils';
 import Layout from '../components/layout';
 
 export interface JoinFormData {
@@ -19,14 +19,17 @@ export default function Join() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm<JoinFormData>({ mode: 'onBlur' });
+  } = useForm<JoinFormData>({ mode: 'onChange' });
 
-  const onValid: SubmitHandler<JoinFormData> = (data: JoinFormData) => {
-    API.post('signup', data).then(() => {
-      alert('회원가입에 성공했습니다.');
-      router.replace('/login');
-    });
+  const onValid: SubmitHandler<JoinFormData> = async (data: JoinFormData) => {
+    API.post('signup', data)
+      .then(() => {
+        alert('회원가입에 성공했습니다.');
+        router.replace('/login');
+      })
+      .catch(e => alert(e.response.data.error));
   };
 
   return (
@@ -44,12 +47,7 @@ export default function Join() {
               })}
               placeholder="이메일"
               type="text"
-              className={`${cls(
-                'w-full h-12 border rounded-md p-2',
-                errors.email
-                  ? 'border-red-400 focus:outline-red-400'
-                  : 'border-gray-300 focus:outline-gray-500',
-              )}`}
+              className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
             />
             <ErrorMessage message={errors.email?.message} />
           </div>
@@ -61,12 +59,7 @@ export default function Join() {
               })}
               placeholder="닉네임"
               type="text"
-              className={`${cls(
-                'w-full h-12 border rounded-md p-2',
-                errors.nickname
-                  ? 'border-red-400 focus:outline-red-400'
-                  : 'border-gray-300 focus:outline-gray-500',
-              )}`}
+              className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
             />
             <ErrorMessage message={errors.nickname?.message} />
           </div>
@@ -78,27 +71,19 @@ export default function Join() {
               })}
               placeholder="비밀번호"
               type="password"
-              className={`${cls(
-                'w-full h-12 border rounded-md p-2',
-                errors.password
-                  ? 'border-red-400 focus:outline-red-400'
-                  : 'border-gray-300 focus:outline-gray-500',
-              )}`}
+              className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
             />
-            <ErrorMessage message={errors.password?.message} />
 
             <input
               {...register('passwordCheck', {
                 required: '비밀번호가 일치하지 않습니다.',
+                validate: (check: string) =>
+                  watch('password') === check ||
+                  '비밀번호가 일치하지 않습니다.',
               })}
               placeholder="비밀번호 재입력"
               type="password"
-              className={`${cls(
-                'w-full h-12 border rounded-md p-2',
-                errors.passwordCheck
-                  ? 'border-red-400 focus:outline-red-400'
-                  : 'border-gray-300 focus:outline-gray-500',
-              )}`}
+              className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
             />
             <ErrorMessage message={errors.passwordCheck?.message} />
           </div>

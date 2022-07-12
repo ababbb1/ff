@@ -10,7 +10,7 @@ import { cls } from '../../libs/client/utils';
 import { RoomData } from '../../libs/types/user';
 
 interface Props {
-  onValid: (data: RoomFormData) => void | any;
+  onValid: (data: RoomFormData) => void | unknown;
   initData?: RoomData;
   master?: string;
 }
@@ -42,7 +42,7 @@ export default function RoomForm({ onValid, initData, master }: Props) {
     setValue('hintTime', initData?.hintTime || '');
     setValue('reasoningTime', initData?.reasoningTime || '');
     setValue('master', master || initData?.master || '');
-    setValue('isRandom', initData?.isRandom || false);
+    setValue('isRandom', Boolean(initData?.isRandom) || false);
   }, []);
 
   return (

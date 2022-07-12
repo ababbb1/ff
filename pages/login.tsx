@@ -3,7 +3,7 @@ import { getSession } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import SocialLoginButtons from '../components/socialLoginButtons';
-import { cls, emailCheck } from '../libs/client/utils';
+import { emailCheck } from '../libs/client/utils';
 import ErrorMessage from '../components/error-message';
 import Link from 'next/link';
 import Layout from '../components/layout';
@@ -18,7 +18,7 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({ mode: 'onSubmit' });
+  } = useForm<LoginFormData>({ mode: 'onChange' });
 
   const onValid: SubmitHandler<LoginFormData> = async (data: LoginFormData) => {
     signIn('credentials', {
@@ -43,12 +43,7 @@ export default function Login() {
               })}
               placeholder="이메일"
               type="text"
-              className={`${cls(
-                'w-full h-12 border rounded-md p-2',
-                errors.email
-                  ? 'border-red-400 focus:outline-red-400'
-                  : 'border-gray-300 focus:outline-gray-500',
-              )}`}
+              className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
             />
             <ErrorMessage message={errors.email?.message} />
           </div>
@@ -60,12 +55,7 @@ export default function Login() {
               })}
               placeholder="비밀번호"
               type="password"
-              className={`${cls(
-                'w-full h-12 border rounded-md p-2',
-                errors.password
-                  ? 'border-red-400 focus:outline-red-400'
-                  : 'border-gray-300 focus:outline-gray-500',
-              )}`}
+              className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
             />
             <ErrorMessage message={errors.password?.message} />
           </div>

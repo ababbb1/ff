@@ -90,7 +90,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     pages: {
       signIn: '/',
       signOut: '/',
-      error: '/login',
+      error: '/error/login-error',
     },
   });
 }

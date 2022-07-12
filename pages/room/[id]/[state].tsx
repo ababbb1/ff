@@ -5,15 +5,17 @@ import { Suspense, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { API_DOMAIN } from '../../../libs/client/api';
 import { RoomData, UserSession } from '../../../libs/types/user';
-import RoomReady from '../../../components/room/room-ready';
+import RoomLobby from '../../../components/room/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
 import Layout from '../../../components/layout';
-// import { preventUnload } from '../../libs/client/component/room';
 
-const RoomHint = dynamic(() => import('../../../components/room/room-hint'));
+const RoomHint = dynamic(() => import('../../../components/room/room-hint'), {
+  ssr: false,
+});
 const RoomReasoning = dynamic(
   () => import('../../../components/room/room-reasoning'),
+  { ssr: false },
 );
 
 export default function Room({ user }: { user: UserSession }) {
@@ -21,22 +23,25 @@ export default function Room({ user }: { user: UserSession }) {
   const [roomInfo, setRoomInfo] = useState<RoomData>();
   const { id: roomId, state: roomState, roomUniqueId } = router.query;
 
-  const socket = io(API_DOMAIN, { transports: ['websocket'] });
+  const socket = io(API_DOMAIN, {
+    transports: ['websocket'],
+    closeOnBeforeunload: false,
+  });
 
-  const updateRoomInfoHandler = (data: any) => {
-    console.log('data:', data);
+  const updateRoomInfoHandler = (data: { roomInfo: RoomData }) => {
     setRoomInfo(data.roomInfo);
   };
 
+  const onBeforeUnload = () => {
+    socket.emit('exit_room', { roomId, userId: user.id });
+  };
+
   useEffect(() => {
-    console.log(router.query);
-    // window.addEventListener('beforeunload', preventUnload);
-    router.beforePopState(({ as }) => {
-      if (!as.includes('room')) {
-        socket.emit('exit_room', { roomId, userId: user.id });
-        socket.disconnect();
-      }
-      return true;
+    window.addEventListener('beforeunload', onBeforeUnload);
+    router.beforePopState(() => {
+      socket.emit('exit_room', { roomId, userId: user.id });
+      router.replace('/');
+      return false;
     });
 
     if (roomUniqueId) {
@@ -53,23 +58,23 @@ export default function Room({ user }: { user: UserSession }) {
     socket.on('update_room', updateRoomInfoHandler);
 
     return () => {
-      // window.removeEventListener('beforeunload', preventUnload);
       socket.off('update_room', updateRoomInfoHandler);
+      window.removeEventListener('beforeunload', onBeforeUnload);
     };
   }, []);
 
   return (
     <Layout>
       {roomState === 'hint' ? (
-        <Suspense fallback={<LoadingScreen visible />}>
-          <RoomHint />
+        <Suspense fallback={<LoadingScreen />}>
+          <RoomHint {...{ roomInfo }} />
         </Suspense>
       ) : roomState === 'reasoning' ? (
-        <Suspense fallback={<LoadingScreen visible />}>
+        <Suspense fallback={<LoadingScreen />}>
           <RoomReasoning />
         </Suspense>
       ) : (
-        <RoomReady
+        <RoomLobby
           {...{
             user,
             roomInfo,
@@ -93,14 +98,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  // if (!req.headers.referer) {
-  //   return {
-  //     redirect: {
-  //       destination: '/error/access-denied',
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (!req.headers.referer) {
+    return {
+      redirect: {
+        destination: '/error/access-denied',
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: {

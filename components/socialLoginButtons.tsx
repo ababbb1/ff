@@ -5,10 +5,10 @@ import LoadingScreen from './loading-screen';
 import { Provider } from '../libs/types/user';
 
 export default function SocialLoginButtons() {
-  const [loadingScreenState, setLoadingScreenState] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const loginHandler = (name: Provider) => {
-    setLoadingScreenState(true);
+    setIsLoading(true);
     signIn(name, { callbackUrl: '/' });
   };
 
@@ -72,7 +72,7 @@ export default function SocialLoginButtons() {
           </div>
         </a>
       </div>
-      <LoadingScreen visible={loadingScreenState} />
+      {isLoading && <LoadingScreen />}
     </>
   );
 }

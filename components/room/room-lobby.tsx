@@ -13,7 +13,7 @@ interface Props {
   socket: Socket;
 }
 
-export default function RoomReady({ user, roomInfo, socket }: Props) {
+export default function RoomLobby({ user, roomInfo, socket }: Props) {
   const router = useRouter();
   const isMaster = user.nickname === roomInfo?.master;
 
@@ -23,8 +23,7 @@ export default function RoomReady({ user, roomInfo, socket }: Props) {
 
   const exitButtonHandler = () => {
     socket.emit('exit_room', { roomId: roomInfo?.id, userId: user.id });
-    socket.disconnect();
-    router.replace('/');
+    router.back();
   };
 
   const submitMessageHandler = () => {
@@ -37,12 +36,11 @@ export default function RoomReady({ user, roomInfo, socket }: Props) {
     setMessage('');
   };
 
-  const onReceiveMessage = ({ message }: any) => {
+  const onReceiveMessage = ({ message }: { message: string }) => {
     setMessageList(prev => [...prev, message]);
   };
 
   const onSettingFormValid = async (data: RoomFormData) => {
-    console.log('update form data', data);
     socket.emit('update_room', { ...data, roomId: roomInfo?.id });
     setIsSetting(false);
   };
@@ -55,7 +53,7 @@ export default function RoomReady({ user, roomInfo, socket }: Props) {
     };
   }, []);
 
-  if (!roomInfo) return <LoadingScreen visible />;
+  if (!roomInfo) return <LoadingScreen />;
   return (
     <>
       <div>

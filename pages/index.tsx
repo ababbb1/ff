@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
 import Layout from '../components/layout';
 import AnimatedTextLayout from '../components/animated-text-layout';
 import Link from 'next/link';
@@ -10,6 +9,7 @@ import API, { authHeaders } from '../libs/client/api';
 import { useQuery } from 'react-query';
 import LoadingScreen from '../components/loading-screen';
 import RoomSearch from '../components/room/room-search';
+import { useState } from 'react';
 
 interface Props {
   user: UserSession;
@@ -17,7 +17,6 @@ interface Props {
 }
 
 export default function Home({ user }: Props) {
-  const router = useRouter();
   const { isLoading, data } = useQuery(
     'getRoomListAll',
     () => API.get('rooms', { headers: authHeaders(user.token) }),
@@ -28,7 +27,9 @@ export default function Home({ user }: Props) {
   );
   const roomList = data?.data.result.roomList;
 
-  if (isLoading) return <LoadingScreen visible />;
+  const [searchModal, setSearchModal] = useState<boolean>(false);
+
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <Layout>
@@ -51,17 +52,15 @@ export default function Home({ user }: Props) {
               )}
             </ul>
           </div>
-          <Link href={'/?search=1'} as={'/search'} scroll={false}>
-            방찾기
-          </Link>
+          <button onClick={() => setSearchModal(!searchModal)}>방찾기</button>
           <Link href={'/room/create'}>방만들기</Link>
         </div>
 
-        {router.query.search && (
+        {searchModal && (
           <ModalLayout
             background="dark"
-            onClose={() => {
-              router.back();
+            closeHandler={() => {
+              setSearchModal(!searchModal);
             }}
           >
             <RoomSearch {...{ user }} />

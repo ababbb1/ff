@@ -4,13 +4,13 @@ import { cls } from '../libs/client/utils';
 interface Props {
   children?: React.ReactNode;
   background?: 'none' | 'dark';
-  onClose: (param?: any) => void | any;
+  closeHandler: (param?: unknown) => void | unknown;
 }
 
 export default function ModalLayout({
   children,
   background = 'none',
-  onClose,
+  closeHandler,
 }: Props) {
   useEffect(() => {
     document.body.style.cssText = `
@@ -29,7 +29,7 @@ export default function ModalLayout({
     <div
       onClick={e => {
         if (e.target !== e.currentTarget) return;
-        onClose();
+        closeHandler();
       }}
       className={cls(
         background === 'dark' ? 'bg-[#00000090]' : '',

@@ -18,7 +18,7 @@ export default function RoomSearch({ user }: { user: UserSession }) {
       <RoomSearchForm {...{ user, setSearchResult, setIsLoading }} />
       <div className="relative">
         {isLoading ? (
-          <LoadingScreen visible isFull={false} />
+          <LoadingScreen isFull={false} />
         ) : (
           <RoomSearchResult {...{ searchResultList: searchResult?.roomList }} />
         )}
