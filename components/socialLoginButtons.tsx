@@ -21,7 +21,7 @@ export default function SocialLoginButtons() {
         >
           <div className="w-8 h-8 relative">
             <Image
-              src="/kakao.png"
+              src="/social/kakao.png"
               alt="kakao"
               layout="fill"
               quality={100}
@@ -35,7 +35,7 @@ export default function SocialLoginButtons() {
         >
           <div className="w-8 h-8 relative">
             <Image
-              src="/naver.png"
+              src="/social/naver.png"
               alt="naver"
               layout="fill"
               quality={100}
@@ -49,7 +49,7 @@ export default function SocialLoginButtons() {
         >
           <div className="w-8 h-8 relative">
             <Image
-              src="/google.png"
+              src="/social/google.png"
               alt="google"
               layout="fill"
               quality={100}
@@ -63,7 +63,7 @@ export default function SocialLoginButtons() {
         >
           <div className="w-8 h-8 relative">
             <Image
-              src="/facebook.png"
+              src="/social/facebook.png"
               alt="facebook"
               layout="fill"
               quality={100}
