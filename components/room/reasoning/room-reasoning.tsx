@@ -1,24 +1,27 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Timer from '../../timer';
 import HintBoard from './hint-board';
 import HintImage from './hint-image';
 import { DropTargetMonitor } from 'react-dnd';
-import { ImageInfo } from '../../../libs/types/room';
-import { useRecoilState } from 'recoil';
-import {
-  boardImageListState,
-  imageListState,
-  roomInfoState,
-} from '../../../libs/client/room';
-import { socket } from '../socket';
+import { ImageData, RoomData } from '../../../libs/types/room';
 import Image from 'next/image';
+import { Socket } from 'socket.io-client';
 
-export default function RoomReasoning() {
-  const [roomInfo] = useRecoilState(roomInfoState);
-  const [imageList, setImageList] = useRecoilState(imageListState);
-  const [boardImageList] = useRecoilState(boardImageListState);
+interface Props {
+  imageListState: [ImageData[], Dispatch<SetStateAction<ImageData[]>>];
+  socket: Socket;
+  roomInfo: RoomData | null;
+}
 
-  const handleDrop = (item: ImageInfo, monitor: DropTargetMonitor) => {
+export default function RoomReasoning({
+  imageListState,
+  socket,
+  roomInfo,
+}: Props) {
+  const [boardImageList, setBoardImageList] = useState<ImageData[]>([]);
+  const [imageList, setImageList] = imageListState;
+
+  const handleDrop = (item: ImageData, monitor: DropTargetMonitor) => {
     console.log(item);
     const coord = monitor.getClientOffset();
 
@@ -31,8 +34,10 @@ export default function RoomReasoning() {
   };
 
   useEffect(() => {
-    console.log(boardImageList);
-  }, [boardImageList]);
+    socket.on('board_image', (imageInfo: ImageData) => {
+      setBoardImageList(prev => [...prev, imageInfo]);
+    });
+  }, []);
 
   return (
     <div className="w-full h-full">

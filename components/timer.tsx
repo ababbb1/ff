@@ -12,21 +12,15 @@ export default function Timer({ seconds = 0, isActive }: Props) {
   const m = Math.floor((t % 3600) / 60);
   const s = Math.floor((t % 3600) % 60);
 
-  // const intervalObs$ = interval(1000).pipe(
-  //   take(t),
-  //   map(x => t - x - 1),
-  // );
-  // const subscription = intervalObs$.subscribe((t: number) => setT(t));
-
   useEffect(() => {
     const decrease =
       isActive && setInterval(() => setT(prev => prev - 1), 1000);
-    if (!isActive || t === 0) clearInterval(decrease as NodeJS.Timer);
+    if (!isActive || t < 0) clearInterval(decrease as NodeJS.Timer);
 
     return () => {
       clearInterval(decrease as NodeJS.Timer);
     };
-  }, [isActive]);
+  }, []);
 
   return (
     <div>

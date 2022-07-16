@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef } from 'react';
+import { MouseEventHandler, RefObject, useEffect, useRef } from 'react';
 import { cls, imagedataToImageUrl } from '../libs/client/utils';
 import html2canvas from 'html2canvas';
 
@@ -20,12 +20,14 @@ export default function CaptureCursor({
   const bg = useRef<HTMLDivElement>(null);
   const flash = useRef<HTMLDivElement>(null);
 
-  const captureEvent = (e: MouseEvent) => {
+  const captureEvent: MouseEventHandler<HTMLDivElement> = e => {
     if (flash.current) flash.current.style.display = 'block';
+
     setTimeout(async () => {
+      if (bg.current) bg.current.style.display = 'none';
       if (flash.current) flash.current.style.display = 'none';
       const canvas = await html2canvas(document.body);
-      const imgUrl = imagedataToImageUrl(
+      const imageUrl = imagedataToImageUrl(
         canvas
           .getContext('2d')
           ?.getImageData(
@@ -35,8 +37,7 @@ export default function CaptureCursor({
             height,
           ),
       );
-
-      if (imgUrl) onCapture(imgUrl);
+      if (imageUrl) onCapture(imageUrl);
     }, 120);
   };
 
@@ -61,15 +62,18 @@ export default function CaptureCursor({
   const mouseMove = (e: MouseEvent) => {
     if (bg.current) {
       if (isActive && isOnTarget(e.clientX, e.clientY)) {
+        const borderTop = e.clientY - height / 2;
+        const borderRight = window.innerWidth - e.clientX - width / 2;
+        const borderBottom = window.innerHeight - e.clientY - height / 2;
+        const borderLeft = e.clientX - width / 2;
+
+        const calWidth = (n: number) => (n < 0 ? 0 : n);
+
         bg.current.style.display = 'block';
-        bg.current.style.borderTopWidth = `${e.clientY - height / 2}px`;
-        bg.current.style.borderRightWidth = `${
-          window.innerWidth - e.clientX - width / 2
-        }px`;
-        bg.current.style.borderBottomWidth = `${
-          window.innerHeight - e.clientY - height / 2
-        }px`;
-        bg.current.style.borderLeftWidth = `${e.clientX - width / 2}px`;
+        bg.current.style.borderTopWidth = `${calWidth(borderTop)}px`;
+        bg.current.style.borderRightWidth = `${calWidth(borderRight)}px`;
+        bg.current.style.borderBottomWidth = `${calWidth(borderBottom)}px`;
+        bg.current.style.borderLeftWidth = `${calWidth(borderLeft)}px`;
       } else {
         bg.current.style.display = 'none';
       }
@@ -80,13 +84,11 @@ export default function CaptureCursor({
     const captureScreen = bg.current;
     if (captureScreen) {
       document.addEventListener('mousemove', mouseMove);
-      captureScreen.addEventListener('click', captureEvent);
     }
 
     return () => {
       if (captureScreen) {
         document.removeEventListener('mousemove', mouseMove);
-        captureScreen.removeEventListener('click', captureEvent);
       }
     };
   });
@@ -95,6 +97,7 @@ export default function CaptureCursor({
     <>
       <div
         ref={bg}
+        onClick={captureEvent}
         className={cls(
           isActive ? 'block' : 'hidden',
           'text-center box-border border-solid border-[#00000090] fixed z-40 top-0 left-0 w-full h-full hover:cursor-crosshair',

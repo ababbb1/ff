@@ -3,14 +3,19 @@ import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
 import AnimatedTextLayout from '../components/animated-text-layout';
 import Link from 'next/link';
-import ModalLayout from '../components/modal-layout';
 import { UserSession } from '../libs/types/user';
 import API, { authHeaders } from '../libs/client/api';
 import { useQuery } from 'react-query';
 import LoadingScreen from '../components/loading-screen';
 import RoomSearch from '../components/room/room-search';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { RoomData } from '../libs/types/room';
+import dynamic from 'next/dynamic';
+import useToggle from '../libs/hooks/useToggle';
+
+const ModalLayout = dynamic(() => import('../components/modal-layout'), {
+  ssr: false,
+});
 
 interface Props {
   user: UserSession;
@@ -28,7 +33,7 @@ export default function Home({ user }: Props) {
   );
   const roomList = data?.data.result?.roomList;
 
-  const [searchModal, setSearchModal] = useState<boolean>(false);
+  const [searchModal, toggleSearchModal] = useToggle();
 
   if (isLoading) return <LoadingScreen />;
 
@@ -37,10 +42,7 @@ export default function Home({ user }: Props) {
       <AnimatedTextLayout>
         <div className="flex flex-col">
           <Link href={'/mypage'}>마이페이지</Link>
-          <button
-            onClick={() => setSearchModal(!searchModal)}
-            className="text-left"
-          >
+          <button onClick={() => toggleSearchModal(true)} className="text-left">
             방찾기
           </button>
           <Link href={'/room/create'}>방만들기</Link>
@@ -67,14 +69,16 @@ export default function Home({ user }: Props) {
         </div>
 
         {searchModal && (
-          <ModalLayout
-            background="dark"
-            handleClose={() => {
-              setSearchModal(!searchModal);
-            }}
-          >
-            <RoomSearch {...{ user }} />
-          </ModalLayout>
+          <Suspense>
+            <ModalLayout
+              background="dark"
+              handleClose={() => {
+                toggleSearchModal(false);
+              }}
+            >
+              <RoomSearch {...{ user }} />
+            </ModalLayout>
+          </Suspense>
         )}
       </AnimatedTextLayout>
     </Layout>

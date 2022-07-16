@@ -39,7 +39,7 @@ export interface MediaState {
   state: boolean;
 }
 
-export interface ImageInfo {
+export interface ImageData {
   id: string;
   x: number;
   y: number;

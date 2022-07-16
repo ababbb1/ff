@@ -2,13 +2,14 @@ import { Dispatch, SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
 import API, { authHeaders } from '../../libs/client/api';
 import { cls } from '../../libs/client/utils';
+import { ToggleHandler } from '../../libs/hooks/useToggle';
 import { UserSession } from '../../libs/types/user';
 import { RoomSearchApiResponse } from './room-search';
 
 interface Props {
   user: UserSession;
   setSearchResult: Dispatch<SetStateAction<RoomSearchApiResponse | undefined>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  toggleIsLoading: ToggleHandler;
 }
 
 export interface SearchFormData {
@@ -19,20 +20,20 @@ export interface SearchFormData {
 export default function RoomSearchForm({
   user,
   setSearchResult,
-  setIsLoading,
+  toggleIsLoading,
 }: Props) {
   const { register, handleSubmit } = useForm<SearchFormData>({
     mode: 'onSubmit',
   });
 
   const onValid = async (params: SearchFormData) => {
-    setIsLoading(true);
+    toggleIsLoading(true);
     const res = await API.get('room/search', {
       params,
       headers: authHeaders(user.token),
     });
     setSearchResult(res.data.result);
-    setIsLoading(false);
+    toggleIsLoading(false);
   };
 
   return (

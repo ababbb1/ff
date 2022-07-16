@@ -1,35 +1,49 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
-import { getMedia, toggleMediaState } from '../../libs/client/media';
-import {
-  currentUsersState,
-  messageListState,
-  roomInfoState,
-  streamState,
-  videoState,
-} from '../../libs/client/room';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { toggleMediaState } from '../../libs/client/media';
 import { splitByColon } from '../../libs/client/utils';
 import LoadingScreen from '../loading-screen';
 import ModalLayout from '../modal-layout';
 import RoomForm, { RoomFormData } from './room-form';
-import { useRecoilState } from 'recoil';
 import { UserSession } from '../../libs/types/user';
-import { socket } from './socket';
 import UserVideo from '../user-video';
+import { CurrentUser, MediaState, RoomData } from '../../libs/types/room';
+import { Socket } from 'socket.io-client';
+import useToggle from '../../libs/hooks/useToggle';
 
-export default function RoomLobby({ user }: { user: UserSession }) {
-  const [roomInfo] = useRecoilState(roomInfoState);
-  const [currentUsers] = useRecoilState(currentUsersState);
-  const [stream, setStream] = useRecoilState(streamState);
-  const [video, setVideo] = useRecoilState(videoState);
-  const [messageList] = useRecoilState(messageListState);
+interface Props {
+  user: UserSession;
+  roomInfo: RoomData | null;
+  currentUsers: CurrentUser[];
+  socket: Socket;
+  stream: MediaStream | null;
+  video: [MediaState, Dispatch<SetStateAction<MediaState>>];
+  messageList: string[];
+}
+
+export default function RoomLobby({
+  user,
+  roomInfo,
+  currentUsers,
+  socket,
+  stream,
+  video,
+  messageList,
+}: Props) {
   const dataToSendToServer = { roomId: roomInfo?.id, userId: user.id };
 
   const router = useRouter();
   const isMaster = user?.nickname === roomInfo?.master;
   const isReady = currentUsers?.filter(v => !v.readyState).length === 0;
 
-  const [isSetting, setIsSetting] = useState(false);
+  const [videoState, setVideoState] = video;
+  const [isSetting, toggleIsSetting] = useToggle();
   const [message, setMessage] = useState('');
 
   const myVideoRef = useRef<HTMLVideoElement>(null);
@@ -54,13 +68,13 @@ export default function RoomLobby({ user }: { user: UserSession }) {
   const handleVideoToggleButton = () => {
     if (stream) {
       toggleMediaState(stream, 'video');
-      setVideo({ ...video, state: !video.state });
+      setVideoState(prev => ({ ...prev, state: !prev.state }));
     }
   };
 
   const onSettingFormValid = async (data: RoomFormData) => {
     socket.emit('update_room', { ...data, roomId: roomInfo?.id });
-    setIsSetting(false);
+    toggleIsSetting(false);
   };
 
   useEffect(() => {
@@ -79,7 +93,7 @@ export default function RoomLobby({ user }: { user: UserSession }) {
         <div className="flex gap-4">
           {isMaster ? (
             <>
-              <button onClick={() => setIsSetting(true)}>세팅</button>
+              <button onClick={() => toggleIsSetting(true)}>세팅</button>
               {currentUsers.length > 1 && isReady ? (
                 <button
                   className="text-red-500"
@@ -141,7 +155,7 @@ export default function RoomLobby({ user }: { user: UserSession }) {
             {isMaster && <span>방장</span>}
             <div>
               <UserVideo width={100} height={100} ref={myVideoRef} />
-              {video.state ? (
+              {videoState.state ? (
                 <button onClick={handleVideoToggleButton}>비디오 끄기</button>
               ) : (
                 <button onClick={handleVideoToggleButton}>비디오 켜기</button>
@@ -165,7 +179,7 @@ export default function RoomLobby({ user }: { user: UserSession }) {
         <ModalLayout
           background="dark"
           handleClose={() => {
-            setIsSetting(false);
+            toggleIsSetting(false);
           }}
         >
           <div className="w-[80%] h-[80%]">

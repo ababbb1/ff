@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import useToggle from '../../libs/hooks/useToggle';
 import { RoomData } from '../../libs/types/room';
 import { UserSession } from '../../libs/types/user';
 import LoadingScreen from '../loading-screen';
@@ -12,11 +13,11 @@ export interface RoomSearchApiResponse {
 
 export default function RoomSearch({ user }: { user: UserSession }) {
   const [searchResult, setSearchResult] = useState<RoomSearchApiResponse>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, toggleIsLoading] = useToggle();
 
   return (
     <div className="w-50 bg-white">
-      <RoomSearchForm {...{ user, setSearchResult, setIsLoading }} />
+      <RoomSearchForm {...{ user, setSearchResult, toggleIsLoading }} />
       <div className="relative">
         {isLoading ? (
           <LoadingScreen isFull={false} />

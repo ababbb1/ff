@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import CaptureCursor from '../capture-cursor';
 import axios from 'axios';
 import { base64ToFile, getImageUrl } from '../../libs/client/utils';
@@ -7,77 +7,82 @@ import LoadingScreen from '../loading-screen';
 import Timer from '../timer';
 import { useRouter } from 'next/router';
 import ModalLayout from '../modal-layout';
-import { useRecoilState } from 'recoil';
-import {
-  currentUsersState,
-  imageListState,
-  roomInfoState,
-} from '../../libs/client/room';
 import { UserSession } from '../../libs/types/user';
-import { socket } from './socket';
-import API from '../../libs/client/api';
 import Link from 'next/link';
+import { CurrentUser, ImageData, RoomData } from '../../libs/types/room';
+import { Socket } from 'socket.io-client';
+import useToggle from '../../libs/hooks/useToggle';
 
-export default function RoomHint({ user }: { user: UserSession }) {
+interface Props {
+  user: UserSession;
+  roomInfo: RoomData | null;
+  imageListState: [ImageData[], Dispatch<SetStateAction<ImageData[]>>];
+  socket: Socket;
+  currentUsers: CurrentUser[];
+}
+
+export default function RoomHint({
+  user,
+  roomInfo,
+  imageListState,
+  socket,
+  currentUsers,
+}: Props) {
   const CAMERA_WIDTH = 180;
   const CAMERA_HEIGHT = 180;
   const IMAGE_WIDTH = 120;
   const IMAGE_HEIGHT = 120;
 
-  const [roomInfo] = useRecoilState(roomInfoState);
-  const [currentUsers] = useRecoilState(currentUsersState);
-  const [imageList, setImageList] = useRecoilState(imageListState);
+  const [imageList, setImageList] = imageListState;
+  const [camera, toggleCamera] = useToggle();
+  const [isLoading, toggleIsLoading] = useToggle();
   const dataToSendToServer = { roomId: roomInfo?.id, userId: user.id };
-
-  const [camera, setCamera] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement>(null);
   const isHintTime = roomInfo?.roomState === 'hintTime';
 
   const onCapture = async (imgURL: string) => {
-    if (imageList.length < 10 && !isLoading) {
-      setCamera(false);
+    toggleCamera(false);
 
-      if (imgURL) {
-        setIsLoading(true);
-        const file = base64ToFile(imgURL, 'image');
-        const formData = new FormData();
-        formData.append('file', file);
+    if (imgURL) {
+      toggleIsLoading(true);
+      const file = base64ToFile(imgURL, 'image');
+      const formData = new FormData();
+      formData.append('file', file);
 
-        const getUploadURLResponse = await axios.get('/api/files');
+      const getUploadURLResponse = await axios.get('/api/files');
 
-        const res = await axios({
-          method: 'post',
-          url: getUploadURLResponse.data.uploadURL,
-          data: formData,
+      const res = await axios({
+        method: 'post',
+        url: getUploadURLResponse.data.uploadURL,
+        data: formData,
+      });
+
+      const {
+        success,
+        result: { id },
+      } = res.data;
+
+      if (success) {
+        socket.emit('hint_register', {
+          userId: user.id,
+          roomId: roomInfo?.id,
+          imageId: id,
         });
+        setImageList(prev => [
+          ...prev,
+          {
+            id,
+            x: 0,
+            y: 0,
+            isDropped: false,
+            previewUrl: getImageUrl(id),
+          },
+        ]);
+      } else alert('이미지 등록에 실패했습니다.');
 
-        const {
-          success,
-          result: { id },
-        } = res.data;
-
-        if (success) {
-          socket.emit('hint_register', {
-            userId: user.id,
-            roomId: roomInfo?.id,
-            imageId: id,
-          });
-          setImageList(prev => [
-            ...prev,
-            {
-              id,
-              x: 0,
-              y: 0,
-              isDropped: false,
-              previewUrl: getImageUrl(id),
-            },
-          ]);
-        } else alert('이미지 등록에 실패했습니다.');
-      }
-      setIsLoading(false);
+      toggleIsLoading(false);
     }
   };
 
@@ -121,13 +126,18 @@ export default function RoomHint({ user }: { user: UserSession }) {
           map
         </div>
       </div>
-      <button
-        onClick={() => {
-          setCamera(!camera);
-        }}
-      >
-        카메라
-      </button>
+
+      {imageList.length < 10 && !isLoading ? (
+        <button
+          onClick={() => {
+            toggleCamera();
+          }}
+        >
+          {`카메라 ${camera ? '끄기' : '켜기'} ${imageList.length}/10`}
+        </button>
+      ) : (
+        <button className="text-red-500">{`카메라 ${imageList.length}/10`}</button>
+      )}
       <div>
         <ul className="flex">
           {imageList.map((image, i) => (
