@@ -4,12 +4,13 @@ import Layout from '../components/layout';
 import AnimatedTextLayout from '../components/animated-text-layout';
 import Link from 'next/link';
 import ModalLayout from '../components/modal-layout';
-import { RoomData, UserSession } from '../libs/types/user';
+import { UserSession } from '../libs/types/user';
 import API, { authHeaders } from '../libs/client/api';
 import { useQuery } from 'react-query';
 import LoadingScreen from '../components/loading-screen';
 import RoomSearch from '../components/room/room-search';
 import { useState } from 'react';
+import { RoomData } from '../libs/types/room';
 
 interface Props {
   user: UserSession;
@@ -25,7 +26,7 @@ export default function Home({ user }: Props) {
       refetchIntervalInBackground: true,
     },
   );
-  const roomList = data?.data.result.roomList;
+  const roomList = data?.data.result?.roomList;
 
   const [searchModal, setSearchModal] = useState<boolean>(false);
 
@@ -34,9 +35,15 @@ export default function Home({ user }: Props) {
   return (
     <Layout>
       <AnimatedTextLayout>
-        <div>
-          <span>{user.nickname} 님</span>
+        <div className="flex flex-col">
           <Link href={'/mypage'}>마이페이지</Link>
+          <button
+            onClick={() => setSearchModal(!searchModal)}
+            className="text-left"
+          >
+            방찾기
+          </button>
+          <Link href={'/room/create'}>방만들기</Link>
           <div>
             <div>방목록</div>
             <ul>
@@ -44,16 +51,19 @@ export default function Home({ user }: Props) {
                 <div>아직 방이 없습니다.</div>
               ) : (
                 roomList.map((v: RoomData) => (
-                  <li key={`room${v.id}`} className="w-30 h-20 bg-red-300">
-                    <span>{v.title}</span>
+                  <li
+                    key={`room${v.id}`}
+                    className="bg-red-300 border border-black flex flex-col"
+                  >
+                    <span>{`title: ${v.title}`}</span>
+                    <span>{`방장: ${v.master}`}</span>
+                    <span>{`상태: ${v.roomState}`}</span>
                     <Link href={`/room/${v.id}/lobby`}>입장</Link>
                   </li>
                 ))
               )}
             </ul>
           </div>
-          <button onClick={() => setSearchModal(!searchModal)}>방찾기</button>
-          <Link href={'/room/create'}>방만들기</Link>
         </div>
 
         {searchModal && (

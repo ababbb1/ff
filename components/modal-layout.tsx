@@ -4,7 +4,7 @@ import { cls } from '../libs/client/utils';
 interface Props {
   children?: React.ReactNode;
   background?: 'none' | 'dark';
-  handleClose: (param?: unknown) => void | unknown;
+  handleClose?: (param?: unknown) => void | unknown;
 }
 
 export default function ModalLayout({
@@ -29,7 +29,7 @@ export default function ModalLayout({
     <div
       onClick={e => {
         if (e.target !== e.currentTarget) return;
-        handleClose();
+        if (handleClose) handleClose();
       }}
       className={cls(
         background === 'dark' ? 'bg-[#00000090]' : '',

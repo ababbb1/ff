@@ -56,8 +56,10 @@ export default function Join() {
             <input
               {...register('nickname', {
                 required: '닉네임을 입력해주세요.',
-                validate: { nicknameCheck },
-                maxLength: 10,
+                validate: {
+                  nicknameCheck,
+                  length: s => s.length < 11 || '10자 이하로 입력해주세요.',
+                },
               })}
               placeholder="닉네임"
               type="text"

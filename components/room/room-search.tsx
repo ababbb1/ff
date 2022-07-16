@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { RoomData, UserSession } from '../../libs/types/user';
+import { RoomData } from '../../libs/types/room';
+import { UserSession } from '../../libs/types/user';
 import LoadingScreen from '../loading-screen';
 import RoomSearchForm from './room-search-form';
 import RoomSearchResult from './room-search-result';
@@ -20,7 +21,7 @@ export default function RoomSearch({ user }: { user: UserSession }) {
         {isLoading ? (
           <LoadingScreen isFull={false} />
         ) : (
-          <RoomSearchResult {...{ searchResultList: searchResult?.roomList }} />
+          <RoomSearchResult {...{ searchResult }} />
         )}
       </div>
     </div>

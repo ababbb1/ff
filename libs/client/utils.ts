@@ -10,6 +10,7 @@ export const emailCheck = (value: string) => {
 };
 
 export const nicknameCheck = (value: string) => {
+  console.log(value.length);
   // eslint-disable-next-line
   const regExp = /[^\w가-힣0-9]|[\_]/g;
   return !regExp.test(value) || '특수문자는 사용할 수 없습니다.';
@@ -43,3 +44,6 @@ export const base64ToFile = (dataurl: string, fileName: string) => {
 
 export const splitByColon = (s: string, t: 'name' | 'platform') =>
   s.includes(':') ? (t === 'name' ? s.split(':')[0] : s.split(':')[1]) : s;
+
+export const getImageUrl = (id: string) =>
+  `https://imagedelivery.net/-T83tAhVmWAdtnO8EXNRag/${id}/public`;

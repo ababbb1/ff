@@ -1,96 +1,85 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Suspense, useEffect, useState } from 'react';
-import io from 'socket.io-client';
-import { API_DOMAIN } from '../../../libs/client/api';
-import { CurrentUser, RoomData, UserSession } from '../../../libs/types/user';
+import React, { Suspense, useEffect } from 'react';
+import { UserSession } from '../../../libs/types/user';
 import RoomLobby from '../../../components/room/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
 import Layout from '../../../components/layout';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import SocketComponent, { socket } from '../../../components/room/socket';
+import { RecoilRoot, useRecoilState } from 'recoil';
+import { currentUsersState, roomInfoState } from '../../../libs/client/room';
 
 const RoomHint = dynamic(() => import('../../../components/room/room-hint'), {
   ssr: false,
 });
 const RoomReasoning = dynamic(
-  () => import('../../../components/room/room-reasoning'),
+  () => import('../../../components/room/reasoning/room-reasoning'),
   { ssr: false },
 );
 
-export interface UpdateRoomResponse {
-  roomInfo: RoomData;
-  currentUser: CurrentUser[];
-}
-
-export default function Room({ user }: { user: UserSession }) {
+const Room = ({ user }: { user: UserSession }) => {
   const router = useRouter();
-  const [roomInfo, setRoomInfo] = useState<RoomData>();
-  const [currentUsers, setCurrentUsers] = useState<CurrentUser[]>();
   const { id: roomId, state: roomState, roomUniqueId } = router.query;
+  const dataToSendToServer = { roomId, userId: user.id };
 
-  const socket = io(API_DOMAIN, {
-    transports: ['websocket'],
-    closeOnBeforeunload: false,
-  });
-
-  const onUpdateRoom = (data: UpdateRoomResponse) => {
-    setCurrentUsers(data.currentUser);
-    setRoomInfo(data.roomInfo);
-  };
+  const [roomInfo] = useRecoilState(roomInfoState);
+  const [currentUsers] = useRecoilState(currentUsersState);
 
   const onBeforeUnload = () => {
-    socket.emit('exit_room', { roomId, userId: user.id });
+    socket.emit('exit_room', dataToSendToServer);
+    socket.removeAllListeners();
   };
 
   useEffect(() => {
     window.addEventListener('beforeunload', onBeforeUnload);
+
     router.beforePopState(() => {
-      socket.emit('exit_room', { roomId, userId: user.id });
+      onBeforeUnload();
       router.replace('/');
       return false;
     });
 
-    if (roomUniqueId) {
-      socket.emit('create_room', { roomId, roomUniqueId });
-    } else {
-      socket.emit('join_room', {
-        userId: user.id,
-        roomId,
-        email: user.email,
-        nickname: user.nickname,
-      });
-    }
-
-    socket.on('update_room', onUpdateRoom);
-
     return () => {
-      socket.off('update_room', onUpdateRoom);
       window.removeEventListener('beforeunload', onBeforeUnload);
     };
   }, []);
 
+  useEffect(() => {
+    console.log(roomInfo);
+  }, [roomInfo]);
+  useEffect(() => {
+    console.log(currentUsers);
+  }, [currentUsers]);
   return (
-    <Layout>
-      {roomState === 'hint' ? (
-        <Suspense fallback={<LoadingScreen />}>
-          <RoomHint {...{ roomInfo }} />
-        </Suspense>
-      ) : roomState === 'reasoning' ? (
-        <Suspense fallback={<LoadingScreen />}>
-          <RoomReasoning />
-        </Suspense>
-      ) : (
-        <RoomLobby
-          {...{
-            user,
-            currentUsers,
-            roomInfo,
-            socket,
-          }}
-        />
-      )}
-    </Layout>
+    <SocketComponent {...{ user, roomUniqueId, roomId }}>
+      <Layout>
+        {roomState === 'hint' ? (
+          <Suspense fallback={<LoadingScreen />}>
+            <RoomHint user={user} />
+          </Suspense>
+        ) : roomState === 'reasoning' ? (
+          <Suspense fallback={<LoadingScreen />}>
+            <DndProvider backend={HTML5Backend}>
+              <RoomReasoning />
+            </DndProvider>
+          </Suspense>
+        ) : (
+          <RoomLobby user={user} />
+        )}
+      </Layout>
+    </SocketComponent>
+  );
+};
+
+export default function RecoilRootRoom({ user }: { user: UserSession }) {
+  return (
+    <RecoilRoot>
+      <Room user={user} />
+    </RecoilRoot>
   );
 }
 
@@ -106,14 +95,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  if (!req.headers.referer) {
-    return {
-      redirect: {
-        destination: '/error/access-denied',
-        permanent: false,
-      },
-    };
-  }
+  // if (!req.headers.referer) {
+  //   return {
+  //     redirect: {
+  //       destination: '/error/access-denied',
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   return {
     props: {

@@ -7,7 +7,7 @@ import { NavigationOptions } from 'swiper/types';
 import { useForm } from 'react-hook-form';
 import { useEffect, useRef } from 'react';
 import { cls } from '../../libs/client/utils';
-import { RoomData } from '../../libs/types/user';
+import { RoomData } from '../../libs/types/room';
 
 interface Props {
   onValid: (data: RoomFormData) => void | unknown;
@@ -38,11 +38,11 @@ export default function RoomForm({ onValid, initData, master }: Props) {
   useEffect(() => {
     setValue('title', initData?.title || '');
     setValue('password', initData?.password || '');
-    setValue('episode', initData?.episode || episodes[0]);
+    setValue('episode', episodes[0]);
     setValue('hintTime', initData?.hintTime || '');
     setValue('reasoningTime', initData?.reasoningTime || '');
     setValue('master', master || initData?.master || '');
-    setValue('isRandom', Boolean(initData?.isRandom) || false);
+    setValue('isRandom', initData?.isRandom === '1');
   }, []);
 
   return (

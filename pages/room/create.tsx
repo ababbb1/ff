@@ -8,7 +8,6 @@ import Layout from '../../components/layout';
 import RoomForm, { RoomFormData } from '../../components/room/room-form';
 
 export default function CreateRoom({ user }: { user: UserSession }) {
-  const episodes = ['대저택 살인사건'];
   const router = useRouter();
 
   const onValid = async (data: RoomFormData) => {
@@ -29,7 +28,7 @@ export default function CreateRoom({ user }: { user: UserSession }) {
   return (
     <Layout>
       <AnimatedTextLayout>
-        <RoomForm {...{ episodes, onValid, master: user.email || '' }} />
+        <RoomForm {...{ onValid, master: user.email || '' }} />
       </AnimatedTextLayout>
     </Layout>
   );
