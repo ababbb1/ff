@@ -1,5 +1,5 @@
-import Peer from 'peerjs';
-import React from 'react';
+import { Dispatch, SetStateAction } from 'react';
+import { UserSession } from './user';
 
 export interface RoomData {
   count: number;
@@ -51,3 +51,42 @@ export interface PeerState {
   peerId: string;
   stream: MediaStream;
 }
+
+export interface RoomState {
+  roomInfo: RoomData | null;
+  currentUsers: CurrentUser[];
+  stream: MediaStream | null;
+  messageList: string[];
+  peerConnection: RTCPeerConnection | null;
+  video: MediaState;
+  imageList: ImageData[];
+  boardImageList: ImageData[];
+}
+
+export type RoomStateAction =
+  | {
+      type: 'ROOM_INFO';
+      payload: RoomData;
+    }
+  | {
+      type: 'CURRENT_USERS';
+      payload: CurrentUser[];
+    }
+  | {
+      type: 'MESSAGE_LIST_PUSH';
+      payload: string;
+    }
+  | {
+      type: 'VIDEO';
+      payload: MediaState;
+    }
+  | {
+      type: 'IMAGE_LIST';
+      payload: ImageData[];
+    }
+  | {
+      type: 'BOARD_IMAGE_LIST_PUSH';
+      payload: ImageData;
+    };
+
+export type RoomContextType = [RoomState, Dispatch<RoomStateAction>];

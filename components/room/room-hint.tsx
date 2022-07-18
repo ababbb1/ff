@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import CaptureCursor from '../capture-cursor';
 import axios from 'axios';
 import { base64ToFile, getImageUrl } from '../../libs/client/utils';
@@ -9,34 +8,28 @@ import { useRouter } from 'next/router';
 import ModalLayout from '../modal-layout';
 import { UserSession } from '../../libs/types/user';
 import Link from 'next/link';
-import { CurrentUser, ImageData, RoomData } from '../../libs/types/room';
-import { Socket } from 'socket.io-client';
 import useToggle from '../../libs/hooks/useToggle';
+import useRoomContext from '../../libs/hooks/room/useRoomContext';
+import {
+  hintReady,
+  hintRegister,
+  hintTimeStart,
+} from '../../libs/client/socket.io';
 
 interface Props {
   user: UserSession;
-  roomInfo: RoomData | null;
-  imageListState: [ImageData[], Dispatch<SetStateAction<ImageData[]>>];
-  socket: Socket;
-  currentUsers: CurrentUser[];
 }
 
-export default function RoomHint({
-  user,
-  roomInfo,
-  imageListState,
-  socket,
-  currentUsers,
-}: Props) {
+export default function RoomHint({ user }: Props) {
   const CAMERA_WIDTH = 180;
   const CAMERA_HEIGHT = 180;
   const IMAGE_WIDTH = 120;
   const IMAGE_HEIGHT = 120;
 
-  const [imageList, setImageList] = imageListState;
+  const [{ roomInfo, imageList, currentUsers }, dispatch] = useRoomContext();
+
   const [camera, toggleCamera] = useToggle();
   const [isLoading, toggleIsLoading] = useToggle();
-  const dataToSendToServer = { roomId: roomInfo?.id, userId: user.id };
 
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement>(null);
@@ -65,25 +58,30 @@ export default function RoomHint({
       } = res.data;
 
       if (success) {
-        socket.emit('hint_register', {
+        hintRegister({
           userId: user.id,
           roomId: roomInfo?.id,
           imageId: id,
         });
-        setImageList(prev => [
-          ...prev,
-          {
-            id,
-            x: 0,
-            y: 0,
-            isDropped: false,
-            previewUrl: getImageUrl(id),
-          },
-        ]);
+
+        dispatch({
+          type: 'IMAGE_LIST',
+          payload: [
+            ...imageList,
+            { id, x: 0, y: 0, isDropped: false, previewUrl: getImageUrl(id) },
+          ],
+        });
       } else alert('이미지 등록에 실패했습니다.');
 
       toggleIsLoading(false);
     }
+  };
+
+  const handleHintReadyButton = () => {
+    hintReady({
+      roomId: roomInfo?.id,
+      userId: user.id,
+    });
   };
 
   // useEffect(() => {
@@ -96,9 +94,9 @@ export default function RoomHint({
   useEffect(() => {
     if (
       roomInfo?.roomState !== 'hintTime' &&
-      currentUsers.filter(v => !v.hintReady).length === 0
+      currentUsers.every(v => v.hintReady)
     ) {
-      socket.emit('hint_start', dataToSendToServer);
+      hintTimeStart({ roomId: roomInfo?.id, userId: user.id });
     }
   }, [currentUsers]);
 
@@ -107,11 +105,7 @@ export default function RoomHint({
       {!isHintTime && (
         <ModalLayout background="dark">
           <div className="w-[30rem] h-[20rem] bg-white flex justify-center items-center">
-            <button
-              onClick={() => socket.emit('hint_ready', dataToSendToServer)}
-            >
-              준비
-            </button>
+            <button onClick={handleHintReadyButton}>준비</button>
           </div>
         </ModalLayout>
       )}
@@ -142,7 +136,7 @@ export default function RoomHint({
         <ul className="flex">
           {imageList.map((image, i) => (
             <li key={`hint${i}`}>
-              <Image
+              <img
                 src={image.previewUrl}
                 width={IMAGE_WIDTH}
                 height={IMAGE_HEIGHT}

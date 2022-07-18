@@ -6,38 +6,27 @@ import { DropTargetMonitor } from 'react-dnd';
 import { ImageData, RoomData } from '../../../libs/types/room';
 import Image from 'next/image';
 import { Socket } from 'socket.io-client';
+import useArray, { UseArrayMap } from '../../../libs/hooks/useArray';
+import useRoomContext from '../../../libs/hooks/room/useRoomContext';
+import { hintPostOnBoard } from '../../../libs/client/socket.io';
 
-interface Props {
-  imageListState: [ImageData[], Dispatch<SetStateAction<ImageData[]>>];
-  socket: Socket;
-  roomInfo: RoomData | null;
-}
-
-export default function RoomReasoning({
-  imageListState,
-  socket,
-  roomInfo,
-}: Props) {
-  const [boardImageList, setBoardImageList] = useState<ImageData[]>([]);
-  const [imageList, setImageList] = imageListState;
+export default function RoomReasoning() {
+  const [{ roomInfo, imageList, boardImageList }, dispatch] = useRoomContext();
 
   const handleDrop = (item: ImageData, monitor: DropTargetMonitor) => {
-    console.log(item);
     const coord = monitor.getClientOffset();
 
     item.isDropped = true;
     item.x = (coord?.x as number) + window.scrollX;
     item.y = (coord?.y as number) + window.scrollY;
 
-    setImageList(imageList.map(v => (v.id === item.id ? item : v)));
-    socket.emit('hint_board', { imageInfo: item, roomId: roomInfo?.id });
-  };
+    const imageListWithoutDroppedItem = imageList.map(v =>
+      v.id === item.id ? item : v,
+    );
 
-  useEffect(() => {
-    socket.on('board_image', (imageInfo: ImageData) => {
-      setBoardImageList(prev => [...prev, imageInfo]);
-    });
-  }, []);
+    dispatch({ type: 'IMAGE_LIST', payload: imageListWithoutDroppedItem });
+    hintPostOnBoard({ imageInfo: item, roomId: roomInfo?.id });
+  };
 
   return (
     <div className="w-full h-full">
@@ -60,12 +49,12 @@ export default function RoomReasoning({
           />
         ))}
       </div>
-      {boardImageList?.map((v, i) => (
+      {boardImageList.map((v, i) => (
         <div
           key={`boardImage${i}`}
           style={{ position: 'absolute', left: `${v.x}px`, top: `${v.y}px` }}
         >
-          <Image src={v.previewUrl} width={100} height={100} />
+          <img src={v.previewUrl} width={100} height={100} />
         </div>
       ))}
     </div>

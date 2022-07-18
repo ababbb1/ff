@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { interval, map, take } from 'rxjs';
 
 interface Props {
   seconds?: number;
@@ -20,7 +19,7 @@ export default function Timer({ seconds = 0, isActive }: Props) {
     return () => {
       clearInterval(decrease as NodeJS.Timer);
     };
-  }, []);
+  }, [isActive]);
 
   return (
     <div>

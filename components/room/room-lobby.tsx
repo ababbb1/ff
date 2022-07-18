@@ -1,11 +1,5 @@
 import { useRouter } from 'next/router';
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useRef } from 'react';
 import { toggleMediaState } from '../../libs/client/media';
 import { splitByColon } from '../../libs/client/utils';
 import LoadingScreen from '../loading-screen';
@@ -13,78 +7,93 @@ import ModalLayout from '../modal-layout';
 import RoomForm, { RoomFormData } from './room-form';
 import { UserSession } from '../../libs/types/user';
 import UserVideo from '../user-video';
-import { CurrentUser, MediaState, RoomData } from '../../libs/types/room';
-import { Socket } from 'socket.io-client';
 import useToggle from '../../libs/hooks/useToggle';
+import useInput from '../../libs/hooks/useInput';
+import useUpdateEffect from '../../libs/hooks/useUpdateEffect';
+import useRoomContext from '../../libs/hooks/room/useRoomContext';
+import {
+  exitRoom,
+  gameReady,
+  gameStart,
+  submitMessage,
+  updateRoom,
+} from '../../libs/client/socket.io';
 
 interface Props {
   user: UserSession;
-  roomInfo: RoomData | null;
-  currentUsers: CurrentUser[];
-  socket: Socket;
-  stream: MediaStream | null;
-  video: [MediaState, Dispatch<SetStateAction<MediaState>>];
-  messageList: string[];
 }
 
-export default function RoomLobby({
-  user,
-  roomInfo,
-  currentUsers,
-  socket,
-  stream,
-  video,
-  messageList,
-}: Props) {
-  const dataToSendToServer = { roomId: roomInfo?.id, userId: user.id };
+export default function RoomLobby({ user }: Props) {
+  const [{ roomInfo, currentUsers, stream, video, messageList }, dispatch] =
+    useRoomContext();
 
   const router = useRouter();
   const isMaster = user?.nickname === roomInfo?.master;
-  const isReady = currentUsers?.filter(v => !v.readyState).length === 0;
+  const isReady = currentUsers?.every(v => v.readyState);
 
-  const [videoState, setVideoState] = video;
   const [isSetting, toggleIsSetting] = useToggle();
-  const [message, setMessage] = useState('');
+
+  const {
+    value: message,
+    onChange: onMessageChange,
+    clear: messageClear,
+  } = useInput();
 
   const myVideoRef = useRef<HTMLVideoElement>(null);
 
   const handleExitButton = () => {
-    socket.emit('exit_room', dataToSendToServer);
+    exitRoom({ roomId: roomInfo?.id, userId: user.id });
     router.back();
+  };
+
+  const handleStartButton = () => {
+    gameStart({
+      roomId: roomInfo?.id,
+      userId: user.id,
+    });
+  };
+
+  const handleReadyButton = () => {
+    gameReady({
+      roomId: roomInfo?.id,
+      userId: user.id,
+    });
   };
 
   const handleSubmitMessage = () => {
     if (message) {
-      socket.emit('submit_chat', {
+      submitMessage({
         message,
         nickname: user.nickname,
         roomId: roomInfo?.id,
       });
 
-      setMessage('');
+      messageClear();
     }
   };
 
   const handleVideoToggleButton = () => {
     if (stream) {
       toggleMediaState(stream, 'video');
-      setVideoState(prev => ({ ...prev, state: !prev.state }));
+      dispatch({ type: 'VIDEO', payload: { ...video, state: !video.state } });
     }
   };
 
   const onSettingFormValid = async (data: RoomFormData) => {
-    socket.emit('update_room', { ...data, roomId: roomInfo?.id });
+    updateRoom({ ...data, roomId: roomInfo?.id });
     toggleIsSetting(false);
   };
 
   useEffect(() => {
-    if (myVideoRef.current) myVideoRef.current.srcObject = stream;
+    if (myVideoRef.current) {
+      myVideoRef.current.srcObject = stream;
+    }
   }, [stream]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (roomInfo?.roomState === 'hintReady')
       router.replace(`/room/${roomInfo.id}/hint`);
-  }, [router, roomInfo]);
+  }, [roomInfo]);
 
   if (!roomInfo) return <LoadingScreen />;
   return (
@@ -95,10 +104,7 @@ export default function RoomLobby({
             <>
               <button onClick={() => toggleIsSetting(true)}>세팅</button>
               {currentUsers.length > 1 && isReady ? (
-                <button
-                  className="text-red-500"
-                  onClick={() => socket.emit('game_start', dataToSendToServer)}
-                >
+                <button className="text-red-500" onClick={handleStartButton}>
                   게임시작
                 </button>
               ) : (
@@ -106,11 +112,7 @@ export default function RoomLobby({
               )}
             </>
           ) : (
-            <button
-              onClick={() => socket.emit('ready_state', dataToSendToServer)}
-            >
-              준비
-            </button>
+            <button onClick={handleReadyButton}>준비</button>
           )}
 
           <button onClick={handleExitButton}>나가기</button>
@@ -135,12 +137,9 @@ export default function RoomLobby({
 
           <div>
             <input
-              onChange={e => {
-                setMessage(e.target.value);
-              }}
-              type="text"
-              placeholder="메시지 입력"
               value={message}
+              onChange={onMessageChange}
+              placeholder="메시지 입력"
               onKeyUp={e => {
                 if (e.key === 'Enter') handleSubmitMessage();
               }}
@@ -155,7 +154,7 @@ export default function RoomLobby({
             {isMaster && <span>방장</span>}
             <div>
               <UserVideo width={100} height={100} ref={myVideoRef} />
-              {videoState.state ? (
+              {video.state ? (
                 <button onClick={handleVideoToggleButton}>비디오 끄기</button>
               ) : (
                 <button onClick={handleVideoToggleButton}>비디오 켜기</button>
