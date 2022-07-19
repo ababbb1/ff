@@ -1,9 +1,14 @@
 import { Dispatch } from 'react';
 import { io } from 'socket.io-client';
-import { ImageData, RoomStateAction, UpdateRoomResponse } from '../types/room';
+import {
+  ImageData,
+  RoomState,
+  RoomStateAction,
+  UpdateRoomResponse,
+} from '../types/room';
 import { API_DOMAIN } from './api';
 
-type SocketEmitData = { [k: string]: unknown };
+type SocketEmitData = { [k: string | number]: unknown };
 
 const socket = io(API_DOMAIN, {
   transports: ['websocket'],
@@ -29,6 +34,32 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
   });
 };
 
+export const onAfterUpdatePeerConnection = (
+  peerConnection: RTCPeerConnection,
+  roomId: string,
+) => {
+  socket.on('user_connected', async () => {
+    const offer = await peerConnection.createOffer();
+    peerConnection.setLocalDescription(offer);
+    socket.emit('offer', { offer, roomId });
+  });
+
+  socket.on('offer', async offer => {
+    peerConnection.setRemoteDescription(offer);
+    const answer = await peerConnection.createAnswer();
+    peerConnection.setLocalDescription(answer);
+    socket.emit('answer', { answer, roomId });
+  });
+
+  socket.on('answer', answer => {
+    peerConnection.setRemoteDescription(answer);
+  });
+
+  socket.on('ice', ice => {
+    if (peerConnection) peerConnection.addIceCandidate(ice);
+  });
+};
+
 const emit = (e: string) => (data: SocketEmitData) => {
   socket.emit(e, data);
 };
@@ -44,6 +75,7 @@ export const hintRegister = emit('hint_register');
 export const hintReady = emit('hint_ready');
 export const hintTimeStart = emit('hint_start');
 export const hintPostOnBoard = emit('hint_board');
+export const iceEmit = emit('ice');
 
 export const socketRemoveAllListeners = () => {
   socket.removeAllListeners();

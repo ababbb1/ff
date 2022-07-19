@@ -31,6 +31,65 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
           boardImageList: [...state.boardImageList, action.payload],
         };
 
+      case 'STREAM':
+        return { ...state, stream: action.payload };
+
+      case 'VIDEO_INPUT_DEVICES':
+        return {
+          ...state,
+          video: {
+            ...state.video,
+            input: { ...state.video.input, devices: action.payload },
+          },
+        };
+      case 'VIDEO_INPUT_STATE':
+        return {
+          ...state,
+          video: {
+            ...state.video,
+            input: { ...state.video.input, state: action.payload },
+          },
+        };
+
+      case 'AUDIO_INPUT_DEVICES':
+        return {
+          ...state,
+          audio: {
+            ...state.audio,
+            input: { ...state.audio.input, devices: action.payload },
+          },
+        };
+      case 'AUDIO_OUTPUT_DEVICES':
+        return {
+          ...state,
+          audio: {
+            ...state.audio,
+            output: { ...state.audio.output, devices: action.payload },
+          },
+        };
+      case 'AUDIO_INPUT_STATE':
+        return {
+          ...state,
+          audio: {
+            ...state.audio,
+            input: { ...state.audio.input, state: action.payload },
+          },
+        };
+      case 'AUDIO_OUTPUT_STATE':
+        return {
+          ...state,
+          audio: {
+            ...state.audio,
+            output: { ...state.audio.output, state: action.payload },
+          },
+        };
+
+      case 'PEER_CONNECTION':
+        return {
+          ...state,
+          peerConnection: action.payload,
+        };
+
       default:
         return state;
     }
@@ -43,8 +102,12 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
     peerConnection: null,
     currentUsers: [],
     video: {
-      devices: [],
-      state: false,
+      input: { devices: [], state: true },
+      output: { devices: [], state: true },
+    },
+    audio: {
+      input: { devices: [], state: true },
+      output: { devices: [], state: true },
     },
     imageList: [],
     boardImageList: [],

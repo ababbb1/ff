@@ -1,15 +1,12 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef } from 'react';
-import { toggleMediaState } from '../../libs/client/media';
+import React, { ChangeEvent, useEffect, useRef } from 'react';
 import { splitByColon } from '../../libs/client/utils';
-import LoadingScreen from '../loading-screen';
 import ModalLayout from '../modal-layout';
 import RoomForm, { RoomFormData } from './room-form';
 import { UserSession } from '../../libs/types/user';
 import UserVideo from '../user-video';
 import useToggle from '../../libs/hooks/useToggle';
 import useInput from '../../libs/hooks/useInput';
-import useUpdateEffect from '../../libs/hooks/useUpdateEffect';
 import useRoomContext from '../../libs/hooks/room/useRoomContext';
 import {
   exitRoom,
@@ -18,14 +15,20 @@ import {
   submitMessage,
   updateRoom,
 } from '../../libs/client/socket.io';
+import { RoomData } from '../../libs/types/room';
+import {
+  mediaDeviceChange,
+  MediaKindType,
+  mediaOnOffToggle,
+} from '../../libs/client/media';
 
 interface Props {
   user: UserSession;
 }
 
 export default function RoomLobby({ user }: Props) {
-  const [{ roomInfo, currentUsers, stream, video, messageList }, dispatch] =
-    useRoomContext();
+  const [state, dispatch] = useRoomContext();
+  const { roomInfo, currentUsers, stream, video, audio, messageList } = state;
 
   const router = useRouter();
   const isMaster = user?.nickname === roomInfo?.master;
@@ -40,6 +43,7 @@ export default function RoomLobby({ user }: Props) {
   } = useInput();
 
   const myVideoRef = useRef<HTMLVideoElement>(null);
+  const currentUsersVideoRefs = useRef<HTMLVideoElement[]>([]);
 
   const handleExitButton = () => {
     exitRoom({ roomId: roomInfo?.id, userId: user.id });
@@ -72,12 +76,15 @@ export default function RoomLobby({ user }: Props) {
     }
   };
 
-  const handleVideoToggleButton = () => {
-    if (stream) {
-      toggleMediaState(stream, 'video');
-      dispatch({ type: 'VIDEO', payload: { ...video, state: !video.state } });
-    }
+  const handleMediaToggleButton = (type: 'VIDEO_INPUT' | 'AUDIO_INPUT') => {
+    mediaOnOffToggle(state, dispatch, type);
   };
+
+  const onMediaDeviceChange =
+    (type: MediaKindType) => (e: ChangeEvent<HTMLSelectElement>) => {
+      const deviceId = e.target.value;
+      if (stream) mediaDeviceChange(stream, dispatch, type, deviceId);
+    };
 
   const onSettingFormValid = async (data: RoomFormData) => {
     updateRoom({ ...data, roomId: roomInfo?.id });
@@ -90,12 +97,12 @@ export default function RoomLobby({ user }: Props) {
     }
   }, [stream]);
 
-  useUpdateEffect(() => {
-    if (roomInfo?.roomState === 'hintReady')
+  useEffect(() => {
+    if (roomInfo?.roomState === 'hintReady') {
       router.replace(`/room/${roomInfo.id}/hint`);
+    }
   }, [roomInfo]);
 
-  if (!roomInfo) return <LoadingScreen />;
   return (
     <>
       <div>
@@ -119,10 +126,10 @@ export default function RoomLobby({ user }: Props) {
         </div>
 
         <div className="flex flex-col border border-black">
-          <span>{`title: ${roomInfo.title}`}</span>
-          <span>{`episode: ${roomInfo.episode}`}</span>
-          <span>{`힌트 시간: ${roomInfo.hintTime}`}</span>
-          <span>{`추리 시간: ${roomInfo.reasoningTime}`}</span>
+          <span>{`title: ${roomInfo?.title}`}</span>
+          <span>{`episode: ${roomInfo?.episode}`}</span>
+          <span>{`힌트 시간: ${roomInfo?.hintTime}`}</span>
+          <span>{`추리 시간: ${roomInfo?.reasoningTime}`}</span>
         </div>
 
         <div className="border border-black">
@@ -153,12 +160,60 @@ export default function RoomLobby({ user }: Props) {
             <span>{splitByColon(user.nickname, 'name')}</span>
             {isMaster && <span>방장</span>}
             <div>
-              <UserVideo width={100} height={100} ref={myVideoRef} />
-              {video.state ? (
-                <button onClick={handleVideoToggleButton}>비디오 끄기</button>
-              ) : (
-                <button onClick={handleVideoToggleButton}>비디오 켜기</button>
-              )}
+              <div>
+                <UserVideo width={100} height={100} ref={myVideoRef} />
+              </div>
+              <div>
+                {video.input.state ? (
+                  <button
+                    onClick={() => handleMediaToggleButton('VIDEO_INPUT')}
+                  >
+                    비디오 끄기
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleMediaToggleButton('VIDEO_INPUT')}
+                  >
+                    비디오 켜기
+                  </button>
+                )}
+                {audio.input.state ? (
+                  <button
+                    onClick={() => handleMediaToggleButton('AUDIO_INPUT')}
+                  >
+                    마이크 끄기
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleMediaToggleButton('AUDIO_INPUT')}
+                  >
+                    마이크 켜기
+                  </button>
+                )}
+              </div>
+              <div>
+                <select onChange={onMediaDeviceChange('VIDEO_INPUT')}>
+                  {video.input.devices.map(v => (
+                    <option key={v.deviceId} value={v.deviceId}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+                <select onChange={onMediaDeviceChange('AUDIO_INPUT')}>
+                  {audio.input.devices.map(v => (
+                    <option key={v.deviceId} value={v.deviceId}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+                <select onChange={onMediaDeviceChange('AUDIO_OUTPUT')}>
+                  {audio.output.devices.map(v => (
+                    <option key={v.deviceId} value={v.deviceId}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
           {currentUsers &&
@@ -167,7 +222,7 @@ export default function RoomLobby({ user }: Props) {
               .map((v, i) => (
                 <div key={`user${i}`} className="border border-black">
                   <span>{splitByColon(v.nickname, 'name')}</span>
-                  {v.nickname === roomInfo.master && <span>방장</span>}
+                  {v.nickname === roomInfo?.master && <span>방장</span>}
                   <div className="w-[100px] h-[100px] flex justify-center items-center bg-black"></div>
                 </div>
               ))}
@@ -183,7 +238,7 @@ export default function RoomLobby({ user }: Props) {
         >
           <div className="w-[80%] h-[80%]">
             <RoomForm
-              initData={roomInfo}
+              initData={roomInfo as RoomData}
               master={user.nickname}
               onValid={onSettingFormValid}
             />

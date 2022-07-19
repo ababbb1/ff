@@ -27,6 +27,7 @@ export interface CurrentUser {
   social: boolean;
   readyState: boolean;
   hintReady: boolean;
+  peerId: string;
 }
 
 export interface UpdateRoomResponse {
@@ -58,7 +59,8 @@ export interface RoomState {
   stream: MediaStream | null;
   messageList: string[];
   peerConnection: RTCPeerConnection | null;
-  video: MediaState;
+  video: { input: MediaState; output: MediaState };
+  audio: { input: MediaState; output: MediaState };
   imageList: ImageData[];
   boardImageList: ImageData[];
 }
@@ -77,8 +79,32 @@ export type RoomStateAction =
       payload: string;
     }
   | {
-      type: 'VIDEO';
-      payload: MediaState;
+      type: 'STREAM';
+      payload: MediaStream;
+    }
+  | {
+      type: 'VIDEO_INPUT_DEVICES';
+      payload: MediaDeviceInfo[];
+    }
+  | {
+      type: 'VIDEO_INPUT_STATE';
+      payload: boolean;
+    }
+  | {
+      type: 'AUDIO_INPUT_DEVICES';
+      payload: MediaDeviceInfo[];
+    }
+  | {
+      type: 'AUDIO_OUTPUT_DEVICES';
+      payload: MediaDeviceInfo[];
+    }
+  | {
+      type: 'AUDIO_INPUT_STATE';
+      payload: boolean;
+    }
+  | {
+      type: 'AUDIO_OUTPUT_STATE';
+      payload: boolean;
     }
   | {
       type: 'IMAGE_LIST';
@@ -87,6 +113,10 @@ export type RoomStateAction =
   | {
       type: 'BOARD_IMAGE_LIST_PUSH';
       payload: ImageData;
+    }
+  | {
+      type: 'PEER_CONNECTION';
+      payload: RTCPeerConnection;
     };
 
 export type RoomContextType = [RoomState, Dispatch<RoomStateAction>];

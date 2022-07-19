@@ -15,9 +15,17 @@ import {
   createRoom,
   exitRoom,
   joinRoom,
+  onAfterUpdatePeerConnection,
   socketRemoveAllListeners,
 } from '../../../libs/client/socket.io';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
+import {
+  getMedia,
+  getMediaDevices,
+  makePeerConnection,
+} from '../../../libs/client/media';
+import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
+import useTimeout from '../../../libs/hooks/useTimeout';
 
 const RoomHint = dynamic(() => import('../../../components/room/room-hint'), {
   ssr: false,
@@ -33,31 +41,28 @@ const Room = ({ user }: { user: UserSession }) => {
   const roomUniqueId = router.query.roomUniqueId;
   const roomState = router.query.state;
 
-  const roomContext = useRoomContext();
+  const [state, dispatch] = useRoomContext();
+  const { roomInfo, currentUsers, stream, peerConnection } = state;
 
   const onBeforeUnload = () => {
     exitRoom({ roomId: router.query.id, userId: user.id });
     socketRemoveAllListeners();
   };
 
-  // useEffect
-  useEffect(() => {
-    connectRoomSocket(roomContext[1]);
-
-    if (router.query.roomUniqueId) {
-      createRoom({ roomId, roomUniqueId });
-    } else {
-      joinRoom({
-        roomId,
-        userId: user.id,
-        email: user.email,
-        nickname: user.nickname,
-      });
+  useTimeout(() => {
+    if (!roomInfo) {
+      alert('연결에 실패했습니다.');
+      router.back();
     }
+  }, 3000);
+
+  useEffect(() => {
+    getMedia(dispatch);
+    connectRoomSocket(dispatch);
 
     router.beforePopState(() => {
       onBeforeUnload();
-      router.replace('/');
+      router.reload();
       return false;
     });
 
@@ -67,13 +72,38 @@ const Room = ({ user }: { user: UserSession }) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log(roomInfo);
-  // }, [roomInfo]);
-  // useEffect(() => {
-  //   console.log(currentUsers);
-  // }, [currentUsers]);
+  useUpdateEffect(() => {
+    if (stream) {
+      makePeerConnection(roomId as string, stream, dispatch);
+      if (router.query.roomUniqueId) {
+        createRoom({ roomId, roomUniqueId, streamId: stream.id });
+      } else {
+        joinRoom({
+          roomId,
+          userId: user.id,
+          email: user.email,
+          nickname: user.nickname,
+          streamId: stream.id,
+        });
+      }
+      //emit streamid
+    }
+  }, [stream]);
 
+  useUpdateEffect(() => {
+    if (peerConnection && typeof roomId === 'string') {
+      onAfterUpdatePeerConnection(peerConnection, roomId);
+    }
+  }, [peerConnection]);
+
+  useUpdateEffect(() => {
+    console.log(roomInfo);
+  }, [roomInfo]);
+  useUpdateEffect(() => {
+    console.log(currentUsers);
+  }, [currentUsers]);
+
+  if (!roomInfo) return <LoadingScreen />;
   return (
     <Layout>
       {roomState === 'hint' ? (
@@ -121,7 +151,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  if (!req.headers.referer) {
+  const referer = req.headers.referer;
+  console.log(referer);
+  if (!referer) {
     return {
       redirect: {
         destination: '/error/access-denied',

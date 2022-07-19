@@ -5,8 +5,7 @@ export default function useInput(
   predicates?: Array<(value: string) => boolean>,
 ) {
   const [value, setValue] = useState(defaultValue);
-
-  let isError = false;
+  const [isError, setIsError] = useState(false);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {
@@ -15,7 +14,9 @@ export default function useInput(
 
     if (predicates) {
       predicates.forEach(fn => {
-        isError = !fn(value);
+        if (!fn(value)) {
+          setIsError(true);
+        }
       });
     }
 

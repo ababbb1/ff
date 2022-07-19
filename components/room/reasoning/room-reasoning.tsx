@@ -1,12 +1,8 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Timer from '../../timer';
 import HintBoard from './hint-board';
 import HintImage from './hint-image';
 import { DropTargetMonitor } from 'react-dnd';
-import { ImageData, RoomData } from '../../../libs/types/room';
-import Image from 'next/image';
-import { Socket } from 'socket.io-client';
-import useArray, { UseArrayMap } from '../../../libs/hooks/useArray';
+import { ImageData } from '../../../libs/types/room';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import { hintPostOnBoard } from '../../../libs/client/socket.io';
 
@@ -32,7 +28,7 @@ export default function RoomReasoning() {
     <div className="w-full h-full">
       <Timer
         seconds={roomInfo?.reasoningTime ? +roomInfo.reasoningTime * 60 : 0}
-        isActive={false}
+        isActive
       />
       <HintBoard
         accept={'hint_image'}

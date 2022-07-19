@@ -28,7 +28,7 @@ export default function CreateRoom({ user }: { user: UserSession }) {
   return (
     <Layout>
       <AnimatedTextLayout>
-        <RoomForm {...{ onValid, master: user.email || '' }} />
+        <RoomForm {...{ onValid, master: user.nickname }} />
       </AnimatedTextLayout>
     </Layout>
   );
