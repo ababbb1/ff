@@ -15,6 +15,7 @@ import {
   hintRegister,
   hintTimeStart,
 } from '../../libs/client/socket.io';
+import Image from 'next/image';
 
 interface Props {
   user: UserSession;
@@ -84,12 +85,13 @@ export default function RoomHint({ user }: Props) {
     });
   };
 
-  // useEffect(() => {
-  //   if (roomInfo?.hintTime)
-  //     setTimeout(() => {
-  //       router.replace(`/room/${roomInfo.id}/reasoning`);
-  //     }, +roomInfo.hintTime * 60 * 1000);
-  // }, []);
+  useEffect(() => {
+    if (roomInfo) {
+      setTimeout(() => {
+        router.replace(`/room/${roomInfo.id}/reasoning`);
+      }, +roomInfo.hintTime * 60 * 1000);
+    }
+  }, []);
 
   useEffect(() => {
     if (
@@ -98,7 +100,7 @@ export default function RoomHint({ user }: Props) {
     ) {
       hintTimeStart({ roomId: roomInfo?.id, userId: user.id });
     }
-  }, [currentUsers]);
+  }, [currentUsers, roomInfo?.id, roomInfo?.roomState, user.id]);
 
   return (
     <>
@@ -136,12 +138,7 @@ export default function RoomHint({ user }: Props) {
         <ul className="flex">
           {imageList.map((image, i) => (
             <li key={`hint${i}`}>
-              <img
-                src={image.previewUrl}
-                width={IMAGE_WIDTH}
-                height={IMAGE_HEIGHT}
-                alt={`hint${i}`}
-              />
+              <Image src={image.previewUrl} alt={`hint${i}`} />
             </li>
           ))}
           {isLoading && (

@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
-import { UserSession } from './user';
+import { Dispatch } from 'react';
 
 export interface RoomData {
   count: number;

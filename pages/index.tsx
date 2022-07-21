@@ -2,7 +2,6 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
 import AnimatedTextLayout from '../components/animated-text-layout';
-import Link from 'next/link';
 import { UserSession } from '../libs/types/user';
 import API, { authHeaders } from '../libs/client/api';
 import { useQuery } from 'react-query';
@@ -12,6 +11,7 @@ import { Suspense, useState } from 'react';
 import { RoomData } from '../libs/types/room';
 import dynamic from 'next/dynamic';
 import useToggle from '../libs/hooks/useToggle';
+import MainpageInterface from '../components/mainpage/mainpage-interface';
 
 const ModalLayout = dynamic(() => import('../components/modal-layout'), {
   ssr: false,
@@ -32,40 +32,42 @@ export default function Home({ user }: Props) {
     },
   );
   const roomList = data?.data.result?.roomList;
-
   const [searchModal, toggleSearchModal] = useToggle();
+  const [logoLoaded, setLogoLoaded] = useState(false);
+
+  const handleSearchButton = () => {
+    toggleSearchModal(true);
+  };
+
+  const handleLogoLoaded = () => {
+    setLogoLoaded(true);
+  };
 
   if (isLoading) return <LoadingScreen />;
 
   return (
     <Layout>
       <AnimatedTextLayout>
-        <div className="flex flex-col">
-          <Link href={'/mypage'}>마이페이지</Link>
-          <button onClick={() => toggleSearchModal(true)} className="text-left">
-            방찾기
-          </button>
-          <Link href={'/room/create'}>방만들기</Link>
-          <div>
-            <div>방목록</div>
-            <ul>
-              {!roomList ? (
-                <div>아직 방이 없습니다.</div>
-              ) : (
-                roomList.map((v: RoomData) => (
-                  <li
-                    key={`room${v.id}`}
-                    className="bg-red-300 border border-black flex flex-col"
-                  >
-                    <span>{`title: ${v.title}`}</span>
-                    <span>{`방장: ${v.master}`}</span>
-                    <span>{`상태: ${v.roomState}`}</span>
-                    <Link href={`/room/${v.id}/lobby`}>입장</Link>
-                  </li>
-                ))
-              )}
-            </ul>
+        <div className="flex flex-col w-full h-full border-black">
+          <div className="w-full px-32 py-10 max-h-[45%] flex justify-center items-center">
+            {/* <MainpageLogoLarge /> */}
+            <div
+              className={`transition-all delay-[400ms] duration-1000 ${
+                logoLoaded ? 'opacity-100' : 'opacity-0 -translate-y-4'
+              }`}
+            >
+              <img
+                src="/assets/mainpage-logo.png"
+                alt="mainpage-logo"
+                onLoad={handleLogoLoaded}
+              />
+            </div>
           </div>
+          <MainpageInterface
+            user={user}
+            roomList={roomList}
+            searchButtonHandler={handleSearchButton}
+          />
         </div>
 
         {searchModal && (
