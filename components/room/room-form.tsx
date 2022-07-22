@@ -1,94 +1,81 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
-import { NavigationOptions } from 'swiper/types';
-import { useForm } from 'react-hook-form';
-import { useEffect, useRef } from 'react';
-import { cls } from '../../libs/client/utils';
-import { RoomData } from '../../libs/types/room';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { cls } from '../../libs/utils';
+import { EpisodeInfo, RoomData } from '../../libs/types/room';
+import { EPISODES } from '../../libs/const';
 
 interface Props {
   onValid: (data: RoomFormData) => void | unknown;
+  onClose: () => void;
   initData?: RoomData;
-  master?: string;
+  master: string;
+  currentEpisode?: EpisodeInfo;
+  isActive?: boolean;
 }
 
 export interface RoomFormData {
   title: string;
   password: string;
-  episode: string;
+  episode: EpisodeInfo;
   hintTime: string;
   reasoningTime: string;
   master: string;
   isRandom: boolean;
 }
 
-export default function RoomForm({ onValid, initData, master }: Props) {
-  const episodes = ['대저택 살인사건'];
-
-  const navigationPrevRef = useRef(null);
-  const navigationNextRef = useRef(null);
-
+export default function RoomForm({
+  onValid,
+  onClose,
+  initData,
+  master,
+  currentEpisode,
+  isActive = true,
+}: Props) {
   const { register, handleSubmit, setValue, watch } = useForm<RoomFormData>({
     mode: 'onSubmit',
   });
 
+  const handleValid = (data: RoomFormData) => {
+    if (data.episode.title === 'Random') {
+      const index = Math.round(Math.random() * (EPISODES.length - 2));
+      data.episode = EPISODES[index];
+    }
+    onValid(data);
+  };
+
+  const onInvalid: SubmitErrorHandler<RoomFormData> = errors => {
+    const errorsValues = Object.values(errors);
+    alert(errorsValues.find(v => v.message)?.message);
+  };
+
   useEffect(() => {
     setValue('title', initData?.title || '');
     setValue('password', initData?.password || '');
-    setValue('episode', episodes[0]);
     setValue('hintTime', initData?.hintTime || '');
     setValue('reasoningTime', initData?.reasoningTime || '');
-    setValue('master', master || initData?.master || '');
+    setValue('master', master || '');
     setValue('isRandom', initData?.isRandom === '1');
   }, []);
 
+  useEffect(() => {
+    if (currentEpisode) {
+      setValue('episode', currentEpisode);
+    }
+  }, [currentEpisode, setValue]);
+
   return (
     <form
-      onSubmit={handleSubmit(onValid)}
-      className="w-full h-full flex flex-col lg:flex-row"
+      onSubmit={handleSubmit(handleValid, onInvalid)}
+      className={`w-full h-full flex flex-col lg:flex-row absolute top-0 left-0 transition-all duration-700 ${
+        isActive ? 'opacity-100' : 'opacity-0 translate-y-[4%] -z-10'
+      }`}
     >
-      <div className="bg-red-300 w-full h-full lg:w-1/2 flex flex-col justify-center items-center">
-        <div className="w-full h-full bg-white">
-          <Swiper
-            modules={[Navigation]}
-            navigation={{
-              prevEl: navigationPrevRef.current,
-              nextEl: navigationNextRef.current,
-            }}
-            onBeforeInit={swiper => {
-              const nav = swiper.params.navigation as NavigationOptions;
-              nav.prevEl = navigationPrevRef.current;
-              nav.nextEl = navigationNextRef.current;
-            }}
-            slidesPerView={1}
-            loop
-            onSlideChange={swiper => {
-              setValue('episode', episodes[swiper.realIndex]);
-            }}
-            className="w-full h-full"
-          >
-            <SwiperSlide className="bg-teal-300"></SwiperSlide>
-            <SwiperSlide className="bg-purple-300"></SwiperSlide>
-            <div
-              ref={navigationPrevRef}
-              className="absolute left-2 bottom-4 z-10 hover:cursor-pointer"
-            >
-              <ChevronLeftIcon className="w-8 h-8" />
-            </div>
-            <div
-              ref={navigationNextRef}
-              className="absolute right-2 bottom-4 z-10 hover:cursor-pointer"
-            >
-              <ChevronRightIcon className="w-8 h-8" />
-            </div>
-          </Swiper>
+      <div className="bg-blue-300 w-full h-full">
+        <div onClick={onClose} className="text-white">
+          닫기
         </div>
-      </div>
-
-      <div className="bg-blue-300 w-full lg:w-1/2 lg:h-full">
         <input
           {...register('title', {
             required: '제목을 입력해주세요.',
@@ -106,7 +93,7 @@ export default function RoomForm({ onValid, initData, master }: Props) {
           autoComplete="off"
         />
 
-        <span>{watch('episode') || '해당 에피소드는 준비중입니다.'}</span>
+        <span>{watch('episode')?.title}</span>
 
         <input
           {...register('hintTime', {

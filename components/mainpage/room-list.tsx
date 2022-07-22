@@ -6,6 +6,7 @@ import RoomCard from './room-card';
 import { RoomData } from '../../libs/types/room';
 import { Mousewheel, Scrollbar, Pagination, FreeMode } from 'swiper';
 import { useState } from 'react';
+import { EPISODES } from '../../libs/const';
 
 interface Props {
   roomList: RoomData[];
@@ -26,7 +27,7 @@ export default function RoomList({ roomList }: Props) {
       roomUniqueId: 'string',
       title: '방제목1',
       userId: 1,
-      episode: '대저택 살인사건',
+      episode: EPISODES[0],
     },
     {
       count: 1,
@@ -41,7 +42,7 @@ export default function RoomList({ roomList }: Props) {
       roomUniqueId: 'string',
       title: '방제목2',
       userId: 1,
-      episode: '대저택 살인사건',
+      episode: EPISODES[0],
     },
     {
       count: 1,
@@ -56,7 +57,7 @@ export default function RoomList({ roomList }: Props) {
       roomUniqueId: 'string',
       title: '방제목3',
       userId: 1,
-      episode: '대저택 살인사건',
+      episode: EPISODES[0],
     },
     {
       count: 1,
@@ -71,7 +72,7 @@ export default function RoomList({ roomList }: Props) {
       roomUniqueId: 'string',
       title: '방제목4',
       userId: 1,
-      episode: '대저택 살인사건',
+      episode: EPISODES[0],
     },
     {
       count: 1,
@@ -86,7 +87,7 @@ export default function RoomList({ roomList }: Props) {
       roomUniqueId: 'string',
       title: '방제목5',
       userId: 1,
-      episode: '대저택 살인사건',
+      episode: EPISODES[0],
     },
     {
       count: 1,
@@ -101,7 +102,7 @@ export default function RoomList({ roomList }: Props) {
       roomUniqueId: 'string',
       title: '방제목6',
       userId: 1,
-      episode: '대저택 살인사건',
+      episode: EPISODES[0],
     },
     {
       count: 1,
@@ -116,7 +117,7 @@ export default function RoomList({ roomList }: Props) {
       roomUniqueId: 'string',
       title: '방제목7',
       userId: 1,
-      episode: '대저택 살인사건',
+      episode: EPISODES[0],
     },
     {
       count: 1,
@@ -131,7 +132,7 @@ export default function RoomList({ roomList }: Props) {
       roomUniqueId: 'string',
       title: '방제목8',
       userId: 1,
-      episode: '대저택 살인사건',
+      episode: EPISODES[0],
     },
   ];
 
@@ -176,7 +177,7 @@ export default function RoomList({ roomList }: Props) {
         ))}
         <div
           className={`swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal absolute z-10 bottom-0 w-full pt-[0.18rem] pb-[0.05rem] px-[1px] h-[0.6rem] bg-black ${
-            roomList.concat(dummy).length > 3 && paginationVisible
+            roomList?.concat(dummy).length > 3 && paginationVisible
               ? 'flex'
               : 'hidden'
           }`}

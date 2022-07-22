@@ -1,16 +1,18 @@
 import { useEffect } from 'react';
-import { cls } from '../libs/client/utils';
+import { cls } from '../libs/utils';
 
 interface Props {
   children?: React.ReactNode;
   background?: 'none' | 'dark';
   handleClose?: (param?: unknown) => void | unknown;
+  isActive: boolean;
 }
 
 export default function ModalLayout({
   children,
   background = 'none',
   handleClose,
+  isActive,
 }: Props) {
   useEffect(() => {
     document.body.style.cssText = `
@@ -32,11 +34,18 @@ export default function ModalLayout({
         if (handleClose) handleClose();
       }}
       className={cls(
-        background === 'dark' ? 'bg-[#00000090]' : '',
-        'fixed z-50 top-0 left-0 w-full h-screen flex justify-center items-center',
+        background === 'dark' ? 'bg-[#000000dd]' : '',
+        'fixed top-0 left-0 w-full flex h-screen justify-center items-center',
+        isActive ? 'opacity-100 z-50' : 'opacity-0 -z-10',
       )}
     >
-      {children}
+      <div
+        className={`transition-all duration-500 ${
+          isActive ? 'opacity-100' : 'opacity-0 translate-y-3'
+        }`}
+      >
+        {children}
+      </div>
     </div>
   );
 }

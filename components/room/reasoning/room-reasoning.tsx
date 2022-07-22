@@ -4,7 +4,7 @@ import HintImage from './hint-image';
 import { DropTargetMonitor } from 'react-dnd';
 import { ImageData } from '../../../libs/types/room';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import { hintPostOnBoard } from '../../../libs/client/socket.io';
+import { hintPostOnBoard } from '../../../libs/socket.io';
 
 export default function RoomReasoning() {
   const [{ roomInfo, imageList, boardImageList }, dispatch] = useRoomContext();

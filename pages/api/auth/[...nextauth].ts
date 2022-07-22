@@ -4,7 +4,7 @@ import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
-import API from '../../../libs/client/api';
+import API from '../../../libs/api';
 import jwt_decode from 'jwt-decode';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { UserSession } from '../../../libs/types/user';

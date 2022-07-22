@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useDrag } from 'react-dnd';
-import { cls } from '../../../libs/client/utils';
+import { cls } from '../../../libs/utils';
 
 export interface Props {
   id: string;

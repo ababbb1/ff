@@ -14,6 +14,5 @@ export interface UserSession {
   jti: string;
   nickname: string;
   provider: Provider;
-  social: boolean;
   token: string;
 }

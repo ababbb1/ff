@@ -1,11 +1,11 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import API from '../libs/client/api';
+import API from '../libs/api';
 import { useRouter } from 'next/router';
 import ErrorMessage from '../components/error-message';
-import { emailCheck, nicknameCheck } from '../libs/client/utils';
-import Layout from '../components/layout';
+import { emailCheck, nicknameCheck } from '../libs/utils';
+import Layout from '../components/layout/layout';
 
 export interface JoinFormData {
   email: string;
@@ -33,7 +33,7 @@ export default function Join() {
   };
 
   return (
-    <Layout>
+    <Layout title="회원가입">
       <div className="w-full justify-center items-center h-screen flex">
         <form
           onSubmit={handleSubmit(onValid)}

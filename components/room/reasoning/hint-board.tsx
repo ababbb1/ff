@@ -1,10 +1,10 @@
 import { useDrop, DropTargetMonitor } from 'react-dnd';
-import { ImageInfo } from '../../../libs/types/room';
+import { ImageData } from '../../../libs/types/room';
 
 export interface HintBoardProps {
   accept: string;
   lastDroppedItem?: any;
-  onDrop: (item: ImageInfo, monitor: DropTargetMonitor) => void;
+  onDrop: (item: ImageData, monitor: DropTargetMonitor) => void;
 }
 
 export default function HintBoard({ accept, onDrop }: HintBoardProps) {

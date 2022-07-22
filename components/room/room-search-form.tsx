@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
-import API, { authHeaders } from '../../libs/client/api';
-import { cls } from '../../libs/client/utils';
+import API, { authHeaders } from '../../libs/api';
+import { cls } from '../../libs/utils';
 import { ToggleHandler } from '../../libs/hooks/useToggle';
 import { UserSession } from '../../libs/types/user';
 import { RoomSearchApiResponse } from './room-search';

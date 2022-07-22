@@ -1,5 +1,5 @@
 import { MouseEventHandler, RefObject, useEffect, useRef } from 'react';
-import { cls, imagedataToImageUrl } from '../libs/client/utils';
+import { cls, imagedataToImageUrl } from '../libs/utils';
 import html2canvas from 'html2canvas';
 
 interface Props {

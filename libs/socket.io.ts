@@ -1,11 +1,6 @@
 import { Dispatch } from 'react';
 import { io } from 'socket.io-client';
-import {
-  ImageData,
-  RoomState,
-  RoomStateAction,
-  UpdateRoomResponse,
-} from '../types/room';
+import { ImageData, RoomStateAction, UpdateRoomResponse } from './types/room';
 import { API_DOMAIN } from './api';
 
 type SocketEmitData = { [k: string | number]: unknown };
@@ -20,6 +15,7 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
     const onlyMasterIsReady = currentUser?.map(v =>
       v.nickname === roomInfo.master ? { ...v, readyState: true } : v,
     );
+    console.log(onlyMasterIsReady);
 
     dispatch({ type: 'CURRENT_USERS', payload: onlyMasterIsReady });
     dispatch({ type: 'ROOM_INFO', payload: roomInfo });

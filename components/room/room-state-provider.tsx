@@ -31,8 +31,8 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
           boardImageList: [...state.boardImageList, action.payload],
         };
 
-      case 'STREAM':
-        return { ...state, stream: action.payload };
+      case 'MY_STREAM':
+        return { ...state, myStream: action.payload };
 
       case 'VIDEO_INPUT_DEVICES':
         return {
@@ -90,6 +90,12 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
           peerConnection: action.payload,
         };
 
+      case 'CURRENT_USER_STREAMS':
+        return {
+          ...state,
+          currentUserStreams: action.payload,
+        };
+
       default:
         return state;
     }
@@ -97,7 +103,7 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
 
   const roomDispatch = useReducer(reducer, {
     roomInfo: null,
-    stream: null,
+    myStream: null,
     messageList: [],
     peerConnection: null,
     currentUsers: [],
@@ -111,6 +117,7 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
     },
     imageList: [],
     boardImageList: [],
+    currentUserStreams: [],
   });
 
   return (

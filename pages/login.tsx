@@ -3,10 +3,10 @@ import { getSession } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import SocialLoginButtons from '../components/socialLoginButtons';
-import { emailCheck } from '../libs/client/utils';
+import { emailCheck } from '../libs/utils';
 import ErrorMessage from '../components/error-message';
 import Link from 'next/link';
-import Layout from '../components/layout';
+import Layout from '../components/layout/layout';
 
 export interface LoginFormData {
   email: string;
@@ -29,7 +29,7 @@ export default function Login() {
   };
 
   return (
-    <Layout>
+    <Layout title="로그인">
       <div className="w-full justify-center items-center h-screen flex">
         <form
           onSubmit={handleSubmit(onValid)}

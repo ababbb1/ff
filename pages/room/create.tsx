@@ -1,14 +1,22 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import API, { authHeaders } from '../../libs/client/api';
+import API, { authHeaders } from '../../libs/api';
 import { useRouter } from 'next/router';
 import { UserSession } from '../../libs/types/user';
-import AnimatedTextLayout from '../../components/animated-text-layout';
-import Layout from '../../components/layout';
+import AnimatedTextLayout from '../../components/layout/animated-text-layout';
+import Layout from '../../components/layout/layout';
 import RoomForm, { RoomFormData } from '../../components/room/room-form';
+import EpisodeSelecter from '../../components/room/episode-selecter';
+import { useState } from 'react';
+import { EpisodeInfo } from '../../libs/types/room';
+import { EPISODES } from '../../libs/const';
 
 export default function CreateRoom({ user }: { user: UserSession }) {
   const router = useRouter();
+
+  const [currentEpisode, setCurrentEpisode] = useState<EpisodeInfo>(
+    EPISODES[0],
+  );
 
   const onValid = async (data: RoomFormData) => {
     const res = await API.post('room/create', data, {
@@ -25,10 +33,26 @@ export default function CreateRoom({ user }: { user: UserSession }) {
     }
   };
 
+  const handleClose = () => router.back();
+
   return (
-    <Layout>
+    <Layout title={'방 만들기'}>
       <AnimatedTextLayout>
-        <RoomForm {...{ onValid, master: user.nickname }} />
+        <div className="w-full h-full flex">
+          <div className="w-1/2 h-full">
+            <EpisodeSelecter onChange={setCurrentEpisode} isActive />
+          </div>
+          <div className="w-1/2 h-full relative">
+            <RoomForm
+              {...{
+                onValid,
+                onClose: handleClose,
+                master: user.nickname,
+                currentEpisode,
+              }}
+            />
+          </div>
+        </div>
       </AnimatedTextLayout>
     </Layout>
   );

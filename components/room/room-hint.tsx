@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import CaptureCursor from '../capture-cursor';
 import axios from 'axios';
-import { base64ToFile, getImageUrl } from '../../libs/client/utils';
+import { base64ToFile, getImageUrl } from '../../libs/utils';
 import LoadingScreen from '../loading-screen';
 import Timer from '../timer';
 import { useRouter } from 'next/router';
@@ -10,11 +10,7 @@ import { UserSession } from '../../libs/types/user';
 import Link from 'next/link';
 import useToggle from '../../libs/hooks/useToggle';
 import useRoomContext from '../../libs/hooks/room/useRoomContext';
-import {
-  hintReady,
-  hintRegister,
-  hintTimeStart,
-} from '../../libs/client/socket.io';
+import { hintReady, hintRegister, hintTimeStart } from '../../libs/socket.io';
 import Image from 'next/image';
 
 interface Props {
@@ -104,13 +100,11 @@ export default function RoomHint({ user }: Props) {
 
   return (
     <>
-      {!isHintTime && (
-        <ModalLayout background="dark">
-          <div className="w-[30rem] h-[20rem] bg-white flex justify-center items-center">
-            <button onClick={handleHintReadyButton}>준비</button>
-          </div>
-        </ModalLayout>
-      )}
+      <ModalLayout background="dark" isActive={!isHintTime}>
+        <div className="w-[30rem] h-[20rem] bg-white flex justify-center items-center">
+          <button onClick={handleHintReadyButton}>준비</button>
+        </div>
+      </ModalLayout>
 
       <div className="p-10">
         <Link href={`/room/${roomInfo?.id}/reasoning`}>이동</Link>

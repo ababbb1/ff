@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import useTimeout from '../libs/hooks/useTimeout';
-import BorderStar from './svg/layout/border-star';
+import useTimeout from '../../libs/hooks/useTimeout';
+import BorderStar from '../svg/layout/border-star';
 
 interface Props {
   children?: React.ReactNode;
@@ -46,10 +46,10 @@ export default function AnimatedTextLayout({ children }: Props) {
   }, []);
 
   return (
-    <div className="w-full min-h-screen flex justify-center items-center relative overflow-hidden">
+    <div className="w-full h-full flex justify-center items-center relative overflow-hidden">
       {/* top */}
       <div
-        className={`absolute flex top-0 left-[-100vw] h-8 z-10 whitespace-nowrap animate-[text-move-right_infinite_linear] bg-animate-layout-border font-hanson-bold`}
+        className={`absolute flex top-0 left-[-100vw] h-8 z-10 whitespace-nowrap animate-[text-move-right_infinite_linear] bg-animate-layout-border`}
         style={{
           animationDuration: `${horizontalDuration}s`,
         }}
@@ -66,7 +66,7 @@ export default function AnimatedTextLayout({ children }: Props) {
                   <span
                     ref={i === 0 ? horizontalItem : null}
                     key={i}
-                    className="flex items-center h-full pt-1"
+                    className="flex items-center h-full pt-1 disable-dragging font-hanson-bold"
                   >
                     {v}
                   </span>
@@ -78,7 +78,7 @@ export default function AnimatedTextLayout({ children }: Props) {
 
       {/* right */}
       <div
-        className="absolute flex top-0 right-[-100vh] h-8 z-10 whitespace-nowrap animate-[text-move-down_infinite_linear] bg-animate-layout-border font-hanson-bold"
+        className="absolute flex top-0 right-[-100vh] h-8 z-10 whitespace-nowrap animate-[text-move-down_infinite_linear] bg-animate-layout-border"
         style={{
           animationDuration: `${verticalDuration}s`,
         }}
@@ -95,7 +95,7 @@ export default function AnimatedTextLayout({ children }: Props) {
                   <span
                     ref={i === 0 ? verticalItem : null}
                     key={i}
-                    className="flex items-center h-full pt-1"
+                    className="flex items-center h-full pt-1 disable-dragging font-hanson-bold"
                   >
                     {v}
                   </span>
@@ -107,7 +107,7 @@ export default function AnimatedTextLayout({ children }: Props) {
 
       {/* bottom */}
       <div
-        className="absolute flex bottom-0 right-[-100vw] h-8 z-10 whitespace-nowrap animate-[text-move-left_infinite_linear] bg-animate-layout-border font-hanson-bold"
+        className="absolute flex bottom-0 right-[-100vw] h-8 z-10 whitespace-nowrap animate-[text-move-left_infinite_linear] bg-animate-layout-border"
         style={{
           animationDuration: `${horizontalDuration}s`,
         }}
@@ -121,7 +121,10 @@ export default function AnimatedTextLayout({ children }: Props) {
               {Array(horizontalItemCount)
                 .fill(0)
                 .map((_, i) => (
-                  <span key={i} className="flex items-center h-full pt-1">
+                  <span
+                    key={i}
+                    className="flex items-center h-full pt-1 disable-dragging font-hanson-bold"
+                  >
                     {v}
                   </span>
                 ))}
@@ -132,7 +135,7 @@ export default function AnimatedTextLayout({ children }: Props) {
 
       {/* left */}
       <div
-        className="absolute flex bottom-0 left-[-100vh] h-8 z-10 whitespace-nowrap animate-[text-move-top_infinite_linear] bg-animate-layout-border font-hanson-bold"
+        className="absolute flex bottom-0 left-[-100vh] h-8 z-10 whitespace-nowrap animate-[text-move-top_infinite_linear] bg-animate-layout-border"
         style={{
           animationDuration: `${verticalDuration}s`,
         }}
@@ -146,7 +149,10 @@ export default function AnimatedTextLayout({ children }: Props) {
               {Array(verticalItemCount)
                 .fill(0)
                 .map((_, i) => (
-                  <span key={i} className="flex items-center h-full pt-1">
+                  <span
+                    key={i}
+                    className="flex items-center h-full pt-1 disable-dragging font-hanson-bold"
+                  >
                     {v}
                   </span>
                 ))}
@@ -168,9 +174,7 @@ export default function AnimatedTextLayout({ children }: Props) {
         <BorderStar />
       </div>
 
-      <section className="w-full h-fit lg:h-screen min-h-screen p-8">
-        {children}
-      </section>
+      <section className="w-full h-full p-8">{children}</section>
     </div>
   );
 }

@@ -2,22 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  background: black;
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  -webkit-user-drag: none;
+*:not(.font-hanson-bold) {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', sans-serif;
 }
 
 @font-face {
@@ -29,6 +19,38 @@ img {
   font-family: 'Hanson-Bold';
 }
 
+html,
+body {
+  background: black;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+.disable-dragging {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .room-list-swiper .swiper-pagination-bullet-active {
   background: #17ef46;
+}
+
+.swiper-pagination-fraction {
+  z-index: 20 !important;
+  bottom: 6px !important;
+}
+
+.current-users-card:nth-child(4) {
+  border-bottom-right-radius: 1rem;
 }

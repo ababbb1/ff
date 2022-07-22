@@ -1,5 +1,5 @@
 import { Dispatch } from 'react';
-import { RoomState, RoomStateAction } from '../types/room';
+import { RoomState, RoomStateAction } from './types/room';
 import { iceEmit } from './socket.io';
 
 export type MediaKindType = 'VIDEO_INPUT' | 'AUDIO_INPUT' | 'AUDIO_OUTPUT';
@@ -21,7 +21,7 @@ export const getMedia = async (
 ) => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    dispatch({ type: 'STREAM', payload: stream });
+    dispatch({ type: 'MY_STREAM', payload: stream });
     getMediaDevices(dispatch);
   } catch (e) {
     console.log(e);
@@ -57,19 +57,19 @@ export const mediaOnOffToggle = (
   dispatch: Dispatch<RoomStateAction>,
   type: 'VIDEO_INPUT' | 'AUDIO_INPUT',
 ) => {
-  const { stream, video, audio } = state;
+  const { myStream, video, audio } = state;
 
-  if (stream) {
+  if (myStream) {
     const tracks =
       type === 'VIDEO_INPUT'
-        ? stream.getVideoTracks()
-        : stream.getAudioTracks();
+        ? myStream.getVideoTracks()
+        : myStream.getAudioTracks();
 
     tracks.forEach(track => {
       track.enabled = !track.enabled;
     });
 
-    dispatch({ type: 'STREAM', payload: stream });
+    dispatch({ type: 'MY_STREAM', payload: myStream });
 
     dispatch({
       type: `${type}_STATE`,
@@ -115,7 +115,7 @@ export const makePeerConnection = (
   const peerConnection = new RTCPeerConnection();
 
   peerConnection.onicecandidate = returnIceHandler(initRoomId);
-  peerConnection.ontrack = onTrack;
+  peerConnection.ontrack = returnOnTrack(dispatch);
 
   stream?.getTracks().forEach(track => peerConnection.addTrack(track, stream));
   dispatch({ type: 'PEER_CONNECTION', payload: peerConnection });
@@ -124,10 +124,14 @@ export const makePeerConnection = (
 const returnIceHandler =
   (roomId: string): PeerConnectionOnIceCandidate =>
   data => {
+    console.log('ice emit');
     if (data.candidate) iceEmit({ ice: data.candidate, roomId });
   };
 
-const onTrack: PeerConnectionOnTrack = data => {
-  console.log('got an event from my peer');
-  console.log(data);
-};
+const returnOnTrack =
+  (dispatch: Dispatch<RoomStateAction>): PeerConnectionOnTrack =>
+  data => {
+    console.log('got an event from my peer');
+    console.log(data);
+    dispatch({ type: 'CURRENT_USER_STREAMS', payload: data.streams });
+  };

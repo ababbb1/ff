@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { splitByColon } from '../../libs/client/utils';
+import { splitByColon } from '../../libs/utils';
 import { RoomData } from '../../libs/types/room';
 import { UserSession } from '../../libs/types/user';
 import RoomList from './room-list';
@@ -39,7 +39,7 @@ export default function MainpageInterface({
             className="w-full h-full flex flex-col justify-center px-6 py-4 relative"
           >
             <div className="absolute top-0 left-0 w-full h-full hover:bg-black opacity-20 rounded-bl-2xl"></div>
-            <span className="text-sm">방 찾기</span>
+            <span className="text-sm text-left">방 찾기</span>
             <span className="font-hanson-bold text-xl flex items-center pt-1">
               Find a room
             </span>
@@ -49,7 +49,7 @@ export default function MainpageInterface({
           <Link href={'/room/create'}>
             <div className="w-full h-full flex flex-col justify-center px-6 py-4 relative">
               <div className="absolute top-0 left-0 w-full h-full hover:bg-black opacity-20"></div>
-              <span className="text-sm">방 만들기</span>
+              <span className="text-sm text-left">방 만들기</span>
               <span className="font-hanson-bold text-xl flex items-center pt-1">
                 Making a room
               </span>

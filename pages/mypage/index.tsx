@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { UserSession } from '../../libs/types/user';
-import AnimatedTextLayout from '../../components/animated-text-layout';
-import Layout from '../../components/layout';
+import AnimatedTextLayout from '../../components/layout/animated-text-layout';
+import Layout from '../../components/layout/layout';
 import { signOut } from 'next-auth/react';
 
 export default function Mypage({ user }: { user: UserSession }) {

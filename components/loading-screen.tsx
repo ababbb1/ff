@@ -1,4 +1,4 @@
-import { cls } from '../libs/client/utils';
+import { cls } from '../libs/utils';
 import ClipLoader from 'react-spinners/ClipLoader';
 
 interface Props {

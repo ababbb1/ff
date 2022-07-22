@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 
 export default function useInput(
-  defaultValue: string = '',
+  defaultValue = '',
   predicates?: Array<(value: string) => boolean>,
 ) {
   const [value, setValue] = useState(defaultValue);
