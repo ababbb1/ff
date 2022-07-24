@@ -34,11 +34,6 @@ export interface UpdateRoomResponse {
   currentUser: CurrentUser[];
 }
 
-export interface MediaState {
-  devices: MediaDeviceInfo[];
-  state: boolean;
-}
-
 export interface ImageData {
   id: string;
   x: number;
@@ -51,13 +46,12 @@ export interface RoomState {
   roomInfo: RoomData | null;
   currentUsers: CurrentUser[];
   myStream: MediaStream | null;
+  myDevices: MediaDeviceInfo[];
+  myPeerConnection: RTCPeerConnection | null;
   messageList: string[];
-  peerConnection: RTCPeerConnection | null;
-  video: { input: MediaState; output: MediaState };
-  audio: { input: MediaState; output: MediaState };
   imageList: ImageData[];
   boardImageList: ImageData[];
-  currentUserStreams: readonly MediaStream[];
+  currentUserTrackEvent: RTCTrackEvent | null;
 }
 
 export type RoomStateAction =
@@ -78,28 +72,12 @@ export type RoomStateAction =
       payload: MediaStream;
     }
   | {
-      type: 'VIDEO_INPUT_DEVICES';
+      type: 'MY_DEVICES';
       payload: MediaDeviceInfo[];
     }
   | {
-      type: 'VIDEO_INPUT_STATE';
-      payload: boolean;
-    }
-  | {
-      type: 'AUDIO_INPUT_DEVICES';
-      payload: MediaDeviceInfo[];
-    }
-  | {
-      type: 'AUDIO_OUTPUT_DEVICES';
-      payload: MediaDeviceInfo[];
-    }
-  | {
-      type: 'AUDIO_INPUT_STATE';
-      payload: boolean;
-    }
-  | {
-      type: 'AUDIO_OUTPUT_STATE';
-      payload: boolean;
+      type: 'MY_PEERCONNECTION';
+      payload: RTCPeerConnection;
     }
   | {
       type: 'IMAGE_LIST';
@@ -110,12 +88,8 @@ export type RoomStateAction =
       payload: ImageData;
     }
   | {
-      type: 'PEER_CONNECTION';
-      payload: RTCPeerConnection;
-    }
-  | {
-      type: 'CURRENT_USER_STREAMS';
-      payload: readonly MediaStream[];
+      type: 'CURRENT_USER_TRACK_EVENT';
+      payload: RTCTrackEvent;
     };
 
 export type RoomContextType = [RoomState, Dispatch<RoomStateAction>];

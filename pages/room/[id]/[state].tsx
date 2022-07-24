@@ -3,7 +3,7 @@ import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { Suspense, useEffect } from 'react';
 import { UserSession } from '../../../libs/types/user';
-import RoomLobby from '../../../components/room/room-lobby';
+import RoomLobby from '../../../components/room/lobby/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
 import Layout from '../../../components/layout/layout';
@@ -17,11 +17,10 @@ import {
   joinRoom,
   onAfterUpdatePeerConnection,
   socketRemoveAllListeners,
+  streamEmit,
 } from '../../../libs/socket.io';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import { getMedia, makePeerConnection } from '../../../libs/media';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
-import useTimeout from '../../../libs/hooks/useTimeout';
 import AnimatedTextLayout from '../../../components/layout/animated-text-layout';
 import TopbarLayout from '../../../components/layout/topbar-layout';
 
@@ -40,23 +39,27 @@ const Room = ({ user }: { user: UserSession }) => {
   const roomState = router.query.state;
 
   const [state, dispatch] = useRoomContext();
-  const { roomInfo, myStream, peerConnection } = state;
+  const { roomInfo, myStream, currentUsers, myPeerConnection } = state;
 
   const onBeforeUnload = () => {
     exitRoom({ roomId: router.query.id, userId: user.id });
     socketRemoveAllListeners();
   };
 
-  useTimeout(() => {
-    if (!roomInfo) {
-      alert('연결에 실패했습니다.');
-      router.back();
-    }
-  }, 4000);
-
   useEffect(() => {
-    getMedia(dispatch);
     connectRoomSocket(dispatch);
+    if (!roomInfo) {
+      if (router.query.roomUniqueId) {
+        createRoom({ roomId, roomUniqueId });
+      } else {
+        joinRoom({
+          roomId,
+          userId: user.id,
+          email: user.email,
+          nickname: user.nickname,
+        });
+      }
+    }
 
     router.beforePopState(() => {
       onBeforeUnload();
@@ -71,37 +74,34 @@ const Room = ({ user }: { user: UserSession }) => {
   }, []);
 
   useUpdateEffect(() => {
+    console.log('myStream updated:', myStream);
     if (myStream) {
-      makePeerConnection(roomId as string, myStream, dispatch);
-    }
-    if (myStream && !roomInfo) {
-      if (router.query.roomUniqueId) {
-        createRoom({ roomId, roomUniqueId, streamId: myStream.id });
-      } else {
-        joinRoom({
-          roomId,
-          userId: user.id,
-          email: user.email,
-          nickname: user.nickname,
-          streamId: myStream.id,
-        });
-      }
+      streamEmit({
+        roomId: roomId,
+        userId: user.id,
+        streamId: myStream?.id,
+      });
     }
   }, [myStream]);
 
   useUpdateEffect(() => {
-    if (peerConnection && typeof roomId === 'string') {
-      onAfterUpdatePeerConnection(peerConnection, roomId);
+    console.log('peerConnection updated:', myPeerConnection);
+    if (myPeerConnection && typeof roomId === 'string') {
+      onAfterUpdatePeerConnection(myPeerConnection, roomId);
     }
-  }, [peerConnection]);
+  }, [myPeerConnection]);
 
-  if (!roomInfo) return <LoadingScreen />;
+  useUpdateEffect(() => {
+    console.log('currentUser updated:', currentUsers);
+  }, [currentUsers]);
+
+  if (!roomInfo) return <LoadingScreen fullScreen />;
   return (
     <Layout title={roomInfo.title}>
       <AnimatedTextLayout>
         <TopbarLayout {...{ user, roomInfo }}>
           {roomState === 'hint' ? (
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<LoadingScreen fullScreen />}>
               <RoomHint
                 {...{
                   user,
@@ -109,17 +109,13 @@ const Room = ({ user }: { user: UserSession }) => {
               />
             </Suspense>
           ) : roomState === 'reasoning' ? (
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<LoadingScreen fullScreen />}>
               <DndProvider backend={HTML5Backend}>
                 <RoomReasoning />
               </DndProvider>
             </Suspense>
           ) : (
-            <RoomLobby
-              {...{
-                user,
-              }}
-            />
+            <RoomLobby />
           )}
         </TopbarLayout>
       </AnimatedTextLayout>

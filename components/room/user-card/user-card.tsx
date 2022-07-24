@@ -1,5 +1,6 @@
 import { Session } from 'next-auth';
-import { useLayoutEffect, useRef } from 'react';
+import { useRef } from 'react';
+import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import { CurrentUser } from '../../../libs/types/room';
 import { splitByColon } from '../../../libs/utils';
 import YellowStar from '../../svg/yellow-star';
@@ -21,8 +22,7 @@ export default function UserCard({
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  useLayoutEffect(() => {
-    console.log(stream);
+  useUpdateEffect(() => {
     if (videoRef.current) {
       videoRef.current.srcObject = stream;
     }

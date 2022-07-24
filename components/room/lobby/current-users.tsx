@@ -1,32 +1,35 @@
-import { CurrentUser } from '../../../libs/types/room';
+import { useSession } from 'next-auth/react';
+import useRoomContext from '../../../libs/hooks/room/useRoomContext';
+import CardButton from '../user-card/card-button';
 import UserCard from '../user-card/user-card';
 
-interface Props {
-  currentUsersExceptMe: CurrentUser[];
-  isMaster: boolean;
-  currentUserStreams: readonly MediaStream[];
-}
+export default function CurrentUsers() {
+  const { data: user } = useSession();
+  const [{ currentUsers, roomInfo, currentUserTrackEvent }] = useRoomContext();
+  const currentUsersExceptMe = currentUsers.filter(
+    currentUser => currentUser.id !== user?.id,
+  );
 
-export default function CurrentUsers({
-  currentUsersExceptMe,
-  isMaster,
-  currentUserStreams,
-}: Props) {
   return (
     <div className="w-full h-full flex flex-col gap-[2px] overflow-hidden">
-      {currentUsersExceptMe.map(currentUser => (
+      {currentUsersExceptMe.map((currentUser, i) => (
         <div
-          key={currentUser.id}
+          key={`currentUser${i}`}
           className="current-users-card w-full h-1/4 bg-gray-300 first:rounded-tl-2xl peer-last:rounded-br-2xl p-3"
         >
           <UserCard
             {...{
-              isMaster,
+              isMaster: currentUser.nickname === roomInfo?.master,
               user: currentUser,
-              stream:
-                currentUserStreams.find(
-                  stream => stream.id === currentUser.streamId,
-                ) || new MediaStream(),
+              stream: currentUserTrackEvent?.streams[i] || new MediaStream(),
+              buttons: [
+                currentUser.nickname !== roomInfo?.master &&
+                currentUser.readyState ? (
+                  <CardButton key={'ready'} text={'Ready'} />
+                ) : (
+                  <div key={'none'}></div>
+                ),
+              ],
             }}
           />
         </div>

@@ -34,66 +34,16 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
       case 'MY_STREAM':
         return { ...state, myStream: action.payload };
 
-      case 'VIDEO_INPUT_DEVICES':
-        return {
-          ...state,
-          video: {
-            ...state.video,
-            input: { ...state.video.input, devices: action.payload },
-          },
-        };
-      case 'VIDEO_INPUT_STATE':
-        return {
-          ...state,
-          video: {
-            ...state.video,
-            input: { ...state.video.input, state: action.payload },
-          },
-        };
+      case 'MY_DEVICES':
+        return { ...state, myDevices: action.payload };
 
-      case 'AUDIO_INPUT_DEVICES':
-        return {
-          ...state,
-          audio: {
-            ...state.audio,
-            input: { ...state.audio.input, devices: action.payload },
-          },
-        };
-      case 'AUDIO_OUTPUT_DEVICES':
-        return {
-          ...state,
-          audio: {
-            ...state.audio,
-            output: { ...state.audio.output, devices: action.payload },
-          },
-        };
-      case 'AUDIO_INPUT_STATE':
-        return {
-          ...state,
-          audio: {
-            ...state.audio,
-            input: { ...state.audio.input, state: action.payload },
-          },
-        };
-      case 'AUDIO_OUTPUT_STATE':
-        return {
-          ...state,
-          audio: {
-            ...state.audio,
-            output: { ...state.audio.output, state: action.payload },
-          },
-        };
+      case 'MY_PEERCONNECTION':
+        return { ...state, myPeerConnection: action.payload };
 
-      case 'PEER_CONNECTION':
+      case 'CURRENT_USER_TRACK_EVENT':
         return {
           ...state,
-          peerConnection: action.payload,
-        };
-
-      case 'CURRENT_USER_STREAMS':
-        return {
-          ...state,
-          currentUserStreams: action.payload,
+          currentUserTrackEvent: action.payload,
         };
 
       default:
@@ -104,20 +54,13 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
   const roomDispatch = useReducer(reducer, {
     roomInfo: null,
     myStream: null,
+    myDevices: [],
+    myPeerConnection: null,
     messageList: [],
-    peerConnection: null,
     currentUsers: [],
-    video: {
-      input: { devices: [], state: true },
-      output: { devices: [], state: true },
-    },
-    audio: {
-      input: { devices: [], state: true },
-      output: { devices: [], state: true },
-    },
     imageList: [],
     boardImageList: [],
-    currentUserStreams: [],
+    currentUserTrackEvent: null,
   });
 
   return (

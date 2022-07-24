@@ -1,25 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import RoomForm from './room-form';
-import useRoomContext from '../../libs/hooks/room/useRoomContext';
-import { RoomData } from '../../libs/types/room';
-import EpisodeSelecter from './episode-selecter';
-import UserCard from './user-card/user-card';
-import useRoomLobby from '../../libs/hooks/room/useRoomLobby';
-import CurrentUsers from './lobby/current-users';
-import MessageInterface from './message_interface';
-import { mediaOnOffToggle } from '../../libs/media';
-import MyDeviceButton from './user-card/my-device-button';
+import React, { useState } from 'react';
+import RoomForm from '../room-form';
+import useRoomContext from '../../../libs/hooks/room/useRoomContext';
+import { RoomData } from '../../../libs/types/room';
+import EpisodeSelecter from '../episode-selecter';
+import UserCard from '../user-card/user-card';
+import useRoomLobby from '../../../libs/hooks/room/useRoomLobby';
+import CurrentUsers from './current-users';
+import MessageInterface from '../message_interface';
+import MyDeviceButton from '../user-card/my-device-button';
 import { useSession } from 'next-auth/react';
 import { Session } from 'next-auth';
+import CardButton from '../user-card/card-button';
 
 export default function RoomLobby() {
   const { data: user } = useSession();
-  const [roomState, dispatch] = useRoomContext();
-  const { roomInfo, currentUsers, currentUserStreams, myStream } = roomState;
+  const [roomState] = useRoomContext();
+  const { roomInfo, currentUsers, myStream } = roomState;
   const [currentEpisode, setCurrentEpisode] = useState(roomInfo?.episode);
-  const currentUsersExceptMe = currentUsers.filter(
-    currentUser => currentUser.id !== user?.id,
-  );
 
   const amIReady = currentUsers.find(
     currentUser => currentUser.id === user?.id,
@@ -33,12 +30,8 @@ export default function RoomLobby() {
     handleSettingButton,
     handleSettingClose,
     onSettingFormValid,
-  } = useRoomLobby(user, roomState);
-
-  useEffect(() => {
-    mediaOnOffToggle(roomState, dispatch, 'VIDEO_INPUT');
-    mediaOnOffToggle(roomState, dispatch, 'AUDIO_INPUT');
-  }, []);
+    handleInitConnect,
+  } = useRoomLobby();
 
   return (
     <>
@@ -47,7 +40,7 @@ export default function RoomLobby() {
         <div className="w-1/2 h-full">
           <EpisodeSelecter
             {...{
-              currentEpisode: roomInfo?.episode,
+              initEpisode: currentEpisode,
               onChange: setCurrentEpisode,
               isActive: isSetting,
             }}
@@ -59,9 +52,7 @@ export default function RoomLobby() {
           <div className="w-full h-full flex gap-[2px]">
             <div className="w-[49%] flex flex-col gap-[2px]">
               <div className="w-full h-4/5">
-                <CurrentUsers
-                  {...{ currentUsersExceptMe, isMaster, currentUserStreams }}
-                />
+                <CurrentUsers />
               </div>
               <div className="w-full h-1/5 bg-white rounded-tr-2xl p-3">
                 <UserCard
@@ -73,21 +64,30 @@ export default function RoomLobby() {
                     stream: myStream as MediaStream,
                     buttons: [
                       isMaster ? (
-                        <button
+                        <CardButton
+                          key={'setting'}
+                          isButton
                           onClick={handleSettingButton}
-                          className="w-full h-full rounded bg-gray-200"
-                        >
-                          게임 설정
-                        </button>
+                          text={'Setting'}
+                        />
                       ) : amIReady ? (
-                        <div className="w-full h-full rounded bg-gray-200 flex justify-center items-center">
-                          Ready
+                        <CardButton key={'ready'} text={'Ready'} />
+                      ) : (
+                        <div key={'none'}></div>
+                      ),
+                      myStream ? (
+                        <div key={'deviceButton'} className="flex">
+                          <MyDeviceButton key={'video'} type="VIDEO" />
+                          <MyDeviceButton key={'audio'} type="AUDIO" />
                         </div>
                       ) : (
-                        <div></div>
+                        <CardButton
+                          key={'initConnect'}
+                          isButton
+                          onClick={handleInitConnect}
+                          text={'Video chat'}
+                        />
                       ),
-                      <MyDeviceButton key={'video'} type="VIDEO" />,
-                      <MyDeviceButton key={'audio'} type="AUDIO" />,
                     ],
                   }}
                 />

@@ -42,8 +42,14 @@ export const base64ToFile = (dataurl: string, fileName: string) => {
   return new File([u8arr], fileName, { type: mime });
 };
 
-export const splitByColon = (s: string, t: 'name' | 'platform') =>
-  s.includes(':') ? (t === 'name' ? s.split(':')[0] : s.split(':')[1]) : s;
+export const splitByColon = (s: string, t: 'name' | 'platform') => {
+  if (!s) return;
+  return s.includes(':')
+    ? t === 'name'
+      ? s.split(':')[0]
+      : s.split(':')[1]
+    : s;
+};
 
 export const getImageUrl = (id: string) =>
   `https://imagedelivery.net/-T83tAhVmWAdtnO8EXNRag/${id}/public`;

@@ -39,13 +39,13 @@ export default function Home({ user }: Props) {
     setLogoLoaded(true);
   };
 
-  if (isLoading) return <LoadingScreen />;
+  if (isLoading) return <LoadingScreen fullScreen />;
 
   return (
     <Layout>
       <AnimatedTextLayout>
         <div className="flex flex-col w-full h-full border-black">
-          <div className="w-full px-32 py-10 max-h-[45%] flex justify-center items-center">
+          <div className="w-full px-32 py-10 max-h-[42%] 2xl:max-h-[45%] flex justify-center items-center">
             <div
               className={`transition-all delay-300 duration-1000 ${
                 logoLoaded ? 'opacity-100' : 'opacity-0 -translate-y-4'
