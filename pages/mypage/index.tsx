@@ -17,7 +17,6 @@ export default function Mypage({ user }: { user: UserSession }) {
         <div>
           <span>{user.nickname}</span>
           <span>{user.email}</span>
-          <span>{user.social ? 'social' : 'local'}</span>
           <button onClick={handleLogout}>로그아웃</button>
         </div>
       </AnimatedTextLayout>

@@ -1,15 +1,16 @@
-import { Session } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { RoomFormData } from '../../../components/room/room-form';
+import { initWebRTCConnect } from '../../media';
 import { gameReady, gameStart, updateRoom } from '../../socket.io';
-import { RoomState } from '../../types/room';
+import useRoomContext from './useRoomContext';
 
-export default function useRoomLobby(
-  user: Session | null,
-  { roomInfo, currentUsers }: RoomState,
-) {
+export default function useRoomLobby() {
   const router = useRouter();
+  const { data: user } = useSession();
+  const [{ roomInfo, currentUsers }, dispatch] = useRoomContext();
+
   const [isSetting, setIsSetting] = useState(false);
 
   const isReady = currentUsers.every(currentUser => currentUser.readyState);
@@ -41,6 +42,12 @@ export default function useRoomLobby(
     setIsSetting(false);
   };
 
+  const handleInitConnect = () => {
+    if (roomInfo) {
+      initWebRTCConnect(roomInfo.id, dispatch);
+    }
+  };
+
   useEffect(() => {
     if (roomInfo?.roomState === 'hintReady') {
       router.replace(`/room/${roomInfo.id}/hint`);
@@ -55,5 +62,6 @@ export default function useRoomLobby(
     handleSettingButton,
     handleSettingClose,
     onSettingFormValid,
+    handleInitConnect,
   };
 }

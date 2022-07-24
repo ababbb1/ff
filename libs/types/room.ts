@@ -34,11 +34,6 @@ export interface UpdateRoomResponse {
   currentUser: CurrentUser[];
 }
 
-export interface MediaState {
-  devices: MediaDeviceInfo[];
-  state: boolean;
-}
-
 export interface ImageData {
   id: string;
   x: number;
@@ -76,7 +71,6 @@ export type RoomStateAction =
       type: 'BOARD_IMAGE_LIST_PUSH';
       payload: ImageData;
     };
-
 export type RoomContextType = [RoomState, Dispatch<RoomStateAction>];
 
 export interface EpisodeInfo {

@@ -3,7 +3,7 @@ import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { Suspense, useEffect } from 'react';
 import { UserSession } from '../../../libs/types/user';
-import RoomLobby from '../../../components/room/room-lobby';
+import RoomLobby from '../../../components/room/lobby/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
 import Layout from '../../../components/layout/layout';
@@ -15,12 +15,9 @@ import {
   createRoom,
   exitRoom,
   joinRoom,
-  onAfterUpdatePeerConnection,
   socketRemoveAllListeners,
 } from '../../../libs/socket.io';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
-import useTimeout from '../../../libs/hooks/useTimeout';
 import AnimatedTextLayout from '../../../components/layout/animated-text-layout';
 import TopbarLayout from '../../../components/layout/topbar-layout';
 
@@ -46,15 +43,20 @@ const Room = ({ user }: { user: UserSession }) => {
     socketRemoveAllListeners();
   };
 
-  useTimeout(() => {
-    if (!roomInfo) {
-      alert('연결에 실패했습니다.');
-      router.back();
-    }
-  }, 4000);
-
   useEffect(() => {
     connectRoomSocket(dispatch);
+    if (!roomInfo) {
+      if (router.query.roomUniqueId) {
+        createRoom({ roomId, roomUniqueId });
+      } else {
+        joinRoom({
+          roomId,
+          userId: user.id,
+          email: user.email,
+          nickname: user.nickname,
+        });
+      }
+    }
 
     if (!roomInfo) {
       if (router.query.roomUniqueId) {
@@ -81,13 +83,14 @@ const Room = ({ user }: { user: UserSession }) => {
     };
   }, []);
 
-  if (!roomInfo) return <LoadingScreen />;
+  if (!roomInfo) return <LoadingScreen fullScreen />;
+
   return (
     <Layout title={roomInfo.title}>
       <AnimatedTextLayout>
         <TopbarLayout {...{ user, roomInfo }}>
           {roomState === 'hint' ? (
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<LoadingScreen fullScreen />}>
               <RoomHint
                 {...{
                   user,
@@ -95,17 +98,13 @@ const Room = ({ user }: { user: UserSession }) => {
               />
             </Suspense>
           ) : roomState === 'reasoning' ? (
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<LoadingScreen fullScreen />}>
               <DndProvider backend={HTML5Backend}>
                 <RoomReasoning />
               </DndProvider>
             </Suspense>
           ) : (
-            <RoomLobby
-              {...{
-                user,
-              }}
-            />
+            <RoomLobby />
           )}
         </TopbarLayout>
       </AnimatedTextLayout>

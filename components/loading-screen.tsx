@@ -2,15 +2,21 @@ import { cls } from '../libs/utils';
 import ClipLoader from 'react-spinners/ClipLoader';
 
 interface Props {
-  isFull?: boolean;
+  fullScreen?: boolean;
+  absolute?: boolean;
   size?: number;
 }
 
-export default function LoadingScreen({ isFull = true, size = 40 }: Props) {
+export default function LoadingScreen({
+  fullScreen = false,
+  absolute = false,
+  size = 40,
+}: Props) {
   return (
     <div
       className={cls(
-        isFull ? 'fixed top-0 left-0 z-50 bg-white' : '',
+        fullScreen ? 'fixed top-0 left-0 z-50 bg-white' : '',
+        absolute ? 'absolute' : '',
         'w-full h-full flex justify-center items-center',
       )}
     >
