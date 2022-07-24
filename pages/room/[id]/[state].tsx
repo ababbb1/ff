@@ -19,7 +19,6 @@ import {
   socketRemoveAllListeners,
 } from '../../../libs/socket.io';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import { getMedia, makePeerConnection } from '../../../libs/media';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import useTimeout from '../../../libs/hooks/useTimeout';
 import AnimatedTextLayout from '../../../components/layout/animated-text-layout';
@@ -40,7 +39,7 @@ const Room = ({ user }: { user: UserSession }) => {
   const roomState = router.query.state;
 
   const [state, dispatch] = useRoomContext();
-  const { roomInfo, myStream, peerConnection } = state;
+  const { roomInfo } = state;
 
   const onBeforeUnload = () => {
     exitRoom({ roomId: router.query.id, userId: user.id });
@@ -55,8 +54,20 @@ const Room = ({ user }: { user: UserSession }) => {
   }, 4000);
 
   useEffect(() => {
-    getMedia(dispatch);
     connectRoomSocket(dispatch);
+
+    if (!roomInfo) {
+      if (router.query.roomUniqueId) {
+        createRoom({ roomId, roomUniqueId });
+      } else {
+        joinRoom({
+          roomId,
+          userId: user.id,
+          email: user.email,
+          nickname: user.nickname,
+        });
+      }
+    }
 
     router.beforePopState(() => {
       onBeforeUnload();
@@ -69,31 +80,6 @@ const Room = ({ user }: { user: UserSession }) => {
       window.removeEventListener('beforeunload', onBeforeUnload);
     };
   }, []);
-
-  useUpdateEffect(() => {
-    if (myStream) {
-      makePeerConnection(roomId as string, myStream, dispatch);
-    }
-    if (myStream && !roomInfo) {
-      if (router.query.roomUniqueId) {
-        createRoom({ roomId, roomUniqueId, streamId: myStream.id });
-      } else {
-        joinRoom({
-          roomId,
-          userId: user.id,
-          email: user.email,
-          nickname: user.nickname,
-          streamId: myStream.id,
-        });
-      }
-    }
-  }, [myStream]);
-
-  useUpdateEffect(() => {
-    if (peerConnection && typeof roomId === 'string') {
-      onAfterUpdatePeerConnection(peerConnection, roomId);
-    }
-  }, [peerConnection]);
 
   if (!roomInfo) return <LoadingScreen />;
   return (
