@@ -7,6 +7,7 @@ import { emailCheck } from '../libs/utils';
 import ErrorMessage from '../components/error-message';
 import Link from 'next/link';
 import Layout from '../components/layout/layout';
+import AnimatedTextLayout from '../components/layout/animated-text-layout';
 
 export interface LoginFormData {
   email: string;
@@ -30,43 +31,51 @@ export default function Login() {
 
   return (
     <Layout title="로그인">
-      <div className="w-full justify-center items-center h-screen flex">
-        <form
-          onSubmit={handleSubmit(onValid)}
-          className="flex flex-col items-center h-screen gap-4 px-4 pt-24 w-full max-w-sm"
-        >
-          <div className="w-full flex flex-col gap-1">
-            <input
-              {...register('email', {
-                required: '이메일을 입력해주세요.',
-                validate: { emailCheck: emailCheck },
-              })}
-              placeholder="이메일"
-              type="text"
-              className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
-            />
-            <ErrorMessage message={errors.email?.message} />
-          </div>
+      <AnimatedTextLayout>
+        <div className="w-full h-full bg-black absolute top-0 left-0 p-8">
+          <img
+            src="/assets/note.webp"
+            style={{ width: '100%', height: '100%' }}
+          />
+        </div>
+        <div className="w-full justify-center items-center h-screen flex z-10">
+          <form
+            onSubmit={handleSubmit(onValid)}
+            className="flex flex-col items-center h-screen gap-4 px-4 pt-24 w-full max-w-sm"
+          >
+            <div className="w-full flex flex-col gap-1">
+              <input
+                {...register('email', {
+                  required: '이메일을 입력해주세요.',
+                  validate: { emailCheck: emailCheck },
+                })}
+                placeholder="이메일"
+                type="text"
+                className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
+              />
+              <ErrorMessage message={errors.email?.message} />
+            </div>
 
-          <div className="w-full flex flex-col gap-1">
-            <input
-              {...register('password', {
-                required: '비밀번호를 입력해주세요.',
-              })}
-              placeholder="비밀번호"
-              type="password"
-              className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
-            />
-            <ErrorMessage message={errors.password?.message} />
-          </div>
+            <div className="w-full flex flex-col gap-1">
+              <input
+                {...register('password', {
+                  required: '비밀번호를 입력해주세요.',
+                })}
+                placeholder="비밀번호"
+                type="password"
+                className="w-full h-12 border rounded-md p-2 border-gray-300 focus:outline-gray-500"
+              />
+              <ErrorMessage message={errors.password?.message} />
+            </div>
 
-          <div className="mt-6 flex flex-col gap-2 w-full">
-            <button type="submit">로그인</button>
-            <Link href="/join">회원가입</Link>
-          </div>
-          <SocialLoginButtons />
-        </form>
-      </div>
+            <div className="mt-6 flex flex-col gap-2 w-full">
+              <button type="submit">로그인</button>
+              <Link href="/join">회원가입</Link>
+            </div>
+            <SocialLoginButtons />
+          </form>
+        </div>
+      </AnimatedTextLayout>
     </Layout>
   );
 }

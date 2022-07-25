@@ -11,9 +11,9 @@ module.exports = {
         'animate-layout-border': '#17EF46',
       },
       backgroundImage: {
-        'crumpled-paper': "url('/assets/crumpled-paper.png')",
-        'note': "url('/assets/note.png')",
-        'note-sm': "url('/assets/note-sm.png')",
+        'crumpled-paper': "url('/assets/crumpled-paper.webp')",
+        'note': "url('/assets/note.webp')",
+        'note-sm': "url('/assets/note-sm.webp')",
       },
       keyframes: {
         'text-move-right': {

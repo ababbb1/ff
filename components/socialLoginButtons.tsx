@@ -20,12 +20,10 @@ export default function SocialLoginButtons() {
           className="flex items-center hover:cursor-pointer"
         >
           <div className="w-8 h-8 relative">
-            <Image
-              src="/social/kakao.png"
+            <img
+              src="/social/kakao.webp"
               alt="kakao"
-              layout="fill"
-              quality={100}
-              priority
+              style={{ width: '100%', height: '100%' }}
             />
           </div>
         </a>
@@ -34,12 +32,10 @@ export default function SocialLoginButtons() {
           className="flex items-center hover:cursor-pointer"
         >
           <div className="w-8 h-8 relative">
-            <Image
-              src="/social/naver.png"
+            <img
+              src="/social/naver.webp"
               alt="naver"
-              layout="fill"
-              quality={100}
-              priority
+              style={{ width: '100%', height: '100%' }}
             />
           </div>
         </a>
@@ -48,12 +44,10 @@ export default function SocialLoginButtons() {
           className="flex items-center hover:cursor-pointer"
         >
           <div className="w-8 h-8 relative">
-            <Image
-              src="/social/google.png"
+            <img
+              src="/social/google.webp"
               alt="google"
-              layout="fill"
-              quality={100}
-              priority
+              style={{ width: '100%', height: '100%' }}
             />
           </div>
         </a>
@@ -62,12 +56,10 @@ export default function SocialLoginButtons() {
           className="flex items-center hover:cursor-pointer"
         >
           <div className="w-8 h-8 relative">
-            <Image
-              src="/social/facebook.png"
+            <img
+              src="/social/facebook.webp"
               alt="facebook"
-              layout="fill"
-              quality={100}
-              priority
+              style={{ width: '100%', height: '100%' }}
             />
           </div>
         </a>

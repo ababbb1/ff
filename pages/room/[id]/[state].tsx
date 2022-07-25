@@ -98,25 +98,27 @@ const Room = ({ user }: { user: UserSession }) => {
   return (
     <Layout title={roomInfo.title}>
       <AnimatedTextLayout>
-        <TopbarLayout {...{ user, roomInfo }}>
-          {roomState === 'hint' ? (
-            <Suspense fallback={<LoadingScreen fullScreen />}>
-              <RoomHint
-                {...{
-                  user,
-                }}
-              />
-            </Suspense>
-          ) : roomState === 'reasoning' ? (
-            <Suspense fallback={<LoadingScreen fullScreen />}>
-              <DndProvider backend={HTML5Backend}>
-                <RoomReasoning />
-              </DndProvider>
-            </Suspense>
-          ) : (
-            <RoomLobby />
-          )}
-        </TopbarLayout>
+        <div className="w-full h-full bg-crumpled-paper object-cover">
+          <TopbarLayout {...{ user, roomInfo }}>
+            {roomState === 'hint' ? (
+              <Suspense fallback={<LoadingScreen fullScreen />}>
+                <RoomHint
+                  {...{
+                    user,
+                  }}
+                />
+              </Suspense>
+            ) : roomState === 'reasoning' ? (
+              <Suspense fallback={<LoadingScreen fullScreen />}>
+                <DndProvider backend={HTML5Backend}>
+                  <RoomReasoning />
+                </DndProvider>
+              </Suspense>
+            ) : (
+              <RoomLobby />
+            )}
+          </TopbarLayout>
+        </div>
       </AnimatedTextLayout>
     </Layout>
   );

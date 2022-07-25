@@ -20,10 +20,10 @@ export default function TopbarLayout({ children, user, roomInfo }: Props) {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="bg-white py-[1rem] px-[1.5rem] flex justify-between h-[8%] top-0 w-full">
+      <div className="py-[1rem] px-[1.5rem] flex justify-between h-[8%] top-0 w-full">
         <div className="h-full">
           <img
-            src="/assets/logo-black-sm.png"
+            src="/assets/logo-black-sm.webp"
             alt="topbar-logo"
             style={{ height: '100%' }}
           />

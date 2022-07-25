@@ -73,7 +73,7 @@ export default function RoomForm({
     setValue('hintTime', initData?.hintTime || '10');
     setValue('reasoningTime', initData?.reasoningTime || '10');
     setValue('master', master || '');
-    setValue('isRandom', initData?.isRandom === '1');
+    setValue('isRandom', initData?.isRandom === '1' || true);
   }, []);
 
   useEffect(() => {

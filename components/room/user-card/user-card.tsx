@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import { CurrentUser } from '../../../libs/types/room';
 import { splitByColon } from '../../../libs/utils';
-import YellowStar from '../../svg/yellow-star';
+import YellowStar from '../../svg/lobby/yellow-star';
 import { useSession } from 'next-auth/react';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import UserMenuButton from './user-menu-button';
