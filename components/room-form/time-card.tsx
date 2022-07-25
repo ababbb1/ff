@@ -40,8 +40,8 @@ export default function TimeCard({
         {difficulty === 'Hard' && (
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#000000f4] via-[#000000af] to-[#00000038]"></div>
         )}
-        <div className="w-full h-full flex flex-col justify-between">
-          <div className="flex flex-col relative z-10 gap-1">
+        <div className="w-full h-full flex flex-col justify-between relative z-10">
+          <div className="flex flex-col gap-1">
             <span>{kind === 'hintTime' ? '조사시간' : '추리시간'}</span>
             <span
               className={`font-hanson-bold text-3xl ${
@@ -52,7 +52,7 @@ export default function TimeCard({
             </span>
             <p>{description}</p>
           </div>
-          <div className="flex justify-end relative z-10">
+          <div className="flex justify-end">
             <input
               {...register}
               type="text"
