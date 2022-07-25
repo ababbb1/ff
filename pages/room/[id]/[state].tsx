@@ -11,15 +11,18 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import RoomStateProvider from '../../../components/room/room-state-provider';
 import {
+  afterUpdateStream,
   connectRoomSocket,
   createRoom,
   exitRoom,
   joinRoom,
+  peerJoin,
   socketRemoveAllListeners,
 } from '../../../libs/socket.io';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import AnimatedTextLayout from '../../../components/layout/animated-text-layout';
 import TopbarLayout from '../../../components/layout/topbar-layout';
+import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 
 const RoomHint = dynamic(() => import('../../../components/room/room-hint'), {
   ssr: false,
@@ -36,7 +39,7 @@ const Room = ({ user }: { user: UserSession }) => {
   const roomState = router.query.state;
 
   const [state, dispatch] = useRoomContext();
-  const { roomInfo } = state;
+  const { roomInfo, myStream, peers, currentUsers } = state;
 
   const onBeforeUnload = () => {
     exitRoom({ roomId: router.query.id, userId: user.id });
@@ -45,19 +48,6 @@ const Room = ({ user }: { user: UserSession }) => {
 
   useEffect(() => {
     connectRoomSocket(dispatch);
-    if (!roomInfo) {
-      if (router.query.roomUniqueId) {
-        createRoom({ roomId, roomUniqueId });
-      } else {
-        joinRoom({
-          roomId,
-          userId: user.id,
-          email: user.email,
-          nickname: user.nickname,
-        });
-      }
-    }
-
     if (!roomInfo) {
       if (router.query.roomUniqueId) {
         createRoom({ roomId, roomUniqueId });
@@ -82,6 +72,26 @@ const Room = ({ user }: { user: UserSession }) => {
       window.removeEventListener('beforeunload', onBeforeUnload);
     };
   }, []);
+
+  useUpdateEffect(() => {
+    console.log('myStream updated:', myStream);
+    if (myStream && peers.length === 0) {
+      peerJoin({ roomId: roomId });
+      afterUpdateStream(`${user.id}`, myStream, peers, dispatch);
+    }
+  }, [myStream]);
+
+  useUpdateEffect(() => {
+    console.log('peers updated:', peers);
+    console.log(peers);
+  }, [peers]);
+
+  useUpdateEffect(() => {
+    if (!currentUsers.find(cUser => cUser.userId === user.id)) {
+      console.log(currentUsers);
+      // router.back();
+    }
+  }, [currentUsers]);
 
   if (!roomInfo) return <LoadingScreen fullScreen />;
 

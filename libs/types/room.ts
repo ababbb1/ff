@@ -27,6 +27,7 @@ export interface CurrentUser {
   readyState: boolean;
   hintReady: boolean;
   streamId: string;
+  userId: number;
 }
 
 export interface UpdateRoomResponse {
@@ -42,12 +43,19 @@ export interface ImageData {
   previewUrl: string;
 }
 
+export interface IPeer {
+  userId: string;
+  peer: any;
+}
+
 export interface RoomState {
   roomInfo: RoomData | null;
   currentUsers: CurrentUser[];
   messageList: string[];
   imageList: ImageData[];
   boardImageList: ImageData[];
+  myStream: MediaStream | null;
+  peers: IPeer[];
 }
 
 export type RoomStateAction =
@@ -60,7 +68,7 @@ export type RoomStateAction =
       payload: CurrentUser[];
     }
   | {
-      type: 'MESSAGE_LIST_PUSH';
+      type: 'ADD_MESSAGE';
       payload: string;
     }
   | {
@@ -70,9 +78,22 @@ export type RoomStateAction =
   | {
       type: 'BOARD_IMAGE_LIST_PUSH';
       payload: ImageData;
+    }
+  | {
+      type: 'MY_STREAM';
+      payload: MediaStream;
+    }
+  | {
+      type: 'PEERS';
+      payload: IPeer[];
+    }
+  | {
+      type: 'ADD_PEER';
+      payload: IPeer;
     };
 export type RoomContextType = [RoomState, Dispatch<RoomStateAction>];
 
 export interface EpisodeInfo {
   title: string;
+  description: string;
 }

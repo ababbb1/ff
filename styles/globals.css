@@ -17,6 +17,7 @@
 
 .font-hanson-bold {
   font-family: 'Hanson-Bold';
+  letter-spacing: 0.05rem;
 }
 
 html,
@@ -46,10 +47,14 @@ img {
   background: #17ef46;
 }
 
-.swiper-pagination-fraction {
+.episode-selecter .swiper-pagination-bullet-active {
+  background: #222;
+}
+
+/* .swiper-pagination-fraction {
   z-index: 20 !important;
   bottom: 6px !important;
-}
+} */
 
 .current-users-card:nth-child(4) {
   border-bottom-right-radius: 1rem;

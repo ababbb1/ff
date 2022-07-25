@@ -1,8 +1,8 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { RoomFormData } from '../../../components/room/room-form';
-import { initWebRTCConnect } from '../../media';
+import { RoomFormData } from '../../../components/room-form/room-form';
+import { getMedia } from '../../peer';
 import { gameReady, gameStart, updateRoom } from '../../socket.io';
 import useRoomContext from './useRoomContext';
 
@@ -43,9 +43,9 @@ export default function useRoomLobby() {
   };
 
   const handleInitConnect = () => {
-    if (roomInfo) {
-      initWebRTCConnect(roomInfo.id, dispatch);
-    }
+    getMedia().then(stream => {
+      dispatch({ type: 'MY_STREAM', payload: stream });
+    });
   };
 
   useEffect(() => {

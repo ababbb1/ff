@@ -1,19 +1,14 @@
 import { ChevronDownIcon } from '@heroicons/react/outline';
-import { ChangeEvent, useEffect, useRef } from 'react';
-import useRoomContext from '../../../libs/hooks/room/useRoomContext';
+import { useEffect, useRef } from 'react';
 import useToggle from '../../../libs/hooks/useToggle';
-import { getConstraints, getMedia, getSender } from '../../../libs/media';
-import Mic from '../../svg/mic';
-import Video from '../../svg/video';
+import Mic from '../../svg/lobby/mic';
+import Video from '../../svg/lobby/video';
 
 interface Props {
   type: 'VIDEO' | 'AUDIO';
 }
 
 export default function MyDeviceButton({ type }: Props) {
-  const [roomState, dispatch] = useRoomContext();
-  const { myStream, myDevices, myPeerConnection } = roomState;
-
   const [selecter, toggleSelecter] = useToggle();
 
   const selecterButtonRef = useRef<HTMLButtonElement>(null);
@@ -30,44 +25,44 @@ export default function MyDeviceButton({ type }: Props) {
       <Mic className={symbolClassName} />
     );
 
-  const deviceKind = type === 'VIDEO' ? 'videoinput' : 'audioinput';
+  // const deviceKind = type === 'VIDEO' ? 'videoinput' : 'audioinput';
 
-  const handleDeviceButton = () => {
-    if (myStream) {
-      const tracks =
-        type === 'VIDEO'
-          ? myStream.getVideoTracks()
-          : myStream.getAudioTracks();
-      tracks.forEach(track => {
-        track.enabled = !track.enabled;
-      });
-    }
-  };
+  // const handleDeviceButton = () => {
+  //   if (myStream) {
+  //     const tracks =
+  //       type === 'VIDEO'
+  //         ? myStream.getVideoTracks()
+  //         : myStream.getAudioTracks();
+  //     tracks.forEach(track => {
+  //       track.enabled = !track.enabled;
+  //     });
+  //   }
+  // };
 
   const handleSelecterButton = () => toggleSelecter();
 
-  const handleDeviceChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const deviceId = e.target.value;
-    if (myStream) {
-      const constraints = getConstraints(myStream, type, deviceId);
-      const newStream = await getMedia(constraints);
+  // const handleDeviceChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  //   const deviceId = e.target.value;
+  //   if (myStream) {
+  //     const constraints = getConstraints(myStream, type, deviceId);
+  //     const newStream = await getMedia(constraints);
 
-      const track =
-        type === 'VIDEO'
-          ? newStream?.getVideoTracks()[0]
-          : newStream?.getAudioTracks()[0];
+  //     const track =
+  //       type === 'VIDEO'
+  //         ? newStream?.getVideoTracks()[0]
+  //         : newStream?.getAudioTracks()[0];
 
-      const sender = getSender(myPeerConnection, type);
+  //     const sender = getSender(myPeerConnection, type);
 
-      if (track && sender) {
-        sender.replaceTrack(track);
-      }
+  //     if (track && sender) {
+  //       sender.replaceTrack(track);
+  //     }
 
-      if (newStream) {
-        dispatch({ type: 'MY_STREAM', payload: newStream });
-      }
-    }
-  };
+  //     if (newStream) {
+  //       dispatch({ type: 'MY_STREAM', payload: newStream });
+  //     }
+  //   }
+  // };
 
   const onDocumentClick = (e: MouseEvent) => {
     if (selecterButtonRef.current && selecterRef.current) {
@@ -89,7 +84,7 @@ export default function MyDeviceButton({ type }: Props) {
     <div className="relative">
       <div className="flex h-8 2xl:h-10">
         <button
-          onClick={handleDeviceButton}
+          // onClick={handleDeviceButton}
           className={`p-2 h-full rounded-l border ${
             'bg-gray-300 shadow-inner'
             // device.input.state ? 'bg-gray-300 shadow-inner' : 'bg-gray-200'
@@ -117,7 +112,7 @@ export default function MyDeviceButton({ type }: Props) {
           selecter ? 'opacity-100 z-10' : 'opacity-0 -z-10'
         }`}
       >
-        {myDevices
+        {/* {myDevices
           .filter(device => device.kind === deviceKind)
           .map((device, index) => (
             <input
@@ -129,7 +124,7 @@ export default function MyDeviceButton({ type }: Props) {
               defaultChecked={index === 0}
               onChange={handleDeviceChange}
             />
-          ))}
+          ))} */}
         {/* {type === 'AUDIO' &&
           device.output.devices.map((device, index) => (
             <input

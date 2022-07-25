@@ -16,6 +16,12 @@ export const nicknameCheck = (value: string) => {
   return !regExp.test(value) || '특수문자는 사용할 수 없습니다.';
 };
 
+export const roomPasswordCheck = (value: string) => {
+  // eslint-disable-next-line
+  const regExp = /[^\0-9]|[\_]/g;
+  return !regExp.test(value) || '숫자만 입력해주세요.';
+};
+
 export const imagedataToImageUrl = (imagedata?: ImageData) => {
   if (!imagedata) return;
   const canvas = document.createElement('canvas');

@@ -5,11 +5,11 @@ import { useRouter } from 'next/router';
 import { UserSession } from '../../libs/types/user';
 import AnimatedTextLayout from '../../components/layout/animated-text-layout';
 import Layout from '../../components/layout/layout';
-import RoomForm, { RoomFormData } from '../../components/room/room-form';
-import EpisodeSelecter from '../../components/room/episode-selecter';
+import RoomForm, { RoomFormData } from '../../components/room-form/room-form';
 import { useState } from 'react';
 import { EpisodeInfo } from '../../libs/types/room';
 import { EPISODES } from '../../libs/const';
+import EpisodeSelecter from '../../components/room-form/episode-selecter';
 
 export default function CreateRoom({ user }: { user: UserSession }) {
   const router = useRouter();

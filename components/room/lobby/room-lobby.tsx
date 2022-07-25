@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import RoomForm from '../room-form';
+import RoomForm from '../../room-form/room-form';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import { RoomData } from '../../../libs/types/room';
-import EpisodeSelecter from '../episode-selecter';
 import UserCard from '../user-card/user-card';
 import useRoomLobby from '../../../libs/hooks/room/useRoomLobby';
 import CurrentUsers from './current-users';
 import MessageInterface from '../message_interface';
-import MyDeviceButton from '../user-card/my-device-button';
 import { useSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 import CardButton from '../user-card/card-button';
+import MyDeviceButton from '../user-card/my-device-button';
+import EpisodeSelecter from '../../room-form/episode-selecter';
 
 export default function RoomLobby() {
   const { data: user } = useSession();
@@ -61,7 +61,7 @@ export default function RoomLobby() {
                     isMe: true,
                     isMaster,
                     user: user as Session,
-                    stream: myStream as MediaStream,
+                    stream: myStream,
                     buttons: [
                       isMaster ? (
                         <CardButton
@@ -76,7 +76,7 @@ export default function RoomLobby() {
                         <div key={'none'}></div>
                       ),
                       myStream ? (
-                        <div key={'deviceButton'} className="flex">
+                        <div key={'deviceButton'} className="flex gap-1">
                           <MyDeviceButton key={'video'} type="VIDEO" />
                           <MyDeviceButton key={'audio'} type="AUDIO" />
                         </div>

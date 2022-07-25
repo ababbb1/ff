@@ -16,7 +16,7 @@ export default function MainpageInterface({
   searchButtonHandler,
 }: Props) {
   return (
-    <div className="w-full h-full bg-crumpled-paper flex flex-col border-b-2 border-black">
+    <div className="w-full h-full bg-crumpled-paper bg-cover flex flex-col border-b-2 border-black">
       <div className="flex max-h-[20%]">
         <div className="w-1/3 border-l-2 border-r border-b rounded-br-2xl border-black">
           <div className="flex h-full gap-4 px-6 py-4">

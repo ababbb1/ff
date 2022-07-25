@@ -5,13 +5,13 @@ import UserCard from '../user-card/user-card';
 
 export default function CurrentUsers() {
   const { data: user } = useSession();
-  const [{ currentUsers, roomInfo, currentUserTrackEvent }] = useRoomContext();
+  const [{ currentUsers, roomInfo, peers }] = useRoomContext();
   const currentUsersExceptMe = currentUsers.filter(
-    currentUser => currentUser.id !== user?.id,
+    currentUser => currentUser.userId !== user?.id,
   );
 
   return (
-    <div className="w-full h-full flex flex-col gap-[2px] overflow-hidden">
+    <div className="w-full h-full flex flex-col gap-[2px]">
       {currentUsersExceptMe.map((currentUser, i) => (
         <div
           key={`currentUser${i}`}
@@ -21,7 +21,8 @@ export default function CurrentUsers() {
             {...{
               isMaster: currentUser.nickname === roomInfo?.master,
               user: currentUser,
-              stream: currentUserTrackEvent?.streams[i] || new MediaStream(),
+              stream: peers.find(p => p.userId === `${currentUser.userId}`)
+                ?.peer.streams[0],
               buttons: [
                 currentUser.nickname !== roomInfo?.master &&
                 currentUser.readyState ? (

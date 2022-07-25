@@ -16,7 +16,7 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
       case 'CURRENT_USERS':
         return { ...state, currentUsers: action.payload };
 
-      case 'MESSAGE_LIST_PUSH':
+      case 'ADD_MESSAGE':
         return {
           ...state,
           messageList: [...state.messageList, action.payload],
@@ -31,6 +31,24 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
           boardImageList: [...state.boardImageList, action.payload],
         };
 
+      case 'MY_STREAM':
+        return {
+          ...state,
+          myStream: action.payload,
+        };
+
+      case 'PEERS':
+        return {
+          ...state,
+          peers: action.payload,
+        };
+
+      case 'ADD_PEER':
+        return {
+          ...state,
+          peers: [...state.peers, action.payload],
+        };
+
       default:
         return state;
     }
@@ -42,6 +60,8 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
     currentUsers: [],
     imageList: [],
     boardImageList: [],
+    myStream: null,
+    peers: [],
   });
 
   return (

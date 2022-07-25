@@ -1,19 +1,17 @@
-import Mic from '../../svg/mic';
-import Video from '../../svg/video';
+import Mic from '../../svg/lobby/mic';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import useToggle from '../../../libs/hooks/useToggle';
 import { ChangeEvent, useEffect, useRef } from 'react';
-import { MediaKindType } from '../../../libs/media';
-import { MediaState } from '../../../libs/types/room';
+import Video from '../../svg/lobby/video';
 
 interface Props {
   onClick: () => void;
   state: 'on' | 'off';
   video?: { input: MediaState; output: MediaState };
   audio?: { input: MediaState; output: MediaState };
-  onMediaDeviceChange: (
-    type: MediaKindType,
-  ) => (e: ChangeEvent<HTMLInputElement>) => void;
+  // onMediaDeviceChange: (
+  //   type: <MediaKindType></MediaKindType>,
+  // ) => (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function UserCardButton({
@@ -21,7 +19,7 @@ export default function UserCardButton({
   state,
   video,
   audio,
-  onMediaDeviceChange,
+  // onMediaDeviceChange,
 }: Props) {
   const [deviceListSelecterState, toggleDeviceListSelecterState] = useToggle();
   const refContainer = useRef<HTMLDivElement>(null);

@@ -13,7 +13,7 @@ export default function Layout({ children, title }: Props) {
         <meta name="description" content="" />
         {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
-      <div className="w-screen h-screen flex justify-center items-center">
+      <div className="w-screen h-screen flex justify-center items-center text-[#222]">
         <main className="w-full h-full max-w-[1920px] max-h-[1080px]">
           {children}
         </main>
