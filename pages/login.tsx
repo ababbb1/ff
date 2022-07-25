@@ -64,7 +64,7 @@ export default function Login() {
                   })}
                   placeholder="이메일"
                   type="text"
-                  className="w-full h-12 border rounded-sm p-2 border-gray-300 focus:outline-gray-500"
+                  className="w-full h-12 border rounded-sm px-4 py-2 border-gray-300 focus:outline-gray-500"
                   autoComplete="off"
                 />
                 <ErrorMessage message={errors.email?.message} />
@@ -77,7 +77,7 @@ export default function Login() {
                   })}
                   placeholder="비밀번호"
                   type="password"
-                  className="w-full h-12 border rounded-sm p-2 border-gray-300 focus:outline-gray-500"
+                  className="w-full h-12 border rounded-sm px-4 py-2 border-gray-300 focus:outline-gray-500"
                 />
                 <ErrorMessage message={errors.password?.message} />
               </div>
