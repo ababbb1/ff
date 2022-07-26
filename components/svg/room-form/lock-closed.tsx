@@ -4,16 +4,11 @@ interface Props {
 
 export default function LockClosed({ className }: Props) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 48 48"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg className={className} viewBox="0 0 14 18" fill="none">
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M21 20C21 18.3431 22.3431 17 24 17C25.6569 17 27 18.3431 27 20V22H21V20ZM19 22V20C19 17.2386 21.2386 15 24 15C26.7614 15 29 17.2386 29 20V22C30.1046 22 31 22.8954 31 24V31C31 32.1046 30.1046 33 29 33H19C17.8954 33 17 32.1046 17 31V24C17 22.8954 17.8954 22 19 22ZM19 31L19 24H29V31H19Z"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4 5C4 3.34315 5.34315 2 7 2C8.65685 2 10 3.34315 10 5V7H4V5ZM2 7V5C2 2.23858 4.23858 0 7 0C9.76142 0 12 2.23858 12 5V7C13.1046 7 14 7.89543 14 9V16C14 17.1046 13.1046 18 12 18H2C0.89543 18 0 17.1046 0 16V9C0 7.89543 0.895431 7 2 7ZM2 16L2 9H12V16H2Z"
         fill="currentColor"
       />
     </svg>

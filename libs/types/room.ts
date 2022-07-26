@@ -1,4 +1,5 @@
 import { Dispatch } from 'react';
+import { UserSession } from './user';
 
 export interface RoomData {
   count: number;
@@ -7,7 +8,7 @@ export interface RoomData {
   id: number;
   isRandom: '0' | '1';
   master: string;
-  password: string;
+  password?: string;
   reasoningTime: string;
   roomState: string;
   roomUniqueId: string;
@@ -28,6 +29,12 @@ export interface CurrentUser {
   hintReady: boolean;
   streamId: string;
   userId: number;
+}
+
+export interface MessageInfo {
+  message: string;
+  user: UserSession;
+  at: string;
 }
 
 export interface UpdateRoomResponse {
@@ -51,7 +58,7 @@ export interface IPeer {
 export interface RoomState {
   roomInfo: RoomData | null;
   currentUsers: CurrentUser[];
-  messageList: string[];
+  messageList: MessageInfo[];
   imageList: ImageData[];
   boardImageList: ImageData[];
   myStream: MediaStream | null;
@@ -69,7 +76,7 @@ export type RoomStateAction =
     }
   | {
       type: 'ADD_MESSAGE';
-      payload: string;
+      payload: MessageInfo;
     }
   | {
       type: 'IMAGE_LIST';

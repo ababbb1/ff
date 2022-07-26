@@ -1,3 +1,5 @@
+import { Session } from 'next-auth';
+
 export type Provider =
   | 'credentials'
   | 'kakao'
@@ -5,7 +7,7 @@ export type Provider =
   | 'google'
   | 'facebook';
 
-export interface UserSession {
+export declare interface UserSession extends Session {
   id: number;
   email: string;
   exp: number;

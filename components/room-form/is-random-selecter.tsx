@@ -1,19 +1,19 @@
-import { useEffect } from 'react';
-import { UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import useToggle from '../../libs/hooks/useToggle';
+import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import Triangle from '../svg/room-form/triangle';
 import { RoomFormData } from './room-form';
 
 interface Props {
-  watch: UseFormWatch<RoomFormData>;
   setValue: UseFormSetValue<RoomFormData>;
+  getValues: UseFormGetValues<RoomFormData>;
 }
 
-export default function IsRandomSelecter({ watch, setValue }: Props) {
+export default function IsRandomSelecter({ setValue, getValues }: Props) {
   return (
     <div className="bg-[#D9D9D9] w-full h-full relative p-4 2xl:p-6 disable-dragging">
       <div
-        onClick={() => setValue('isRandom', !watch('isRandom'))}
+        onClick={() =>
+          setValue('isRandom', getValues('isRandom') === '1' ? '0' : '1')
+        }
         className="absolute top-4 right-4 2xl:top-6 2xl:right-6 hover:cursor-pointer hover:animate-bounce"
       >
         <Triangle className="w-4 h-4 2xl:w-5 2xl:h-5 rotate-90" />
@@ -25,9 +25,9 @@ export default function IsRandomSelecter({ watch, setValue }: Props) {
         <div className="relative">
           <div
             className={`absolute left-0 top-0 w-fit h-fit flex flex-col gap-1 transition-all duration-150 ${
-              watch('isRandom')
-                ? 'opacity-0 -translate-x-4 -z-10'
-                : 'opacity-100'
+              getValues('isRandom') === '0'
+                ? 'opacity-100'
+                : 'opacity-0 -translate-x-4 -z-10'
             }`}
           >
             <span className="font-hanson-bold text-2xl 2xl:text-3xl">Free</span>
@@ -39,7 +39,7 @@ export default function IsRandomSelecter({ watch, setValue }: Props) {
 
           <div
             className={`absolute left-0 top-0 w-fit h-fit flex flex-col gap-1 transition-all duration-150 ${
-              watch('isRandom')
+              getValues('isRandom') === '1'
                 ? 'opacity-100'
                 : 'opacity-0 -translate-x-4 -z-10'
             }`}

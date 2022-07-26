@@ -4,6 +4,7 @@ import {
   CurrentUser,
   ImageData,
   IPeer,
+  MessageInfo,
   RoomData,
   RoomStateAction,
   UpdateRoomResponse,
@@ -32,8 +33,8 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
     });
   });
 
-  socket.on('new_chat', ({ message }: { message: string }) => {
-    dispatch({ type: 'ADD_MESSAGE', payload: message });
+  socket.on('new_chat', (messageInfo: MessageInfo) => {
+    dispatch({ type: 'ADD_MESSAGE', payload: messageInfo });
   });
 
   socket.on('board_image', (imageInfo: ImageData) => {

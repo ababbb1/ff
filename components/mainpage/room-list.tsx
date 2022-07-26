@@ -17,26 +17,26 @@ export default function RoomList({ roomList }: Props) {
     {
       count: 1,
       hintReady: false,
-      hintTime: 'false',
+      hintTime: '10',
       id: 1,
       isRandom: '0',
       master: 'master1',
-      password: 'undefined',
+      password: undefined,
       reasoningTime: '10',
-      roomState: '10',
+      roomState: 'standby',
       roomUniqueId: 'string',
-      title: '방제목1',
+      title: '방제목1welkwjelfwelkwaegeawg',
       userId: 1,
       episode: EPISODES[0],
     },
     {
-      count: 1,
+      count: 5,
       hintReady: false,
-      hintTime: 'false',
+      hintTime: '20',
       id: 2,
       isRandom: '1',
       master: 'master2',
-      password: 'undefined',
+      password: '234',
       reasoningTime: '10',
       roomState: '10',
       roomUniqueId: 'string',
@@ -47,12 +47,12 @@ export default function RoomList({ roomList }: Props) {
     {
       count: 1,
       hintReady: false,
-      hintTime: 'false',
+      hintTime: '12',
       id: 3,
       isRandom: '0',
       master: 'master3',
-      password: 'undefined',
-      reasoningTime: '10',
+      password: undefined,
+      reasoningTime: '20',
       roomState: '10',
       roomUniqueId: 'string',
       title: '방제목3',
@@ -164,13 +164,13 @@ export default function RoomList({ roomList }: Props) {
         mousewheel={true}
         freeMode={true}
         slidesPerView={3}
-        className="room-list-swiper w-full h-full"
+        className="room-list-swiper w-full h-full rounded-tl-xl"
         modules={[Scrollbar, Mousewheel, FreeMode, Pagination]}
       >
         {dummy.concat(roomList).map((v, i) => (
           <SwiperSlide
             key={`room${i}`}
-            className="h-full first:rounded-tl-xl border-r-2 border-black last:border-none"
+            className="h-full w-1/3 border-r-2 border-black"
           >
             <RoomCard roomInfo={v} />
           </SwiperSlide>

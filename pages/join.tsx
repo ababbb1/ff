@@ -101,18 +101,20 @@ export default function Join() {
                 className="w-full h-12 border rounded-sm px-4 py-2 border-gray-300 focus:outline-gray-500"
               />
 
-              <input
-                {...register('passwordCheck', {
-                  required: '비밀번호가 일치하지 않습니다.',
-                  validate: (check: string) =>
-                    watch('password') === check ||
-                    '비밀번호가 일치하지 않습니다.',
-                })}
-                placeholder="비밀번호를 다시 한번 입력해주세요."
-                type="password"
-                className="w-full h-12 border rounded-sm px-4 py-2 border-gray-300 focus:outline-gray-500"
-              />
-              <ErrorMessage message={errors.passwordCheck?.message} />
+              <div className="w-full">
+                <input
+                  {...register('passwordCheck', {
+                    required: '비밀번호가 일치하지 않습니다.',
+                    validate: (check: string) =>
+                      watch('password') === check ||
+                      '비밀번호가 일치하지 않습니다.',
+                  })}
+                  placeholder="비밀번호를 다시 한번 입력해주세요."
+                  type="password"
+                  className="w-full h-12 border rounded-sm px-4 py-2 border-gray-300 focus:outline-gray-500"
+                />
+                <ErrorMessage message={errors.passwordCheck?.message} />
+              </div>
 
               <div className="mt-6 flex gap-4 w-full h-12">
                 <div

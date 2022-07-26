@@ -1,13 +1,13 @@
 import { DotsHorizontalIcon } from '@heroicons/react/outline';
-import { Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import { kickUser } from '../../../libs/socket.io';
 import { CurrentUser } from '../../../libs/types/room';
+import { UserSession } from '../../../libs/types/user';
 
 interface Props {
-  user: Session | CurrentUser;
+  user: UserSession | CurrentUser;
 }
 
 export default function UserMenuButton({ user }: Props) {

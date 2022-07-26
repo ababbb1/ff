@@ -7,10 +7,11 @@ import useRoomLobby from '../../../libs/hooks/room/useRoomLobby';
 import CurrentUsers from './current-users';
 import MessageInterface from '../message_interface';
 import { useSession } from 'next-auth/react';
-import { Session } from 'next-auth';
 import CardButton from '../user-card/card-button';
 import MyDeviceButton from '../user-card/my-device-button';
 import EpisodeSelecter from '../../room-form/episode-selecter';
+import MasterButton from './master-button';
+import { UserSession } from '../../../libs/types/user';
 
 export default function RoomLobby() {
   const { data: user } = useSession();
@@ -21,6 +22,16 @@ export default function RoomLobby() {
   const amIReady = currentUsers.find(
     currentUser => currentUser.id === user?.id,
   )?.readyState;
+
+  const currentUsersExeptMaster = currentUsers.filter(
+    cUser => cUser.nickname !== roomInfo?.master,
+  );
+
+  const isAllReady =
+    currentUsersExeptMaster.length > 0 &&
+    currentUsersExeptMaster.every(cUser => cUser.readyState);
+
+  console.log(isAllReady);
 
   const {
     isMaster,
@@ -35,7 +46,7 @@ export default function RoomLobby() {
 
   return (
     <>
-      <div className="flex gap-[2px] w-full h-full">
+      <div className="flex w-full h-full">
         {/* left */}
         <div className="w-1/2 h-full">
           <EpisodeSelecter
@@ -49,8 +60,8 @@ export default function RoomLobby() {
 
         {/* right */}
         <div className="w-1/2 h-full relative">
-          <div className="w-full h-full flex gap-[2px]">
-            <div className="w-[49%] flex flex-col gap-[2px]">
+          <div className="w-full h-full flex">
+            <div className="w-1/2 flex flex-col">
               <div className="w-full h-4/5">
                 <CurrentUsers />
               </div>
@@ -60,7 +71,7 @@ export default function RoomLobby() {
                   {...{
                     isMe: true,
                     isMaster,
-                    user: user as Session,
+                    user: user as UserSession,
                     stream: myStream,
                     buttons: [
                       isMaster ? (
@@ -94,23 +105,31 @@ export default function RoomLobby() {
               </div>
             </div>
 
-            <div className="w-[51%] flex flex-col gap-[2px]">
-              <div className="w-full h-4/5 bg-white rounded-bl-2xl p-3 flex flex-col">
+            <div className="w-1/2 flex flex-col border-l-2 border-black">
+              <div className="w-full h-[86.7%]">
                 <MessageInterface />
               </div>
 
               <div
-                onClick={isMaster ? handleStartButton : handleReadyButton}
-                className="w-full h-1/5 bg-gray-300 rounded-tl-2xl flex justify-center items-center hover:cursor-pointer hover:text-white hover:bg-black hover:border-4 hover:border-white"
+                className={`w-full h-[13.3%] border-black border-t-2  disable-dragging`}
               >
                 {isMaster ? (
-                  <span className="font-hanson-bold text-3xl 2xl:text-4xl pt-2 disable-dragging">
-                    GAME START
-                  </span>
+                  <MasterButton
+                    {...{ isAllReady, handleStartButton, handleSettingButton }}
+                  />
                 ) : (
-                  <span className="font-hanson-bold text-3xl 2xl:text-4xl pt-2 disable-dragging">
-                    READY
-                  </span>
+                  <div
+                    onClick={handleReadyButton}
+                    className={`w-full h-full flex justify-center items-center transition-colors duration-100 hover:cursor-pointer ${
+                      amIReady
+                        ? 'bg-black text-animate-layout-border'
+                        : 'bg-animate-layout-border'
+                    }`}
+                  >
+                    <span className="font-hanson-bold text-3xl 2xl:text-4xl pt-2">
+                      READY
+                    </span>
+                  </div>
                 )}
               </div>
             </div>

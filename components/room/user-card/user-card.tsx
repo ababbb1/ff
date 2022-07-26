@@ -1,4 +1,3 @@
-import { Session } from 'next-auth';
 import { useRef } from 'react';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import { CurrentUser } from '../../../libs/types/room';
@@ -7,11 +6,12 @@ import YellowStar from '../../svg/lobby/yellow-star';
 import { useSession } from 'next-auth/react';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import UserMenuButton from './user-menu-button';
+import { UserSession } from '../../../libs/types/user';
 
 interface Props {
   isMe?: boolean;
   isMaster?: boolean;
-  user: Session | CurrentUser;
+  user: UserSession | CurrentUser;
   stream: MediaStream | null;
   buttons?: JSX.Element[];
 }
@@ -52,7 +52,7 @@ export default function UserCard({
         <div className="flex flex-col gap-2 2xl:gap-3">
           <div className="flex justify-between w-full h-4 2xl:h-6">
             <span className="font-semibold text-xl 2xl:text-3xl flex h-full items-center">
-              {splitByColon(user.nickname as string, 'name')}
+              {splitByColon(user?.nickname || '', 'name')}
             </span>
             {isMaster ? (
               <YellowStar className="w-4 2xl:w-6" />

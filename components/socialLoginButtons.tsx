@@ -64,7 +64,7 @@ export default function SocialLoginButtons() {
           </div>
         </a>
       </div>
-      {isLoading && <LoadingScreen />}
+      {isLoading && <LoadingScreen fullScreen />}
     </>
   );
 }

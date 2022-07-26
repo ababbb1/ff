@@ -64,7 +64,7 @@ export default function TimeCard({
           </div>
         </div>
       </div>
-      <div className="w-[3.5rem] 2xl:w-[4.5rem] border-l-2 border-black bg-white flex flex-col justify-end">
+      <div className="w-[3.5rem] 2xl:w-[4.5rem] h-full border-l-2 border-black bg-white flex flex-col justify-end">
         <div
           onClick={handleIncreaseButton}
           className="w-full aspect-square border-t border-black flex justify-center items-center hover:cursor-pointer hover:bg-black hover:text-white"

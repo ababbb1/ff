@@ -1,11 +1,11 @@
-import { Session } from 'next-auth';
 import { KeyboardEventHandler } from 'react';
 import { submitMessage } from '../../socket.io';
 import { RoomData } from '../../types/room';
+import { UserSession } from '../../types/user';
 import useInput from '../useInput';
 
 export default function useRoomMessage(
-  user: Session | null,
+  user: UserSession,
   roomInfo: RoomData | null,
 ) {
   const {
@@ -18,8 +18,9 @@ export default function useRoomMessage(
     if (message) {
       submitMessage({
         message,
-        nickname: user?.nickname,
+        userId: user?.id,
         roomId: roomInfo?.id,
+        at: new Date(),
       });
       messageClear();
     }

@@ -138,7 +138,7 @@ export default function RoomHint({ user }: Props) {
           {isLoading && (
             <li>
               <div style={{ width: IMAGE_WIDTH, height: IMAGE_HEIGHT }}>
-                <LoadingScreen isFull={false} size={25} />
+                <LoadingScreen fullScreen size={25} />
               </div>
             </li>
           )}

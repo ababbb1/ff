@@ -12,8 +12,9 @@ module.exports = {
       },
       backgroundImage: {
         'crumpled-paper': "url('/assets/crumpled-paper.webp')",
-        'note': "url('/assets/note.webp')",
+        note: "url('/assets/note.webp')",
         'note-sm': "url('/assets/note-sm.webp')",
+        'room-card': "url('/assets/room-card.webp')",
       },
       keyframes: {
         'text-move-right': {
