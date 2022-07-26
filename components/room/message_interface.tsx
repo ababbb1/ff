@@ -15,17 +15,18 @@ export default function MessageInterface() {
   const lastMessageRef = useRef<HTMLLIElement>(null);
   const ulElementRef = useRef<HTMLUListElement>(null);
   const scrollbarRef = useRef<HTMLDivElement>(null);
+  const scrollThumbRef = useRef<HTMLDivElement>(null);
 
   const [isScrollbarVisible, setIsScrollbarVisible] = useState(false);
-  const [scrollThumbHeight, setScrollThumbHeight] = useState(0);
-
-  const ulScrollTop = ulElementRef.current?.scrollTop;
-  const ulHeight = ulElementRef.current?.offsetHeight;
-  const ulScrollHeight = ulElementRef.current?.scrollHeight;
-  const scrollbarHeight = scrollbarRef.current?.offsetHeight;
 
   const handleMouseEnterUlElement = () => {
-    setIsScrollbarVisible(true);
+    if (ulElementRef.current) {
+      const ulScrollHeight = ulElementRef.current.scrollHeight;
+      const ulHeight = ulElementRef.current.clientHeight;
+      if (ulScrollHeight > ulHeight) {
+        setIsScrollbarVisible(true);
+      }
+    }
   };
 
   const handleMouseLeaveUlElement = () => {
@@ -33,20 +34,30 @@ export default function MessageInterface() {
   };
 
   const handleScrollUlElement = () => {
-    if (ulElementRef.current && scrollbarRef.current) {
+    if (
+      ulElementRef.current &&
+      scrollbarRef.current &&
+      scrollThumbRef.current
+    ) {
       const ulScrollTop = ulElementRef.current.scrollTop;
       const ulScrollHeight = ulElementRef.current.scrollHeight;
+      const ulHeight = ulElementRef.current.clientHeight;
       const scrollbarHeight = scrollbarRef.current.offsetHeight;
 
-      const top = Math.floor(
-        (ulScrollTop / ulScrollHeight) * (scrollbarHeight - 6),
-      );
-      scrollbarRef.current.style.paddingTop = `${top + 3}px`;
+      const top = (ulScrollTop / ulScrollHeight) * (scrollbarHeight - 6);
+      scrollThumbRef.current.style.top = `${top + 3}px`;
+
+      const height = (ulHeight / ulScrollHeight) * (scrollbarHeight - 6);
+      scrollThumbRef.current.style.height = `${height}px`;
     }
   };
 
   useEffect(() => {
-    if (ulScrollTop && ulHeight && ulScrollHeight && lastMessageRef.current) {
+    if (ulElementRef.current && lastMessageRef.current) {
+      const ulScrollTop = ulElementRef.current.scrollTop;
+      const ulHeight = ulElementRef.current.clientHeight;
+      const ulScrollHeight = ulElementRef.current.scrollHeight;
+
       const isLastMessageAtEnd =
         Math.abs(
           Math.floor(ulScrollTop + ulHeight) - Math.floor(ulScrollHeight),
@@ -60,11 +71,6 @@ export default function MessageInterface() {
           block: 'end',
         });
       }
-    }
-
-    if (ulHeight && ulScrollHeight && scrollbarHeight) {
-      const height = (ulHeight / ulScrollHeight) * (scrollbarHeight - 6);
-      setScrollThumbHeight(height);
     }
   }, [messageList]);
 
@@ -112,10 +118,8 @@ export default function MessageInterface() {
           }`}
         >
           <div
-            className="w-[4px] bg-animate-layout-border rounded-full"
-            style={{
-              height: `${scrollThumbHeight}px`,
-            }}
+            ref={scrollThumbRef}
+            className="absolute w-[4px] bg-animate-layout-border rounded-full"
           ></div>
         </div>
 

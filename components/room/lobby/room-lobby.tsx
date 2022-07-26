@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import RoomForm from '../../room-form/room-form';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import { RoomData } from '../../../libs/types/room';
-import UserCard from '../user-card/user-card';
 import useRoomLobby from '../../../libs/hooks/room/useRoomLobby';
 import CurrentUsers from './current-users';
 import MessageInterface from '../message_interface';
@@ -12,9 +11,12 @@ import MyDeviceButton from '../user-card/my-device-button';
 import EpisodeSelecter from '../../room-form/episode-selecter';
 import MasterButton from './master-button';
 import { UserSession } from '../../../libs/types/user';
+import UserCard from '../user-card/user-card';
+import { cls } from '../../../libs/utils';
 
 export default function RoomLobby() {
-  const { data: user } = useSession();
+  const { data } = useSession();
+  const user = data as UserSession;
   const [roomState] = useRoomContext();
   const { roomInfo, currentUsers, myStream } = roomState;
   const [currentEpisode, setCurrentEpisode] = useState(roomInfo?.episode);
@@ -59,12 +61,27 @@ export default function RoomLobby() {
         {/* right */}
         <div className="w-1/2 h-full relative">
           <div className="w-full h-full flex">
-            <div className="w-1/2 flex flex-col">
-              <div className="w-full h-4/5">
-                <CurrentUsers />
+            <div className="w-1/2 flex flex-col relative">
+              {currentUsers
+                .filter(cUser => cUser.id !== user?.id)
+                .map(cUser => (
+                  <div
+                    key={cUser.id}
+                    className="w-full h-1/5 border-b-2 border-black last:border-b-0"
+                  >
+                    <UserCard {...{ user: cUser }} />
+                  </div>
+                ))}
+              <div className="absolute bottom-0 w-full h-1/5 border-t-2 border-black">
+                <UserCard {...{ user }} />
               </div>
-              <div className="w-full h-1/5 bg-white rounded-tr-2xl p-3">
-                <UserCard
+
+              {/* <div className="w-full h-4/5"> */}
+              {/* <CurrentUsers /> */}
+              {/* </div> */}
+              {/* <div className="w-full h-1/5">
+                <UserCard /> */}
+              {/* <UserCard
                   key={'usercard'}
                   {...{
                     isMe: true,
@@ -99,17 +116,16 @@ export default function RoomLobby() {
                       ),
                     ],
                   }}
-                />
-              </div>
+                /> */}
             </div>
 
             <div className="w-1/2 flex flex-col border-l-2 border-black">
-              <div className="w-full h-[86.7%]">
+              <div className="w-full h-[86.6%]">
                 <MessageInterface />
               </div>
 
               <div
-                className={`w-full h-[13.3%] border-black border-t-2  disable-dragging`}
+                className={`w-full h-[13.4%] border-black border-t-2  disable-dragging`}
               >
                 {isMaster ? (
                   <MasterButton
@@ -138,7 +154,7 @@ export default function RoomLobby() {
               onValid: onSettingFormValid,
               onClose: handleSettingClose,
               initData: roomInfo as RoomData,
-              master: user?.nickname as string,
+              master: user.nickname,
               currentEpisode,
               isActive: isSetting,
             }}

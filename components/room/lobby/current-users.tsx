@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import CardButton from '../user-card/card-button';
-import UserCard from '../user-card/user-card';
+import UserCard from '../user-card/user-card2';
 
 export default function CurrentUsers() {
   const { data: user } = useSession();

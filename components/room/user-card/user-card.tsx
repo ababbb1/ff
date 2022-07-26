@@ -1,71 +1,121 @@
-import { useRef } from 'react';
-import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
-import { CurrentUser } from '../../../libs/types/room';
-import { splitByColon } from '../../../libs/utils';
-import YellowStar from '../../svg/lobby/yellow-star';
+import { ChevronDownIcon, DotsHorizontalIcon } from '@heroicons/react/outline';
 import { useSession } from 'next-auth/react';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import UserMenuButton from './user-menu-button';
+import { CurrentUser } from '../../../libs/types/room';
 import { UserSession } from '../../../libs/types/user';
+import Mic from '../../svg/lobby/mic';
+import Video from '../../svg/lobby/video';
+import Star from '../../svg/lobby/star';
 
 interface Props {
-  isMe?: boolean;
-  isMaster?: boolean;
   user: UserSession | CurrentUser;
-  stream: MediaStream | null;
-  buttons?: JSX.Element[];
 }
 
-export default function UserCard({
-  isMe = false,
-  isMaster = false,
-  user,
-  stream,
-  buttons,
-}: Props) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [{ roomInfo }] = useRoomContext();
-  const { data: userSession } = useSession();
-  const amIMaster = userSession?.nickname === roomInfo?.master;
+export default function UserCard({ user }: Props) {
+  const { data } = useSession();
+  const userSession = data as UserSession;
 
-  useUpdateEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
-    }
-  }, [stream]);
+  const [{ roomInfo, currentUsers }] = useRoomContext();
+
+  const isMe = user.id === userSession.id;
+  const amIMaster = userSession.nickname === roomInfo?.master;
+  const isMaster = user.nickname === roomInfo?.master;
+  const currentUsersOfMe = currentUsers.find(
+    cUser => cUser.id === userSession.id,
+  );
+  const currentUserNumber = currentUsers
+    .map((cUser, index) => ({
+      id: cUser.id,
+      index,
+    }))
+    .find(v => v.id === user.id)?.index;
 
   return (
-    <div className="w-full h-full flex gap-4">
-      <div className="h-full aspect-square bg-black relative rounded">
-        <video
-          className="absolute w-full h-full object-cover border-2 border-black rounded"
-          ref={videoRef}
-          autoPlay
-          playsInline
-          preload="auto"
-          // muted={isMe}
-          muted
-          style={{ transform: 'rotateY(180deg)' }}
-        />
-      </div>
-      <div className="h-full w-full flex flex-col justify-between py-1">
-        <div className="flex flex-col gap-2 2xl:gap-3">
-          <div className="flex justify-between w-full h-4 2xl:h-6">
-            <span className="font-semibold text-xl 2xl:text-3xl flex h-full items-center">
-              {splitByColon(user?.nickname || '', 'name')}
-            </span>
-            {isMaster ? (
-              <YellowStar className="w-4 2xl:w-6" />
-            ) : !isMe && amIMaster ? (
-              <UserMenuButton user={user} />
+    <div className="w-full h-full flex">
+      <div className="w-full h-full bg-[#000000b2]"></div>
+
+      <div className="h-full aspect-square border-l-2 border-black flex flex-col">
+        <div className="w-full h-1/3 border-b-2 border-black flex">
+          {/* video-button */}
+          <div
+            className={`grow h-full border-r-2 border-black last:border-r-0 flex justify-center items-center ${
+              isMe ? 'hover:cursor-pointer' : ''
+            }`}
+          >
+            <div
+              className={`w-full h-full flex justify-center items-center aspect-square`}
+            >
+              <Video className="w-5 h-5 2xl:w-6 2xl:h-6" />
+            </div>
+            {isMe ? (
+              <div className="bg-[#000000b2] w-full h-full flex items-center justify-center">
+                <ChevronDownIcon className="w-4 h-4 2xl:w-5 2xl:h-5 text-white" />
+              </div>
             ) : null}
           </div>
-          <div className="flex">
-            <span className="2xl:text-2xl font-bold">캐릭터명</span>
+
+          {/* audio-button */}
+          <div
+            className={`grow h-full border-r-2 border-black last:border-r-0 flex justify-center items-center ${
+              isMe ? 'hover:cursor-pointer' : ''
+            }`}
+          >
+            <div
+              className={`w-full h-full flex justify-center items-center aspect-square`}
+            >
+              <Mic className="w-5 h-5 2xl:w-6 2xl:h-6" />
+            </div>
+            {isMe ? (
+              <div className="bg-[#000000b2] w-full h-full flex items-center justify-center">
+                <ChevronDownIcon className="w-4 h-4 2xl:w-5 2xl:h-5 text-white" />
+              </div>
+            ) : null}
           </div>
+
+          {!isMe ? (
+            <div
+              className={`grow h-full border-r-2 border-black last:border-r-0 flex justify-center items-center ${
+                amIMaster
+                  ? 'hover:cursor-pointer hover:bg-black hover:text-white'
+                  : ''
+              }`}
+            >
+              {amIMaster ? (
+                <DotsHorizontalIcon className="w-5 h-5 2xl:w-6 2xl:h-6" />
+              ) : (
+                <div className="w-full h-full bg-[#000000b2]">
+                  <div className="w-5 h-5 2xl:w-6 2xl:h-6" />
+                </div>
+              )}
+            </div>
+          ) : null}
         </div>
 
-        <div className="w-full flex justify-end gap-1">{buttons}</div>
+        <div
+          className={`w-full h-2/3 flex flex-col justify-between p-2 relative`}
+        >
+          <div
+            className={`absolute w-full h-full top-0 left-0 flex justify-center items-center text-[#2c2c2c22] text-base 2xl:text-xl font-hanson-bold transition-all duration-300 ${
+              (user.readyState && !isMaster) ||
+              (currentUsersOfMe?.readyState && !amIMaster && isMe)
+                ? 'opacity-100 bg-animate-layout-border'
+                : 'opacity-0'
+            }`}
+          >
+            Ready
+          </div>
+          <div className="flex justify-between z-10">
+            <span className="font-hanson-bold text-xl 2xl:text-3xl">
+              0{currentUserNumber ? currentUserNumber + 1 : 0}
+            </span>
+            {isMaster ? (
+              <Star className="w-4 h-4 2xl:w-5 2xl:h-5 text-black" />
+            ) : null}
+          </div>
+          <div className="flex z-10">
+            <span className="font-bold 2xl:text-xl">캐릭터 이름</span>
+          </div>
+        </div>
       </div>
     </div>
   );

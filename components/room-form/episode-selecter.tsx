@@ -87,7 +87,7 @@ export default function EpisodeSelecter({
         <div
           ref={navigationPrevRef}
           className={`absolute left-6 top-[50%] -translate-y-[50%] z-10 w-16 h-16 border-2 border-gray-200 rounded-full bg-[#00000033] flex items-center justify-center hover:cursor-pointer transition-all duration-300 ${
-            isActive ? 'opacity-100' : 'opacity-0 translate-y-9'
+            isActive ? 'opacity-100' : 'opacity-0 translate-y-9 -z-10'
           }`}
         >
           <ChevronLeftIcon className="w-8 h-8 text-gray-200" strokeWidth={2} />
@@ -96,7 +96,7 @@ export default function EpisodeSelecter({
         <div
           ref={navigationNextRef}
           className={`absolute right-6 top-[50%] -translate-y-[50%] z-10 w-16 h-16 border-2 border-gray-200 rounded-full bg-[#00000033] flex items-center justify-center hover:cursor-pointer transition-all duration-300 ${
-            isActive ? 'opacity-100' : 'opacity-0 translate-y-9'
+            isActive ? 'opacity-100' : 'opacity-0 translate-y-9 -z-10'
           }`}
         >
           <ChevronRightIcon className="w-8 h-8 text-gray-200" strokeWidth={2} />
@@ -105,7 +105,7 @@ export default function EpisodeSelecter({
         {/* <div className="swiper-pagination swiper-pagination-fraction swiper-pagination-horizontal absolute left-[50%] bottom-[2%] -translate-x-[50%] w-fit flex items-center gap-2 text-gray-100 text-xl disable-dragging"></div> */}
         <div
           className={`absolute left-[50%] bottom-[3%] -translate-x-[50%] z-10 2xl:text-2xl text-white flex gap-3 items-center transition-all duration-300 ${
-            isActive ? 'opacity-100' : 'opacity-0 translate-y-9'
+            isActive ? 'opacity-100' : 'opacity-0 translate-y-9 -z-10'
           }`}
         >
           <span>{`0${currentIndex + 1}`}</span>

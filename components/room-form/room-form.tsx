@@ -218,6 +218,7 @@ export default function RoomForm({
             >
               <input
                 {...register('password', {
+                  required: isPrivate ? '비밀번호를 입력해주세요.' : false,
                   validate: {
                     roomPasswordCheck,
                     passwordLength: s =>
