@@ -34,7 +34,7 @@ export default function MasterButton({
         className="aspect-square h-full hover:cursor-pointer hover:bg-black hover:text-white"
       >
         <div className="w-full h-full flex justify-center items-center hover:rotate-90 duration-500">
-          <Cog className="w-8 h-8" />
+          <Cog className="w-7 h-7 2xl:w-8 2xl:h-8" />
         </div>
       </div>
     </div>
