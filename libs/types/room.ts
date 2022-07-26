@@ -79,6 +79,9 @@ export type RoomStateAction =
       payload: MessageInfo;
     }
   | {
+      type: 'SHIFT_MESSAGE';
+    }
+  | {
       type: 'IMAGE_LIST';
       payload: ImageData[];
     }
@@ -98,6 +101,7 @@ export type RoomStateAction =
       type: 'ADD_PEER';
       payload: IPeer;
     };
+
 export type RoomContextType = [RoomState, Dispatch<RoomStateAction>];
 
 export interface EpisodeInfo {

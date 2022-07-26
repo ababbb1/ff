@@ -39,7 +39,7 @@ const Room = ({ user }: { user: UserSession }) => {
   const roomState = router.query.state;
 
   const [state, dispatch] = useRoomContext();
-  const { roomInfo, myStream, peers, currentUsers } = state;
+  const { roomInfo, myStream, peers, currentUsers, messageList } = state;
 
   const onBeforeUnload = () => {
     exitRoom({ roomId: router.query.id, userId: user.id });
@@ -92,6 +92,12 @@ const Room = ({ user }: { user: UserSession }) => {
       // router.back();
     }
   }, [currentUsers]);
+
+  useUpdateEffect(() => {
+    if (messageList.length > 150) {
+      dispatch({ type: 'SHIFT_MESSAGE' });
+    }
+  }, [messageList]);
 
   if (!roomInfo) return <LoadingScreen fullScreen />;
 

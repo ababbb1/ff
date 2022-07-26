@@ -22,6 +22,12 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
           messageList: [...state.messageList, action.payload],
         };
 
+      case 'SHIFT_MESSAGE':
+        return {
+          ...state,
+          messageList: state.messageList.slice(1, state.messageList.length - 1),
+        };
+
       case 'IMAGE_LIST':
         return { ...state, imageList: action.payload };
 

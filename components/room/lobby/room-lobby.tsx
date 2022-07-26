@@ -31,8 +31,6 @@ export default function RoomLobby() {
     currentUsersExeptMaster.length > 0 &&
     currentUsersExeptMaster.every(cUser => cUser.readyState);
 
-  console.log(isAllReady);
-
   const {
     isMaster,
     handleStartButton,

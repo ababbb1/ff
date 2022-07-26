@@ -109,7 +109,7 @@ export default function RoomForm({
     <form
       onSubmit={handleSubmit(handleValid, onInvalid)}
       className={`disable-dragging w-full h-full flex flex-col lg:flex-row absolute top-0 left-0 transition-all duration-300 ${
-        isActive ? 'opacity-100' : 'opacity-0 translate-y-[4%] -z-10'
+        isActive ? 'opacity-100 z-20' : 'opacity-0 translate-y-[4%] -z-10'
       }`}
     >
       <div
