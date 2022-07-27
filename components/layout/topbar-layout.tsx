@@ -2,19 +2,19 @@ import { useRouter } from 'next/router';
 import { PropsWithChildren } from 'react';
 import { exitRoom } from '../../libs/socket.io';
 import { splitByColon } from '../../libs/utils';
-import { RoomData } from '../../libs/types/room';
-import { UserSession } from '../../libs/types/user';
+import { XIcon } from '@heroicons/react/outline';
+import useRoomContext from '../../libs/hooks/room/useRoomContext';
+import { useSession } from 'next-auth/react';
 
-interface Props extends PropsWithChildren {
-  user: UserSession;
-  roomInfo: RoomData;
-}
+type Props = PropsWithChildren;
 
-export default function TopbarLayout({ children, user, roomInfo }: Props) {
+export default function TopbarLayout({ children }: Props) {
   const router = useRouter();
+  const { data: userSession } = useSession();
+  const [{ roomInfo }] = useRoomContext();
 
   const handleExitButton = () => {
-    exitRoom({ roomId: roomInfo?.id, userId: user.userId });
+    exitRoom({ roomId: roomInfo?.id, userId: userSession?.userId });
     router.back();
   };
 
@@ -38,10 +38,14 @@ export default function TopbarLayout({ children, user, roomInfo }: Props) {
               />
             </div>
             <span className="font-semibold">
-              {splitByColon(user.nickname, 'name')}
+              {userSession?.nickname
+                ? splitByColon(userSession.nickname, 'name')
+                : ''}
             </span>
           </div>
-          <button onClick={handleExitButton}>나가기</button>
+          <button onClick={handleExitButton}>
+            <XIcon className="w-5 h-5 2xl:w-6 2xl:h-6" />
+          </button>
         </div>
       </div>
       <div className="h-[92%] border-2 border-black">{children}</div>

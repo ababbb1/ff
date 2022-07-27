@@ -1,20 +1,20 @@
 import Link from 'next/link';
 import { splitByColon } from '../../libs/utils';
 import { RoomData } from '../../libs/types/room';
-import { UserSession } from '../../libs/types/user';
 import RoomList from './room-list';
+import { useSession } from 'next-auth/react';
 
 interface Props {
-  user: UserSession;
   roomList: RoomData[];
   searchButtonHandler: () => void;
 }
 
 export default function MainpageInterface({
-  user,
   roomList,
   searchButtonHandler,
 }: Props) {
+  const { data: userSession } = useSession();
+
   return (
     <div className="w-full h-full bg-crumpled-paper bg-cover flex flex-col border-b-2 border-black">
       <div className="flex max-h-[20%]">
@@ -28,7 +28,9 @@ export default function MainpageInterface({
             <div className="flex flex-col justify-center">
               <span className="text-sm">유저</span>
               <div className="font-bold text-xl">
-                {splitByColon(user.nickname, 'name')}
+                {userSession?.nickname
+                  ? splitByColon(userSession.nickname, 'name')
+                  : ''}
               </div>
             </div>
           </div>

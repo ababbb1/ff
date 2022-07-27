@@ -2,39 +2,43 @@ import { ChevronDownIcon, DotsHorizontalIcon } from '@heroicons/react/outline';
 import { useSession } from 'next-auth/react';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import { CurrentUser } from '../../../libs/types/room';
-import { UserSession } from '../../../libs/types/user';
 import Mic from '../../svg/lobby/mic';
 import Video from '../../svg/lobby/video';
 import Star from '../../svg/lobby/star';
 import useRoomLobby from '../../../libs/hooks/room/useRoomLobby';
 import VideoChat from '../../svg/lobby/video-chat';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { kickUser } from '../../../libs/socket.io';
 import Triangle from '../../svg/room-form/triangle';
+import usePopup from '../../../libs/hooks/room/usePopup';
+import { Session } from 'next-auth';
 
 interface Props {
-  user: UserSession | CurrentUser;
+  user: Session | CurrentUser;
   userStream?: MediaStream;
 }
 
 export default function UserCard({ user, userStream }: Props) {
-  console.log(userStream);
-  const { data } = useSession();
-  const userSession = data as UserSession;
+  const { data: userSession } = useSession();
 
   const [{ roomInfo, currentUsers, myStreamInfo }] = useRoomContext();
   const { handleGetUserStream } = useRoomLobby();
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const userMenuButtonRef = useRef<HTMLDivElement>(null);
-  const userMenuRef = useRef<HTMLDivElement>(null);
+  const {
+    popupButtonRef,
+    popupRef,
+    isActive,
+    setIsActive,
+    handleClickPopupButton,
+  } = usePopup();
 
-  const isMe = user.userId === userSession.id;
-  const amIMaster = userSession.nickname === roomInfo?.master;
+  const isMe = user.userId === userSession?.userId;
+  const amIMaster = userSession?.nickname === roomInfo?.master;
   const isMaster = user.nickname === roomInfo?.master;
   const currentUsersOfMe = currentUsers.find(
-    cUser => cUser.userId === userSession.id,
+    cUser => cUser.userId === userSession?.userId,
   );
   const currentUserNumber = currentUsers
     .map((cUser, index) => ({
@@ -42,39 +46,15 @@ export default function UserCard({ user, userStream }: Props) {
       index,
     }))
     .find(v => v.id === user.userId)?.index;
-  console.log('cnumber', currentUserNumber);
-
-  const [userMenu, setUserMenu] = useState(false);
-
-  const handleClickUserMenuButton = () => {
-    setUserMenu(prev => !prev);
-  };
 
   const handleClickKickButton = () => {
     kickUser({
       roomId: roomInfo?.id,
       kickedUserId: user.userId,
-      masterUserId: userSession?.id,
+      masterUserId: userSession?.userId,
     });
-    setUserMenu(false);
+    setIsActive(false);
   };
-
-  const onClickDocument = (e: MouseEvent) => {
-    console.log(e.target);
-    if (userMenuButtonRef.current && userMenuRef.current) {
-      if (
-        !e.composedPath().includes(userMenuButtonRef.current) &&
-        !e.composedPath().includes(userMenuRef.current)
-      ) {
-        setUserMenu(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('click', onClickDocument);
-    return () => document.removeEventListener('click', onClickDocument);
-  }, []);
 
   useUpdateEffect(() => {
     if (videoRef.current) {
@@ -112,14 +92,14 @@ export default function UserCard({ user, userStream }: Props) {
                 }`}
               >
                 <div
-                  className={`w-full h-full flex justify-center items-center aspect-square ${
+                  className={`w-full h-full flex justify-center items-center ${
                     isMe ? 'hover:bg-black hover:text-white' : ''
                   }`}
                 >
                   <Video className="w-5 h-5 2xl:w-6 2xl:h-6" />
                 </div>
                 {isMe ? (
-                  <div className="bg-[#000000b2] w-full h-full flex items-center justify-center">
+                  <div className="bg-[#000000b2] w-full max-w-[30%] h-full flex items-center justify-center">
                     <ChevronDownIcon className="w-4 h-4 2xl:w-5 2xl:h-5 text-white" />
                   </div>
                 ) : null}
@@ -131,14 +111,14 @@ export default function UserCard({ user, userStream }: Props) {
                 }`}
               >
                 <div
-                  className={`w-full h-full flex justify-center items-center aspect-square ${
+                  className={`w-full h-full flex justify-center items-center ${
                     isMe ? 'hover:bg-black hover:text-white' : ''
                   }`}
                 >
                   <Mic className="w-5 h-5 2xl:w-6 2xl:h-6" />
                 </div>
                 {isMe ? (
-                  <div className="bg-[#000000b2] w-full h-full flex items-center justify-center">
+                  <div className="bg-[#000000b2] w-full h-full max-w-[30%] flex items-center justify-center">
                     <ChevronDownIcon className="w-4 h-4 2xl:w-5 2xl:h-5 text-white" />
                   </div>
                 ) : null}
@@ -160,21 +140,21 @@ export default function UserCard({ user, userStream }: Props) {
               {amIMaster ? (
                 <>
                   <div
-                    ref={userMenuButtonRef}
-                    onClick={handleClickUserMenuButton}
+                    ref={popupButtonRef}
+                    onClick={handleClickPopupButton}
                     className="w-full h-full flex justify-center items-center hover:cursor-pointer hover:bg-black hover:text-white"
                   >
                     <DotsHorizontalIcon className="w-5 h-5 2xl:w-6 2xl:h-6" />
                   </div>
                   <Triangle
                     className={`absolute top-[100%] left-[50%] translate-y-1 -translate-x-[50%] text-black shadow-md transition-opacity duration-100 w-4 h-4 ${
-                      userMenu ? 'opacity-100 z-20' : 'opacity-0 -z-10'
+                      isActive ? 'opacity-100 z-20' : 'opacity-0 -z-10'
                     }`}
                   />
                   <div
-                    ref={userMenuRef}
+                    ref={popupRef}
                     className={`absolute top-[100%] left-0 translate-y-4 -translate-x-[27%] 2xl:-translate-x-[20%] bg-black text-white shadow-md rounded transition-opacity duration-100 flex w-fit h-fit flex-col py-2 px-4 ${
-                      userMenu ? 'opacity-100 z-20' : 'opacity-0 -z-10'
+                      isActive ? 'opacity-100 z-20' : 'opacity-0 -z-10'
                     }`}
                   >
                     <button
@@ -202,7 +182,7 @@ export default function UserCard({ user, userStream }: Props) {
               (user.readyState && !isMaster) ||
               (currentUsersOfMe?.readyState && !amIMaster && isMe)
                 ? 'opacity-100 bg-animate-layout-border'
-                : 'opacity-0'
+                : 'opacity-0 -z-10'
             }`}
           >
             Ready
@@ -218,7 +198,7 @@ export default function UserCard({ user, userStream }: Props) {
               <Star className="w-4 h-4 2xl:w-5 2xl:h-5 text-black" />
             ) : null}
           </div>
-          <div className="flex z-10">
+          <div className="flex justify-between items-center h-fit z-10">
             <span className="font-bold 2xl:text-xl">캐릭터 이름</span>
           </div>
         </div>

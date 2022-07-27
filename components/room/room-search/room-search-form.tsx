@@ -1,13 +1,12 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
-import API, { authHeaders } from '../../libs/api';
-import { cls } from '../../libs/utils';
-import { ToggleHandler } from '../../libs/hooks/useToggle';
-import { UserSession } from '../../libs/types/user';
+import API, { authHeaders } from '../../../libs/api';
+import { cls } from '../../../libs/utils';
+import { ToggleHandler } from '../../../libs/hooks/useToggle';
 import { RoomSearchApiResponse } from './room-search';
+import { useSession } from 'next-auth/react';
 
 interface Props {
-  user: UserSession;
   setSearchResult: Dispatch<SetStateAction<RoomSearchApiResponse | undefined>>;
   toggleIsLoading: ToggleHandler;
 }
@@ -18,22 +17,25 @@ export interface SearchFormData {
 }
 
 export default function RoomSearchForm({
-  user,
   setSearchResult,
   toggleIsLoading,
 }: Props) {
+  const { data: userSession } = useSession();
+
   const { register, handleSubmit } = useForm<SearchFormData>({
     mode: 'onSubmit',
   });
 
   const onValid = async (params: SearchFormData) => {
-    toggleIsLoading(true);
-    const res = await API.get('room/search', {
-      params,
-      headers: authHeaders(user.token),
-    });
-    setSearchResult(res.data.result);
-    toggleIsLoading(false);
+    if (userSession?.token) {
+      toggleIsLoading(true);
+      const res = await API.get('room/search', {
+        params,
+        headers: authHeaders(userSession.token),
+      });
+      setSearchResult(res.data.result);
+      toggleIsLoading(false);
+    }
   };
 
   return (

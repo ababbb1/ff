@@ -2,15 +2,14 @@ import useRoomMessage from '../../libs/hooks/room/useRoomMessage';
 import useRoomContext from '../../libs/hooks/room/useRoomContext';
 import { useSession } from 'next-auth/react';
 import PaperPlane from '../svg/lobby/paper-plane';
-import { UserSession } from '../../libs/types/user';
 import { getItemsFromDateObject, splitByColon } from '../../libs/utils';
 import { useEffect, useRef, useState } from 'react';
 
 export default function MessageInterface() {
-  const { data: user } = useSession();
+  const { data: userSession } = useSession();
   const [{ messageList, roomInfo }] = useRoomContext();
   const { message, onMessageChange, handleSubmitMessage, handleKeyup } =
-    useRoomMessage(user as UserSession, roomInfo);
+    useRoomMessage(userSession, roomInfo);
 
   const lastMessageRef = useRef<HTMLLIElement>(null);
   const ulElementRef = useRef<HTMLUListElement>(null);
@@ -64,7 +63,8 @@ export default function MessageInterface() {
         ) < ulHeight;
 
       const isLastMessageMine =
-        messageList[messageList.length - 1].user?.userId === user?.userId;
+        messageList[messageList.length - 1].user?.userId ===
+        userSession?.userId;
 
       if (isLastMessageAtEnd || isLastMessageMine || ulScrollTop === 0) {
         lastMessageRef.current.scrollIntoView({
@@ -137,7 +137,7 @@ export default function MessageInterface() {
                 <div className="w-full flex justify-between">
                   <span
                     className={`font-bold 2xl:text-xl ${
-                      msgInfo.user?.nickname === user?.nickname
+                      msgInfo.user?.nickname === userSession?.nickname
                         ? 'text-animate-layout-border'
                         : ''
                     }`}

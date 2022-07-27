@@ -1,8 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import React, { Suspense, useEffect } from 'react';
-import { UserSession } from '../../../libs/types/user';
+import React, { Suspense, useEffect, useRef } from 'react';
 import RoomLobby from '../../../components/room/lobby/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
@@ -17,12 +16,12 @@ import {
   joinRoom,
   socketRemoveAllListeners,
 } from '../../../libs/socket.io';
-import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import AnimatedTextLayout from '../../../components/layout/animated-text-layout';
 import TopbarLayout from '../../../components/layout/topbar-layout';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
-import { useRef } from 'react';
 import { createPeer, getMedia } from '../../../libs/peer';
+import { Session } from 'next-auth';
+import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 
 const RoomHint = dynamic(() => import('../../../components/room/room-hint'), {
   ssr: false,
@@ -32,8 +31,8 @@ const RoomReasoning = dynamic(
   { ssr: false },
 );
 
-const Room = ({ user }: { user: UserSession }) => {
-  console.log('user:', user);
+const Room = ({ userSession }: { userSession: Session }) => {
+  console.log('userSession:', userSession);
   const router = useRouter();
   const roomId = router.query.id;
   const roomUniqueId = router.query.roomUniqueId;
@@ -44,7 +43,7 @@ const Room = ({ user }: { user: UserSession }) => {
   const streamIntervalRef = useRef<NodeJS.Timer>();
 
   const onBeforeUnload = () => {
-    exitRoom({ roomId: router.query.id, userId: user.userId });
+    exitRoom({ roomId: router.query.id, userId: userSession.userId });
     socketRemoveAllListeners();
   };
 
@@ -56,9 +55,9 @@ const Room = ({ user }: { user: UserSession }) => {
       } else {
         joinRoom({
           roomId,
-          userId: user.userId,
-          email: user.email,
-          nickname: user.nickname,
+          userId: userSession.userId,
+          email: userSession.email,
+          nickname: userSession.nickname,
         });
       }
     }
@@ -79,7 +78,7 @@ const Room = ({ user }: { user: UserSession }) => {
   //   console.log('myStream updated:', myStream);
   //   if (myStream && peers.length === 0) {
   //     peerJoin({ roomId: roomId });
-  //     afterUpdateStream(`${user.userId}`, myStream, peers, dispatch);
+  //     afterUpdateStream(`${userSession.userSessionId}`, myStream, peers, dispatch);
   //   }
   // }, [myStream]);
 
@@ -114,11 +113,12 @@ const Room = ({ user }: { user: UserSession }) => {
   useUpdateEffect(() => {
     console.log(currentUsers);
     if (
-      currentUsers.find(cUser => cUser.userId === user.userId)?.streamId &&
-      !peers.find(peer => +peer.userId === user.userId)
+      currentUsers.find(cUser => cUser.userId === userSession.userId)
+        ?.streamId &&
+      !peers.find(peer => +peer.userId === userSession.userId)
     ) {
       if (myStreamInfo.stream) {
-        createPeer(`${user.userId}`, myStreamInfo.stream);
+        createPeer(`${userSession.userId}`, myStreamInfo.stream);
       }
     }
   }, [currentUsers]);
@@ -135,14 +135,10 @@ const Room = ({ user }: { user: UserSession }) => {
     <Layout title={roomInfo.title}>
       <AnimatedTextLayout>
         <div className="w-full h-full bg-crumpled-paper object-cover">
-          <TopbarLayout {...{ user, roomInfo }}>
+          <TopbarLayout>
             {roomState === 'hint' ? (
               <Suspense fallback={<LoadingScreen fullScreen />}>
-                <RoomHint
-                  {...{
-                    user,
-                  }}
-                />
+                <RoomHint />
               </Suspense>
             ) : roomState === 'reasoning' ? (
               <Suspense fallback={<LoadingScreen fullScreen />}>
@@ -160,9 +156,9 @@ const Room = ({ user }: { user: UserSession }) => {
   );
 };
 
-const RoomPage = ({ user }: { user: UserSession }) => (
+const RoomPage = ({ userSession }: { userSession: Session }) => (
   <RoomStateProvider>
-    <Room {...{ user }} />
+    <Room {...{ userSession }} />
   </RoomStateProvider>
 );
 
@@ -193,7 +189,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      user: session,
+      userSession: session,
     },
   };
 };

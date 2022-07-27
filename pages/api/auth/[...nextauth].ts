@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { Session } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
@@ -7,7 +7,6 @@ import FacebookProvider from 'next-auth/providers/facebook';
 import API from '../../../libs/api';
 import jwt_decode from 'jwt-decode';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { UserSession } from '../../../libs/types/user';
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   return await NextAuth(req, res, {
@@ -51,13 +50,10 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     ],
     callbacks: {
       async jwt({ token, user, account }) {
-        console.log('token', token);
-        console.log('user', user);
-        console.log('account', account);
         if (user && account)
           return {
             ...token,
-            userId: user.sub,
+            userId: user.sub || token.id,
             token: user.token,
             nickname: user.nickname || user.name,
             social: user.social,
@@ -67,6 +63,8 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       },
 
       async session({ session, token }) {
+        console.log('session', session);
+        console.log('token', token);
         if (token) {
           if (token.provider !== 'credentials') {
             const data = {
@@ -76,7 +74,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             const res = await API.post('login', data);
 
             const _token = res.data.result.token;
-            const user: UserSession = jwt_decode(_token);
+            const user: Session = jwt_decode(_token);
 
             return {
               ...session,

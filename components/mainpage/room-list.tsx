@@ -172,7 +172,7 @@ export default function RoomList({ roomList }: Props) {
             key={`room${i}`}
             className="h-full w-1/3 border-r-2 border-black"
           >
-            <RoomCard roomInfo={v} />
+            <RoomCard roomData={v} />
           </SwiperSlide>
         ))}
         <div

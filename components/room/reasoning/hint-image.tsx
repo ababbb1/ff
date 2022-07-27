@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { useDrag } from 'react-dnd';
 import { cls } from '../../../libs/utils';
 
@@ -27,7 +26,7 @@ export default function HintImage({ id, type, isDropped, previewUrl }: Props) {
       className={cls(isDropped ? 'hidden' : '')}
       style={{ opacity }}
     >
-      <Image src={previewUrl} width={100} height={100} />
+      <img src={previewUrl} width={100} height={100} />
     </div>
   );
 }

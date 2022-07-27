@@ -1,5 +1,4 @@
 import { signIn } from 'next-auth/react';
-import Image from 'next/image';
 import { useState } from 'react';
 import LoadingScreen from './loading-screen';
 import { Provider } from '../libs/types/user';

@@ -5,12 +5,12 @@ import LockClosed from '../svg/room-form/lock-closed';
 import LockOpen from '../svg/room-form/lock-open';
 
 interface Props {
-  roomInfo: RoomData;
+  roomData: RoomData;
 }
 
-export default function RoomCard({ roomInfo }: Props) {
+export default function RoomCard({ roomData }: Props) {
   const router = useRouter();
-  const isProgress = roomInfo.roomState !== 'standby';
+  const isProgress = roomData.roomState !== 'standby';
 
   return (
     <div
@@ -22,14 +22,14 @@ export default function RoomCard({ roomInfo }: Props) {
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-1 w-[12rem] 2xl:w-[16rem]">
             <span className="text-xl text-ellipsis overflow-hidden whitespace-nowrap">
-              {roomInfo.master}
+              {roomData.master}
             </span>
             <span className="text-2xl font-semibold text-ellipsis overflow-hidden whitespace-nowrap">
-              {roomInfo.title}
+              {roomData.title}
             </span>
           </div>
           <div className="pt-2">
-            {roomInfo.password ? (
+            {roomData.password ? (
               <LockClosed className="w-5 h-5 2xl:w-6 2xl:h-6" />
             ) : (
               <LockOpen className="w-5 h-5 2xl:w-6 2xl:h-6" />
@@ -40,23 +40,23 @@ export default function RoomCard({ roomInfo }: Props) {
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1">
               <ClockIcon className="w-5 h-5 2xl:w-6 2xl:h-6" />
-              <span className="2xl:text-xl">{roomInfo.hintTime}:00</span>
+              <span className="2xl:text-xl">{roomData.hintTime}:00</span>
             </div>
             <div className="flex items-center gap-1">
               <ClockIcon className="w-5 h-5 2xl:w-6 2xl:h-6" />
-              <span className="2xl:text-xl">{roomInfo.reasoningTime}:00</span>
+              <span className="2xl:text-xl">{roomData.reasoningTime}:00</span>
             </div>
           </div>
           <div className="flex flex-col justify-end">
             <span
               className={`text-right ${
-                roomInfo.count === 5 ? 'text-red-600' : ''
+                roomData.count === 5 ? 'text-red-600' : ''
               }`}
             >
-              {roomInfo.count}/5
+              {roomData.count}/5
             </span>
             <span className="text-right">
-              {roomInfo.isRandom === '1' ? '랜덤' : '자유'}
+              {roomData.isRandom === '1' ? '랜덤' : '자유'}
             </span>
           </div>
         </div>
@@ -72,7 +72,7 @@ export default function RoomCard({ roomInfo }: Props) {
           </div>
         ) : (
           <button
-            onClick={() => router.push(`/room/${roomInfo.id}/lobby`)}
+            onClick={() => router.push(`/room/${roomData.id}/lobby`)}
             className="w-full h-full font-hanson-bold text-xl 2xl:text-2xl hover:bg-[#00000076]"
           >
             Game Start

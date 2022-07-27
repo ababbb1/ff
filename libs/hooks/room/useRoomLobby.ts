@@ -14,13 +14,13 @@ import useRoomContext from './useRoomContext';
 
 export default function useRoomLobby() {
   const router = useRouter();
-  const { data: user } = useSession();
+  const { data: userSession } = useSession();
   const [{ roomInfo, currentUsers, peers }, dispatch] = useRoomContext();
 
   const [isSetting, setIsSetting] = useState(false);
 
   const isReady = currentUsers.every(currentUser => currentUser.readyState);
-  const isMaster = roomInfo?.master === user?.nickname;
+  const isMaster = roomInfo?.master === userSession?.nickname;
 
   const handleStartButton = () => {
     if (!isReady || currentUsers.length < 2) {
@@ -29,14 +29,14 @@ export default function useRoomLobby() {
     }
     gameStart({
       roomId: roomInfo?.id,
-      userId: user?.userId,
+      userId: userSession?.userId,
     });
   };
 
   const handleReadyButton = () => {
     gameReady({
       roomId: roomInfo?.id,
-      userId: user?.userId,
+      userId: userSession?.userId,
     });
   };
 
@@ -49,26 +49,28 @@ export default function useRoomLobby() {
   };
 
   const handleGetUserStream = () => {
-    getMedia().then(stream => {
-      const videoTrack = stream.getVideoTracks()[0];
-      const audioTrack = stream.getAudioTracks()[0];
-      dispatch({
-        type: 'MY_STREAM_INFO',
-        payload: {
-          stream,
-          videoDeviceId: videoTrack.id,
-          audioDeviceId: audioTrack.id,
-          videoTrackconstraints: videoTrack.getConstraints(),
-          audioTrackconstraints: audioTrack.getConstraints(),
-        },
+    if (userSession) {
+      getMedia().then(stream => {
+        const videoTrack = stream.getVideoTracks()[0];
+        const audioTrack = stream.getAudioTracks()[0];
+        dispatch({
+          type: 'MY_STREAM_INFO',
+          payload: {
+            stream,
+            videoDeviceId: videoTrack.id,
+            audioDeviceId: audioTrack.id,
+            videoTrackconstraints: videoTrack.getConstraints(),
+            audioTrackconstraints: audioTrack.getConstraints(),
+          },
+        });
+        streamEmit({
+          roomId: roomInfo?.id,
+          userId: userSession?.userId,
+          streamId: stream.id,
+        });
+        afterUpdateStream(`${userSession.userId}`, stream, peers, dispatch);
       });
-      streamEmit({
-        roomId: roomInfo?.id,
-        userId: user?.userId,
-        streamId: stream.id,
-      });
-      afterUpdateStream(user?.userId as string, stream, peers, dispatch);
-    });
+    }
   };
 
   useEffect(() => {

@@ -6,22 +6,19 @@ import LoadingScreen from '../loading-screen';
 import Timer from '../timer';
 import { useRouter } from 'next/router';
 import ModalLayout from '../modal-layout';
-import { UserSession } from '../../libs/types/user';
 import Link from 'next/link';
 import useToggle from '../../libs/hooks/useToggle';
 import useRoomContext from '../../libs/hooks/room/useRoomContext';
 import { hintReady, hintRegister, hintTimeStart } from '../../libs/socket.io';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
-interface Props {
-  user: UserSession;
-}
-
-export default function RoomHint({ user }: Props) {
+export default function RoomHint() {
   const CAMERA_WIDTH = 180;
   const CAMERA_HEIGHT = 180;
   const IMAGE_WIDTH = 120;
   const IMAGE_HEIGHT = 120;
+  const { data: userSession } = useSession();
 
   const [{ roomInfo, imageList, currentUsers }, dispatch] = useRoomContext();
 
@@ -54,9 +51,9 @@ export default function RoomHint({ user }: Props) {
         result: { id },
       } = res.data;
 
-      if (success) {
+      if (success && userSession) {
         hintRegister({
-          userId: user.userId,
+          userId: userSession.userId,
           roomId: roomInfo?.id,
           imageId: id,
         });
@@ -77,7 +74,7 @@ export default function RoomHint({ user }: Props) {
   const handleHintReadyButton = () => {
     hintReady({
       roomId: roomInfo?.id,
-      userId: user.userId,
+      userId: userSession?.userId,
     });
   };
 
@@ -94,9 +91,9 @@ export default function RoomHint({ user }: Props) {
       roomInfo?.roomState !== 'hintTime' &&
       currentUsers.every(v => v.hintReady)
     ) {
-      hintTimeStart({ roomId: roomInfo?.id, userId: user.userId });
+      hintTimeStart({ roomId: roomInfo?.id, userId: userSession?.userId });
     }
-  }, [currentUsers, roomInfo?.id, roomInfo?.roomState, user.userId]);
+  }, [currentUsers, roomInfo, userSession?.userId]);
 
   return (
     <>

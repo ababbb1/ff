@@ -2,7 +2,6 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import API, { authHeaders } from '../../libs/api';
 import { useRouter } from 'next/router';
-import { UserSession } from '../../libs/types/user';
 import AnimatedTextLayout from '../../components/layout/animated-text-layout';
 import Layout from '../../components/layout/layout';
 import RoomForm, { RoomFormData } from '../../components/room-form/room-form';
@@ -10,8 +9,9 @@ import { useState } from 'react';
 import { EpisodeInfo } from '../../libs/types/room';
 import { EPISODES } from '../../libs/const';
 import EpisodeSelecter from '../../components/room-form/episode-selecter';
+import { Session } from 'next-auth';
 
-export default function CreateRoom({ user }: { user: UserSession }) {
+export default function CreateRoom({ userSession }: { userSession: Session }) {
   const router = useRouter();
 
   const [currentEpisode, setCurrentEpisode] = useState<EpisodeInfo>(
@@ -20,7 +20,7 @@ export default function CreateRoom({ user }: { user: UserSession }) {
 
   const onValid = async (data: RoomFormData) => {
     const res = await API.post('room/create', data, {
-      headers: authHeaders(user.token),
+      headers: authHeaders(userSession.token),
     });
 
     if (res.data.result.success) {
@@ -47,7 +47,7 @@ export default function CreateRoom({ user }: { user: UserSession }) {
               {...{
                 onValid,
                 onClose: handleClose,
-                master: user.nickname,
+                master: userSession.nickname,
                 currentEpisode,
               }}
             />
@@ -72,7 +72,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      user: session,
+      userSession: session,
     },
   };
 };

@@ -2,25 +2,23 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import Layout from '../components/layout/layout';
 import AnimatedTextLayout from '../components/layout/animated-text-layout';
-import { UserSession } from '../libs/types/user';
 import API, { authHeaders } from '../libs/api';
 import { useQuery } from 'react-query';
 import LoadingScreen from '../components/loading-screen';
-import RoomSearch from '../components/room/room-search';
 import { useState } from 'react';
-import { RoomData } from '../libs/types/room';
 import MainpageInterface from '../components/mainpage/mainpage-interface';
 import ModalLayout from '../components/modal-layout';
+import { Session } from 'next-auth';
+import RoomSearch from '../components/room/room-search/room-search';
 
 interface Props {
-  user: UserSession;
-  initRoomList: RoomData[];
+  userSession: Session;
 }
 
-export default function Home({ user }: Props) {
+export default function Home({ userSession }: Props) {
   const { isLoading, data } = useQuery(
     'getRoomListAll',
-    () => API.get('room/list', { headers: authHeaders(user.token) }),
+    () => API.get('room/list', { headers: authHeaders(userSession.token) }),
     {
       refetchOnWindowFocus: true,
       refetchIntervalInBackground: true,
@@ -59,7 +57,6 @@ export default function Home({ user }: Props) {
             </div>
           </div>
           <MainpageInterface
-            user={user}
             roomList={roomList}
             searchButtonHandler={handleSearchButton}
           />
@@ -72,7 +69,7 @@ export default function Home({ user }: Props) {
           }}
           isActive={searchModal}
         >
-          <RoomSearch {...{ user }} />
+          <RoomSearch />
         </ModalLayout>
       </AnimatedTextLayout>
     </Layout>
@@ -93,7 +90,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      user: session,
+      userSession: session,
     },
   };
 };

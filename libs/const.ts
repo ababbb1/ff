@@ -9,3 +9,4 @@ export const EPISODES: EpisodeInfo[] = [
   },
   { title: 'Random', description: '' },
 ];
+export const ROLES = ['장아들', '정손녀', '박케어', '홍변호', '양손님'];
