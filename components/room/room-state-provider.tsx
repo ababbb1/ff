@@ -37,10 +37,15 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
           boardImageList: [...state.boardImageList, action.payload],
         };
 
+      case 'MY_STREAM_INFO':
+        return {
+          ...state,
+          myStreamInfo: action.payload,
+        };
       case 'MY_STREAM':
         return {
           ...state,
-          myStream: action.payload,
+          myStreamInfo: { ...state.myStreamInfo, stream: action.payload },
         };
 
       case 'PEERS':
@@ -66,7 +71,13 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
     currentUsers: [],
     imageList: [],
     boardImageList: [],
-    myStream: null,
+    myStreamInfo: {
+      stream: null,
+      videoDeviceId: '',
+      audioDeviceId: '',
+      videoTrackconstraints: {},
+      audioTrackconstraints: {},
+    },
     peers: [],
   });
 

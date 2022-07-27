@@ -3,26 +3,22 @@ import RoomForm from '../../room-form/room-form';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import { RoomData } from '../../../libs/types/room';
 import useRoomLobby from '../../../libs/hooks/room/useRoomLobby';
-import CurrentUsers from './current-users';
 import MessageInterface from '../message_interface';
 import { useSession } from 'next-auth/react';
-import CardButton from '../user-card/card-button';
-import MyDeviceButton from '../user-card/my-device-button';
 import EpisodeSelecter from '../../room-form/episode-selecter';
 import MasterButton from './master-button';
 import { UserSession } from '../../../libs/types/user';
 import UserCard from '../user-card/user-card';
-import { cls } from '../../../libs/utils';
 
 export default function RoomLobby() {
   const { data } = useSession();
   const user = data as UserSession;
   const [roomState] = useRoomContext();
-  const { roomInfo, currentUsers, myStream } = roomState;
+  const { roomInfo, currentUsers, peers } = roomState;
   const [currentEpisode, setCurrentEpisode] = useState(roomInfo?.episode);
 
   const amIReady = currentUsers.find(
-    currentUser => currentUser.id === user?.id,
+    currentUser => currentUser.userId === user?.userId,
   )?.readyState;
 
   const currentUsersExeptMaster = currentUsers.filter(
@@ -41,7 +37,6 @@ export default function RoomLobby() {
     handleSettingButton,
     handleSettingClose,
     onSettingFormValid,
-    handleInitConnect,
   } = useRoomLobby();
 
   return (
@@ -63,13 +58,20 @@ export default function RoomLobby() {
           <div className="w-full h-full flex">
             <div className="w-1/2 flex flex-col relative">
               {currentUsers
-                .filter(cUser => cUser.id !== user?.id)
+                .filter(cUser => cUser.userId !== user?.userId)
                 .map(cUser => (
                   <div
-                    key={cUser.id}
+                    key={cUser.userId}
                     className="w-full h-1/5 border-b-2 border-black last:border-b-0"
                   >
-                    <UserCard {...{ user: cUser }} />
+                    <UserCard
+                      {...{
+                        user: cUser,
+                        userStream: peers.find(
+                          peer => +peer.userId === cUser.userId,
+                        )?.peer.streams[0],
+                      }}
+                    />
                   </div>
                 ))}
               <div className="absolute bottom-0 w-full h-1/5 border-t-2 border-black">

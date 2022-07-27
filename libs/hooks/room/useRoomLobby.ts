@@ -3,13 +3,19 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { RoomFormData } from '../../../components/room-form/room-form';
 import { getMedia } from '../../peer';
-import { gameReady, gameStart, updateRoom } from '../../socket.io';
+import {
+  afterUpdateStream,
+  gameReady,
+  gameStart,
+  streamEmit,
+  updateRoom,
+} from '../../socket.io';
 import useRoomContext from './useRoomContext';
 
 export default function useRoomLobby() {
   const router = useRouter();
   const { data: user } = useSession();
-  const [{ roomInfo, currentUsers }, dispatch] = useRoomContext();
+  const [{ roomInfo, currentUsers, peers }, dispatch] = useRoomContext();
 
   const [isSetting, setIsSetting] = useState(false);
 
@@ -23,14 +29,14 @@ export default function useRoomLobby() {
     }
     gameStart({
       roomId: roomInfo?.id,
-      userId: user?.id,
+      userId: user?.userId,
     });
   };
 
   const handleReadyButton = () => {
     gameReady({
       roomId: roomInfo?.id,
-      userId: user?.id,
+      userId: user?.userId,
     });
   };
 
@@ -42,9 +48,26 @@ export default function useRoomLobby() {
     setIsSetting(false);
   };
 
-  const handleInitConnect = () => {
+  const handleGetUserStream = () => {
     getMedia().then(stream => {
-      dispatch({ type: 'MY_STREAM', payload: stream });
+      const videoTrack = stream.getVideoTracks()[0];
+      const audioTrack = stream.getAudioTracks()[0];
+      dispatch({
+        type: 'MY_STREAM_INFO',
+        payload: {
+          stream,
+          videoDeviceId: videoTrack.id,
+          audioDeviceId: audioTrack.id,
+          videoTrackconstraints: videoTrack.getConstraints(),
+          audioTrackconstraints: audioTrack.getConstraints(),
+        },
+      });
+      streamEmit({
+        roomId: roomInfo?.id,
+        userId: user?.userId,
+        streamId: stream.id,
+      });
+      afterUpdateStream(user?.userId as string, stream, peers, dispatch);
     });
   };
 
@@ -62,6 +85,6 @@ export default function useRoomLobby() {
     handleSettingButton,
     handleSettingClose,
     onSettingFormValid,
-    handleInitConnect,
+    handleGetUserStream,
   };
 }

@@ -14,7 +14,7 @@ export default function TopbarLayout({ children, user, roomInfo }: Props) {
   const router = useRouter();
 
   const handleExitButton = () => {
-    exitRoom({ roomId: roomInfo?.id, userId: user.id });
+    exitRoom({ roomId: roomInfo?.id, userId: user.userId });
     router.back();
   };
 

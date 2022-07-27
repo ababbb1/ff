@@ -64,7 +64,7 @@ export default function MessageInterface() {
         ) < ulHeight;
 
       const isLastMessageMine =
-        messageList[messageList.length - 1].user?.id === user?.id;
+        messageList[messageList.length - 1].user?.userId === user?.userId;
 
       if (isLastMessageAtEnd || isLastMessageMine || ulScrollTop === 0) {
         lastMessageRef.current.scrollIntoView({

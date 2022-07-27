@@ -25,7 +25,7 @@ export default function UserMenuButton({ user }: Props) {
   const handleKickButtonClick = () => {
     kickUser({
       roomId: roomInfo?.id,
-      kickedUserId: user.id,
+      kickedUserId: user.userId,
       masterUserId: userSession?.id,
     });
     setUserMenu(false);

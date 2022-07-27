@@ -52,10 +52,10 @@ export const afterUpdateStream = (
     console.log(`socket on peers: ${currentUser}`);
     if (myStream) {
       const peers = currentUser
-        .filter(cUser => `${cUser.id}` !== userId)
+        .filter(cUser => `${cUser.userId}` !== userId)
         .map(cUser => ({
-          userId: `${cUser.id}`,
-          peer: createPeer(`${cUser.id}`, myStream),
+          userId: `${cUser.userId}`,
+          peer: createPeer(`${cUser.userId}`, myStream),
         }));
       dispatch({ type: 'PEERS', payload: peers });
     }
@@ -96,6 +96,7 @@ export const hintTimeStart = emit('hint_start');
 export const hintPostOnBoard = emit('hint_board');
 export const kickUser = emit('kick_user');
 
+export const streamEmit = emit('stream');
 export const peerJoin = emit('peer_join');
 export const sendSignal = emit('send_signal');
 export const returnSignal = emit('return_signal');

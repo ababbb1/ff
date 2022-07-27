@@ -11,18 +11,18 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import RoomStateProvider from '../../../components/room/room-state-provider';
 import {
-  afterUpdateStream,
   connectRoomSocket,
   createRoom,
   exitRoom,
   joinRoom,
-  peerJoin,
   socketRemoveAllListeners,
 } from '../../../libs/socket.io';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import AnimatedTextLayout from '../../../components/layout/animated-text-layout';
 import TopbarLayout from '../../../components/layout/topbar-layout';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
+import { useRef } from 'react';
+import { createPeer, getMedia } from '../../../libs/peer';
 
 const RoomHint = dynamic(() => import('../../../components/room/room-hint'), {
   ssr: false,
@@ -33,16 +33,18 @@ const RoomReasoning = dynamic(
 );
 
 const Room = ({ user }: { user: UserSession }) => {
+  console.log('user:', user);
   const router = useRouter();
   const roomId = router.query.id;
   const roomUniqueId = router.query.roomUniqueId;
   const roomState = router.query.state;
 
   const [state, dispatch] = useRoomContext();
-  const { roomInfo, myStream, peers, currentUsers, messageList } = state;
+  const { roomInfo, peers, currentUsers, messageList, myStreamInfo } = state;
+  const streamIntervalRef = useRef<NodeJS.Timer>();
 
   const onBeforeUnload = () => {
-    exitRoom({ roomId: router.query.id, userId: user.id });
+    exitRoom({ roomId: router.query.id, userId: user.userId });
     socketRemoveAllListeners();
   };
 
@@ -54,7 +56,7 @@ const Room = ({ user }: { user: UserSession }) => {
       } else {
         joinRoom({
           roomId,
-          userId: user.id,
+          userId: user.userId,
           email: user.email,
           nickname: user.nickname,
         });
@@ -73,23 +75,51 @@ const Room = ({ user }: { user: UserSession }) => {
     };
   }, []);
 
-  useUpdateEffect(() => {
-    console.log('myStream updated:', myStream);
-    if (myStream && peers.length === 0) {
-      peerJoin({ roomId: roomId });
-      afterUpdateStream(`${user.id}`, myStream, peers, dispatch);
-    }
-  }, [myStream]);
+  // useUpdateEffect(() => {
+  //   console.log('myStream updated:', myStream);
+  //   if (myStream && peers.length === 0) {
+  //     peerJoin({ roomId: roomId });
+  //     afterUpdateStream(`${user.userId}`, myStream, peers, dispatch);
+  //   }
+  // }, [myStream]);
 
   useUpdateEffect(() => {
-    console.log('peers updated:', peers);
+    clearInterval(streamIntervalRef.current);
+    streamIntervalRef.current = setInterval(() => {
+      if (myStreamInfo.stream) {
+        const videoTrack = myStreamInfo.stream.getVideoTracks()[0];
+        if (videoTrack.readyState === 'ended') {
+          getMedia({
+            video: {
+              ...myStreamInfo.videoTrackconstraints,
+              deviceId: myStreamInfo.videoDeviceId,
+            },
+            audio: {
+              ...myStreamInfo.audioTrackconstraints,
+              deviceId: myStreamInfo.audioDeviceId,
+            },
+          }).then(stream => {
+            dispatch({ type: 'MY_STREAM', payload: stream });
+          });
+        }
+      }
+    }, 100);
+  }, [myStreamInfo]);
+
+  useUpdateEffect(() => {
+    console.log('peers updated:');
     console.log(peers);
   }, [peers]);
 
   useUpdateEffect(() => {
-    if (!currentUsers.find(cUser => cUser.userId === user.id)) {
-      console.log(currentUsers);
-      // router.back();
+    console.log(currentUsers);
+    if (
+      currentUsers.find(cUser => cUser.userId === user.userId)?.streamId &&
+      !peers.find(peer => +peer.userId === user.userId)
+    ) {
+      if (myStreamInfo.stream) {
+        createPeer(`${user.userId}`, myStreamInfo.stream);
+      }
     }
   }, [currentUsers]);
 

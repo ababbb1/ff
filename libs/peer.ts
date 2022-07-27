@@ -1,8 +1,14 @@
 import Peer from 'simple-peer';
 import { returnSignal, sendSignal } from './socket.io';
 
-export const getMedia = async (constraints = { video: true, audio: true }) => {
-  return navigator.mediaDevices.getUserMedia(constraints);
+export const getMedia = async (constraints?: {
+  video: MediaTrackConstraints;
+  audio: MediaTrackConstraints;
+}) => {
+  if (constraints) {
+    return navigator.mediaDevices.getUserMedia(constraints);
+  }
+  return navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 };
 
 export const createPeer = (userId: string, stream: MediaStream) => {

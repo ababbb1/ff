@@ -56,7 +56,7 @@ export default function RoomHint({ user }: Props) {
 
       if (success) {
         hintRegister({
-          userId: user.id,
+          userId: user.userId,
           roomId: roomInfo?.id,
           imageId: id,
         });
@@ -77,7 +77,7 @@ export default function RoomHint({ user }: Props) {
   const handleHintReadyButton = () => {
     hintReady({
       roomId: roomInfo?.id,
-      userId: user.id,
+      userId: user.userId,
     });
   };
 
@@ -94,9 +94,9 @@ export default function RoomHint({ user }: Props) {
       roomInfo?.roomState !== 'hintTime' &&
       currentUsers.every(v => v.hintReady)
     ) {
-      hintTimeStart({ roomId: roomInfo?.id, userId: user.id });
+      hintTimeStart({ roomId: roomInfo?.id, userId: user.userId });
     }
-  }, [currentUsers, roomInfo?.id, roomInfo?.roomState, user.id]);
+  }, [currentUsers, roomInfo?.id, roomInfo?.roomState, user.userId]);
 
   return (
     <>

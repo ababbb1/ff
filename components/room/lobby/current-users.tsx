@@ -7,7 +7,7 @@ export default function CurrentUsers() {
   const { data: user } = useSession();
   const [{ currentUsers, roomInfo, peers }] = useRoomContext();
   const currentUsersExceptMe = currentUsers.filter(
-    currentUser => currentUser.userId !== user?.id,
+    currentUser => currentUser.userId !== user?.userId,
   );
 
   return (

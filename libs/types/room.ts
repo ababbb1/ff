@@ -55,13 +55,21 @@ export interface IPeer {
   peer: any;
 }
 
+export interface StreamInfo {
+  stream: MediaStream | null;
+  videoDeviceId: string;
+  audioDeviceId: string;
+  videoTrackconstraints: MediaTrackConstraints;
+  audioTrackconstraints: MediaTrackConstraints;
+}
+
 export interface RoomState {
   roomInfo: RoomData | null;
   currentUsers: CurrentUser[];
   messageList: MessageInfo[];
   imageList: ImageData[];
   boardImageList: ImageData[];
-  myStream: MediaStream | null;
+  myStreamInfo: StreamInfo;
   peers: IPeer[];
 }
 
@@ -88,6 +96,10 @@ export type RoomStateAction =
   | {
       type: 'BOARD_IMAGE_LIST_PUSH';
       payload: ImageData;
+    }
+  | {
+      type: 'MY_STREAM_INFO';
+      payload: StreamInfo;
     }
   | {
       type: 'MY_STREAM';

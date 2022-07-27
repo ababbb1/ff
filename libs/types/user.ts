@@ -8,7 +8,7 @@ export type Provider =
   | 'facebook';
 
 export declare interface UserSession extends Session {
-  id: number;
+  userId: number;
   email: string;
   exp: number;
   expires: string;

@@ -18,7 +18,7 @@ export default function useRoomMessage(
     if (message) {
       submitMessage({
         message,
-        userId: user?.id,
+        userId: user?.userId,
         roomId: roomInfo?.id,
         at: new Date(),
       });

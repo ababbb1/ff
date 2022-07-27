@@ -20,6 +20,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           const res = await API.post('local/login', credentials);
 
           const token = res.data.token;
+          console.log('jwt decode', jwt_decode(token));
           if (token) {
             return { ...jwt_decode(token), token };
           } else {
@@ -50,10 +51,13 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     ],
     callbacks: {
       async jwt({ token, user, account }) {
+        console.log('token', token);
+        console.log('user', user);
+        console.log('account', account);
         if (user && account)
           return {
             ...token,
-            id: user.sub,
+            userId: user.sub,
             token: user.token,
             nickname: user.nickname || user.name,
             social: user.social,
@@ -78,7 +82,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
               ...session,
               ...token,
               token: _token,
-              id: user.id,
+              userId: user.userId,
               nickname: user.nickname,
               email: user.email,
             };
