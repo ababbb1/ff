@@ -69,7 +69,7 @@ export default function Home({ userSession }: Props) {
           }}
           isActive={searchModal}
         >
-          <RoomSearch />
+          <RoomSearch {...{ setSearchModal }} />
         </ModalLayout>
       </AnimatedTextLayout>
     </Layout>

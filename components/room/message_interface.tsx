@@ -1,109 +1,49 @@
 import useRoomMessage from '../../libs/hooks/room/useRoomMessage';
 import useRoomContext from '../../libs/hooks/room/useRoomContext';
 import { useSession } from 'next-auth/react';
-import PaperPlane from '../svg/lobby/paper-plane';
+import PaperairplaneIcon from '../svg/lobby/paper-airplane';
 import { getItemsFromDateObject, splitByColon } from '../../libs/utils';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import useScrollbar from '../../libs/hooks/room/useScrollbar';
 
 export default function MessageInterface() {
   const { data: userSession } = useSession();
-  const [{ messageList, roomInfo }] = useRoomContext();
+  const [{ messageList }] = useRoomContext();
   const { message, onMessageChange, handleSubmitMessage, handleKeyup } =
-    useRoomMessage(userSession, roomInfo);
+    useRoomMessage();
 
-  const lastMessageRef = useRef<HTMLLIElement>(null);
-  const ulElementRef = useRef<HTMLUListElement>(null);
-  const scrollbarRef = useRef<HTMLDivElement>(null);
-  const scrollThumbRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
 
-  const [isScrollbarVisible, setIsScrollbarVisible] = useState(false);
-
-  const handleMouseEnterUlElement = () => {
-    if (ulElementRef.current) {
-      const ulScrollHeight = ulElementRef.current.scrollHeight;
-      const ulHeight = ulElementRef.current.clientHeight;
-      if (ulScrollHeight > ulHeight) {
-        setIsScrollbarVisible(true);
-      }
-    }
-  };
-
-  const handleMouseLeaveUlElement = () => {
-    setIsScrollbarVisible(false);
-  };
-
-  const handleScrollUlElement = () => {
-    if (
-      ulElementRef.current &&
-      scrollbarRef.current &&
-      scrollThumbRef.current
-    ) {
-      const ulScrollTop = ulElementRef.current.scrollTop;
-      const ulScrollHeight = ulElementRef.current.scrollHeight;
-      const ulHeight = ulElementRef.current.clientHeight;
-      const scrollbarHeight = scrollbarRef.current.offsetHeight;
-
-      const top = (ulScrollTop / ulScrollHeight) * (scrollbarHeight - 6);
-      scrollThumbRef.current.style.top = `${top + 3}px`;
-
-      const height = (ulHeight / ulScrollHeight) * (scrollbarHeight - 6);
-      scrollThumbRef.current.style.height = `${height}px`;
-    }
-  };
+  const { isScrollbarVisible, scrollTargetRef, scrollbarRef, scrollThumbRef } =
+    useScrollbar();
 
   useEffect(() => {
-    if (ulElementRef.current && lastMessageRef.current) {
-      const ulScrollTop = ulElementRef.current.scrollTop;
-      const ulHeight = ulElementRef.current.clientHeight;
-      const ulScrollHeight = ulElementRef.current.scrollHeight;
+    if (scrollTargetRef.current && lastMessageRef.current) {
+      const messageListScrollTop = scrollTargetRef.current.scrollTop;
+      const messageListHeight = scrollTargetRef.current.clientHeight;
+      const ulScrollHeight = scrollTargetRef.current.scrollHeight;
 
       const isLastMessageAtEnd =
         Math.abs(
-          Math.floor(ulScrollTop + ulHeight) - Math.floor(ulScrollHeight),
-        ) < ulHeight;
+          Math.floor(messageListScrollTop + messageListHeight) -
+            Math.floor(ulScrollHeight),
+        ) < messageListHeight;
 
       const isLastMessageMine =
         messageList[messageList.length - 1].user?.userId ===
         userSession?.userId;
 
-      if (isLastMessageAtEnd || isLastMessageMine || ulScrollTop === 0) {
+      if (
+        isLastMessageAtEnd ||
+        isLastMessageMine ||
+        messageListScrollTop === 0
+      ) {
         lastMessageRef.current.scrollIntoView({
           block: 'end',
         });
       }
     }
   }, [messageList]);
-
-  useEffect(() => {
-    if (ulElementRef.current) {
-      ulElementRef.current.addEventListener(
-        'mouseenter',
-        handleMouseEnterUlElement,
-      );
-      ulElementRef.current.addEventListener(
-        'mouseleave',
-        handleMouseLeaveUlElement,
-      );
-      ulElementRef.current.addEventListener('scroll', handleScrollUlElement);
-
-      return () => {
-        if (ulElementRef.current) {
-          ulElementRef.current.removeEventListener(
-            'mouseenter',
-            handleMouseEnterUlElement,
-          );
-          ulElementRef.current.removeEventListener(
-            'mouseenter',
-            handleMouseLeaveUlElement,
-          );
-          ulElementRef.current.removeEventListener(
-            'scroll',
-            handleScrollUlElement,
-          );
-        }
-      };
-    }
-  }, []);
 
   return (
     <div className="w-full h-full flex flex-col text-white">
@@ -123,12 +63,12 @@ export default function MessageInterface() {
           ></div>
         </div>
 
-        <ul
-          ref={ulElementRef}
+        <div
+          ref={scrollTargetRef}
           className={`w-full overflow-y-auto scrollbar-hide flex flex-col px-6 2xl:px-8`}
         >
           {messageList?.map((msgInfo, i) => (
-            <li
+            <div
               ref={i === messageList.length - 1 ? lastMessageRef : null}
               key={`message${i}`}
               className={`flex justify-between w-full`}
@@ -154,9 +94,9 @@ export default function MessageInterface() {
                   {msgInfo.message}
                 </p>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
       <div className="px-6 2xl:px-8 flex grow-[0.4] items-center bg-[#000000b2]">
         <div className="flex items-center gap-2 p-2 w-full border-b-2 border-animate-layout-border">
@@ -168,7 +108,7 @@ export default function MessageInterface() {
             className="w-full bg-transparent focus:outline-none 2xl:text-xl"
           />
           <div onClick={handleSubmitMessage} className="hover:cursor-pointer">
-            <PaperPlane className="w-5 h-5 2xl:w-6 2xl:h-6 text-animate-layout-border hover:text-white hover:translate-x-1 hover:-translate-y-1 transition-all duration-300" />
+            <PaperairplaneIcon className="w-5 h-5 2xl:w-6 2xl:h-6 text-animate-layout-border hover:text-white hover:translate-x-1 hover:-translate-y-1 transition-all duration-300" />
           </div>
         </div>
       </div>

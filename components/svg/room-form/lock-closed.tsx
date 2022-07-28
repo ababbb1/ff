@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function LockClosed({ className }: Props) {
+export default function LockClosedIcon({ className }: Props) {
   return (
     <svg className={className} viewBox="0 0 14 18" fill="none">
       <path

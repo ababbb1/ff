@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function Mic({ className }: Props) {
+export default function MicrophoneIcon({ className }: Props) {
   return (
     <svg className={className} viewBox="0 0 21 20" fill="none">
       <rect

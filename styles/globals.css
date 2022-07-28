@@ -47,7 +47,8 @@ img {
   background: #17ef46;
 }
 
-.episode-selecter .swiper-pagination-bullet-active {
+.episode-selecter .swiper-pagination-bullet-active,
+.hint-page-swiper .swiper-pagination-bullet-active {
   background: #222;
 }
 

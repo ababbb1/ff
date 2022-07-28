@@ -61,7 +61,7 @@ export default function RoomLobby() {
                   </div>
                 ))}
               <div className="absolute bottom-0 w-full h-1/5 border-t-2 border-black">
-                <UserCard {...{ user: userSession }} />
+                {userSession && <UserCard {...{ user: userSession }} />}
               </div>
             </div>
 

@@ -15,17 +15,19 @@ export default function ModalLayout({
   isActive,
 }: Props) {
   useEffect(() => {
-    document.body.style.cssText = `
+    if (isActive) {
+      document.body.style.cssText = `
       position: fixed;
       top: -${window.scrollY}px;
       overflow-y: hidden;
       width: 100%;`;
+    }
     return () => {
       const scrollY = document.body.style.top;
       document.body.style.cssText = '';
       window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
     };
-  }, []);
+  }, [isActive]);
 
   return (
     <div
@@ -34,8 +36,8 @@ export default function ModalLayout({
         if (handleClose) handleClose();
       }}
       className={cls(
-        background === 'dark' ? 'bg-[#000000dd]' : '',
-        'fixed top-0 left-0 w-full flex h-screen justify-center items-center',
+        background === 'dark' ? 'bg-[#000000e6]' : '',
+        'fixed top-0 left-0 w-screen flex h-screen justify-center items-center',
         isActive ? 'opacity-100 z-50' : 'opacity-0 -z-10',
       )}
     >

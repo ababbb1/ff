@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function Star({ className }: Props) {
+export default function StarIcon({ className }: Props) {
   return (
     <svg
       className={className}

@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function Cog({ className }: Props) {
+export default function CogIcon({ className }: Props) {
   return (
     <svg className={className} viewBox="0 0 34 32" fill="none">
       <path

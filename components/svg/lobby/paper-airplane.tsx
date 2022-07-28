@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function PaperPlane({ className }: Props) {
+export default function PaperairplaneIcon({ className }: Props) {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none">
       <path

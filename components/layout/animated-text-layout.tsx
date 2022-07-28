@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import useTimeout from '../../libs/hooks/useTimeout';
-import BorderStar from '../svg/layout/border-star';
+import GlitterIcon from '../svg/layout/glitter';
 
 interface Props {
   children?: React.ReactNode;
@@ -162,16 +162,16 @@ export default function AnimatedTextLayout({ children }: Props) {
       </div>
 
       <div className="absolute top-0 left-0 w-8 h-8 z-20 bg-animate-layout-border flex justify-center items-center p-[7px]">
-        <BorderStar />
+        <GlitterIcon />
       </div>
       <div className="absolute top-0 right-0 w-8 h-8 z-20 bg-animate-layout-border flex justify-center items-center p-[7px]">
-        <BorderStar />
+        <GlitterIcon />
       </div>
       <div className="absolute bottom-0 right-0 w-8 h-8 z-20 bg-animate-layout-border flex justify-center items-center p-[7px]">
-        <BorderStar />
+        <GlitterIcon />
       </div>
       <div className="absolute bottom-0 left-0 w-8 h-8 z-20 bg-animate-layout-border flex justify-center items-center p-[7px]">
-        <BorderStar />
+        <GlitterIcon />
       </div>
 
       <section className="w-full h-full p-8">{children}</section>

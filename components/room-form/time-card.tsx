@@ -3,7 +3,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
-import Triangle from '../svg/room-form/triangle';
+import TriangleIcon from '../svg/room-form/triangle';
 import { RoomFormData } from './room-form';
 
 interface Props {
@@ -69,13 +69,13 @@ export default function TimeCard({
           onClick={handleIncreaseButton}
           className="w-full aspect-square border-t border-black flex justify-center items-center hover:cursor-pointer hover:bg-black hover:text-white"
         >
-          <Triangle className="w-4 h-4 2xl:w-5 2xl:h-5" />
+          <TriangleIcon className="w-4 h-4 2xl:w-5 2xl:h-5" />
         </div>
         <div
           onClick={handleDecreaseButton}
           className="w-full aspect-square border-t border-black flex justify-center items-center hover:cursor-pointer hover:bg-black hover:text-white"
         >
-          <Triangle className="w-4 h-4 2xl:w-5 2xl:h-5 rotate-180" />
+          <TriangleIcon className="w-4 h-4 2xl:w-5 2xl:h-5 rotate-180" />
         </div>
       </div>
     </div>

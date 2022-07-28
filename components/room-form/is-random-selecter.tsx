@@ -1,5 +1,5 @@
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
-import Triangle from '../svg/room-form/triangle';
+import TriangleIcon from '../svg/room-form/triangle';
 import { RoomFormData } from './room-form';
 
 interface Props {
@@ -16,7 +16,7 @@ export default function IsRandomSelecter({ setValue, getValues }: Props) {
         }
         className="absolute top-4 right-4 2xl:top-6 2xl:right-6 hover:cursor-pointer hover:animate-bounce"
       >
-        <Triangle className="w-4 h-4 2xl:w-5 2xl:h-5 rotate-90" />
+        <TriangleIcon className="w-4 h-4 2xl:w-5 2xl:h-5 rotate-90" />
       </div>
 
       <div className="flex flex-col gap-3">

@@ -3,14 +3,14 @@ import { useSession } from 'next-auth/react';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import { CurrentUser } from '../../../libs/types/room';
 import Mic from '../../svg/lobby/mic';
-import Video from '../../svg/lobby/video';
-import Star from '../../svg/lobby/star';
+import VideoIcon from '../../svg/lobby/video';
+import StarIcon from '../../svg/lobby/star';
 import useRoomLobby from '../../../libs/hooks/room/useRoomLobby';
-import VideoChat from '../../svg/lobby/video-chat';
+import VideochatIcon from '../../svg/lobby/video-chat';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import { useRef } from 'react';
 import { kickUser } from '../../../libs/socket.io';
-import Triangle from '../../svg/room-form/triangle';
+import TriangleIcon from '../../svg/room-form/triangle';
 import usePopup from '../../../libs/hooks/room/usePopup';
 import { Session } from 'next-auth';
 
@@ -96,7 +96,7 @@ export default function UserCard({ user, userStream }: Props) {
                     isMe ? 'hover:bg-black hover:text-white' : ''
                   }`}
                 >
-                  <Video className="w-5 h-5 2xl:w-6 2xl:h-6" />
+                  <VideoIcon className="w-5 h-5 2xl:w-6 2xl:h-6" />
                 </div>
                 {isMe ? (
                   <div className="bg-[#000000b2] w-full max-w-[30%] h-full flex items-center justify-center">
@@ -129,7 +129,7 @@ export default function UserCard({ user, userStream }: Props) {
               onClick={handleGetUserStream}
               className="w-full h-full flex justify-center items-center 2xl:text-base hover:cursor-pointer hover:text-white hover:bg-[#000000b2]"
             >
-              <VideoChat className="w-8 h-8 2xl:w-10 2xl:h-10" />
+              <VideochatIcon className="w-8 h-8 2xl:w-10 2xl:h-10" />
             </div>
           )}
 
@@ -146,7 +146,7 @@ export default function UserCard({ user, userStream }: Props) {
                   >
                     <DotsHorizontalIcon className="w-5 h-5 2xl:w-6 2xl:h-6" />
                   </div>
-                  <Triangle
+                  <TriangleIcon
                     className={`absolute top-[100%] left-[50%] translate-y-1 -translate-x-[50%] text-black shadow-md transition-opacity duration-100 w-4 h-4 ${
                       isActive ? 'opacity-100 z-20' : 'opacity-0 -z-10'
                     }`}
@@ -184,9 +184,7 @@ export default function UserCard({ user, userStream }: Props) {
                 ? 'opacity-100 bg-animate-layout-border'
                 : 'opacity-0 -z-10'
             }`}
-          >
-            Ready
-          </div>
+          ></div>
           <div className="flex justify-between z-10">
             <span className="font-hanson-bold text-xl 2xl:text-3xl">
               0
@@ -195,7 +193,7 @@ export default function UserCard({ user, userStream }: Props) {
                 : 0}
             </span>
             {isMaster ? (
-              <Star className="w-4 h-4 2xl:w-5 2xl:h-5 text-black" />
+              <StarIcon className="w-4 h-4 2xl:w-5 2xl:h-5 text-black" />
             ) : null}
           </div>
           <div className="flex justify-between items-center h-fit z-10">

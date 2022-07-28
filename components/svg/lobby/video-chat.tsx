@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function VideoChat({ className }: Props) {
+export default function VideochatIcon({ className }: Props) {
   return (
     <svg className={className} viewBox="0 0 452.388 452.388">
       <g>

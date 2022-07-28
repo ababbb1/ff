@@ -10,6 +10,7 @@ export type UseArrayFilter<T> = (
 ) => void;
 export type UseArrayInsert<T> = (index: number, newItem: T) => void;
 export type UseArrayRemove = (index: number) => void;
+export type UseArrayUnshift<T> = (item: T) => void;
 export type UseArrayClear = () => void;
 
 export default function useArray<T>(defaultArray: T[]) {
@@ -20,7 +21,7 @@ export default function useArray<T>(defaultArray: T[]) {
   };
 
   const pop: UseArrayPop = () => {
-    setArray(prev => prev.slice(0, prev.length - 2));
+    setArray(prev => prev.slice(0, prev.length - 1));
   };
 
   const map: UseArrayMap<T> = fn => {
@@ -35,20 +36,35 @@ export default function useArray<T>(defaultArray: T[]) {
     setArray(prev => [
       ...prev.slice(0, index),
       newItem,
-      ...prev.slice(index + 1, prev.length - 1),
+      ...prev.slice(index + 1, prev.length),
     ]);
   };
 
   const remove: UseArrayRemove = index => {
     setArray(prev => [
       ...prev.slice(0, index),
-      ...prev.slice(index + 1, prev.length - 1),
+      ...prev.slice(index + 1, prev.length),
     ]);
+  };
+
+  const unshift: UseArrayUnshift<T> = item => {
+    setArray(prev => [item, ...prev]);
   };
 
   const clear: UseArrayClear = () => {
     setArray([]);
   };
 
-  return { array, setArray, push, pop, map, filter, insert, remove, clear };
+  return {
+    array,
+    setArray,
+    push,
+    pop,
+    map,
+    filter,
+    insert,
+    unshift,
+    remove,
+    clear,
+  };
 }

@@ -4,7 +4,7 @@ import { ROLES } from '../../../libs/const';
 import usePopup from '../../../libs/hooks/room/usePopup';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import ModalLayout from '../../modal-layout';
-import Cog from '../../svg/lobby/cog';
+import CogIcon from '../../svg/lobby/cog';
 
 interface Props {
   isMaster: boolean;
@@ -44,7 +44,7 @@ export default function StartReadyButton({
     handleClickPopupButton,
   } = usePopup();
 
-  const handleClickCogButton = () => {
+  const handleClickCogIconButton = () => {
     setIsActive(false);
     setIsModalActive(true);
   };
@@ -70,10 +70,10 @@ export default function StartReadyButton({
             isMaster
               ? isAllReady
                 ? 'bg-[#17EF46] hover:cursor-pointer hover:bg-black hover:text-[#17EF46] text-3xl 2xl:text-4xl'
-                : 'bg-white text-2xl 2xl:text-3xl'
+                : 'text-2xl 2xl:text-3xl'
               : amIReady
-              ? 'bg-[#17EF46] hover:cursor-pointer hover:bg-black hover:text-[#17EF46] text-3xl 2xl:text-4xl'
-              : 'bg-black text-[#17EF46] hover:cursor-pointer hover:bg-[#17EF46] hover:text-black hover:black text-3xl 2xl:text-4xl'
+              ? 'bg-[#17EF46] hover:cursor-pointer text-3xl 2xl:text-4xl'
+              : 'bg-black text-[#17EF46] hover:bg-[#17EF46] hover:text-black hover:cursor-pointer hover:black text-3xl 2xl:text-4xl'
           } border-r-2 border-black font-hanson-bold`}
         >
           {isMaster ? (isAllReady ? 'START' : 'WAITING...') : 'READY'}
@@ -81,10 +81,12 @@ export default function StartReadyButton({
         <div className="aspect-square h-full hover:cursor-pointer hover:bg-black hover:text-white relative">
           <div
             ref={isMaster ? popupButtonRef : null}
-            onClick={isMaster ? handleClickPopupButton : handleClickCogButton}
+            onClick={
+              isMaster ? handleClickPopupButton : handleClickCogIconButton
+            }
             className="w-full h-full flex justify-center items-center hover:rotate-90 duration-500"
           >
-            <Cog className="w-7 h-7 2xl:w-8 2xl:h-8" />
+            <CogIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
           </div>
           <div
             ref={popupRef}
@@ -93,7 +95,7 @@ export default function StartReadyButton({
             }`}
           >
             <button
-              onClick={handleClickCogButton}
+              onClick={handleClickCogIconButton}
               className="whitespace-nowrap w-full h-1/2 hover:bg-white hover:text-black p-3"
             >
               역할 선택

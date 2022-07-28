@@ -5,144 +5,56 @@ import 'swiper/css/mousewheel';
 import RoomCard from './room-card';
 import { RoomData } from '../../libs/types/room';
 import { Mousewheel, Scrollbar, Pagination, FreeMode } from 'swiper';
-import { useState } from 'react';
-import { EPISODES } from '../../libs/const';
+import { KeyboardEventHandler, useRef, useState } from 'react';
+import ModalLayout from '../modal-layout';
+import { useRouter } from 'next/router';
 
 interface Props {
   roomList: RoomData[];
 }
 
-export default function RoomList({ roomList }: Props) {
-  const dummy: RoomData[] = [
-    {
-      count: 1,
-      hintReady: false,
-      hintTime: '10',
-      id: 1,
-      isRandom: '0',
-      master: 'master1',
-      password: undefined,
-      reasoningTime: '10',
-      roomState: 'standby',
-      roomUniqueId: 'string',
-      title: '방제목1welkwjelfwelkwaegeawg',
-      userId: 1,
-      episode: EPISODES[0],
-    },
-    {
-      count: 5,
-      hintReady: false,
-      hintTime: '20',
-      id: 2,
-      isRandom: '1',
-      master: 'master2',
-      password: '234',
-      reasoningTime: '10',
-      roomState: '10',
-      roomUniqueId: 'string',
-      title: '방제목2',
-      userId: 1,
-      episode: EPISODES[0],
-    },
-    {
-      count: 1,
-      hintReady: false,
-      hintTime: '12',
-      id: 3,
-      isRandom: '0',
-      master: 'master3',
-      password: undefined,
-      reasoningTime: '20',
-      roomState: '10',
-      roomUniqueId: 'string',
-      title: '방제목3',
-      userId: 1,
-      episode: EPISODES[0],
-    },
-    {
-      count: 1,
-      hintReady: false,
-      hintTime: 'false',
-      id: 4,
-      isRandom: '0',
-      master: 'master1',
-      password: 'undefined',
-      reasoningTime: '10',
-      roomState: '10',
-      roomUniqueId: 'string',
-      title: '방제목4',
-      userId: 1,
-      episode: EPISODES[0],
-    },
-    {
-      count: 1,
-      hintReady: false,
-      hintTime: 'false',
-      id: 5,
-      isRandom: '0',
-      master: 'master1',
-      password: 'undefined',
-      reasoningTime: '10',
-      roomState: '10',
-      roomUniqueId: 'string',
-      title: '방제목5',
-      userId: 1,
-      episode: EPISODES[0],
-    },
-    {
-      count: 1,
-      hintReady: false,
-      hintTime: 'false',
-      id: 6,
-      isRandom: '0',
-      master: 'master1',
-      password: 'undefined',
-      reasoningTime: '10',
-      roomState: '10',
-      roomUniqueId: 'string',
-      title: '방제목6',
-      userId: 1,
-      episode: EPISODES[0],
-    },
-    {
-      count: 1,
-      hintReady: false,
-      hintTime: 'false',
-      id: 7,
-      isRandom: '0',
-      master: 'master1',
-      password: 'undefined',
-      reasoningTime: '10',
-      roomState: '10',
-      roomUniqueId: 'string',
-      title: '방제목7',
-      userId: 1,
-      episode: EPISODES[0],
-    },
-    {
-      count: 1,
-      hintReady: false,
-      hintTime: 'false',
-      id: 8,
-      isRandom: '0',
-      master: 'master1',
-      password: 'undefined',
-      reasoningTime: '10',
-      roomState: '10',
-      roomUniqueId: 'string',
-      title: '방제목8',
-      userId: 1,
-      episode: EPISODES[0],
-    },
-  ];
+export interface ModalPasswordValidateProps {
+  isActive: boolean;
+  roomData?: RoomData;
+}
 
+export default function RoomList({ roomList }: Props) {
+  const router = useRouter();
   const [paginationVisible, setPaginationVisible] = useState(false);
+  const [isModalActive, setIsModalActive] =
+    useState<ModalPasswordValidateProps>({
+      isActive: false,
+    });
+
+  const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const handleSwiperMouseEnter = () => {
     setPaginationVisible(true);
   };
   const handleSwiperMouseLeave = () => {
     setPaginationVisible(false);
+  };
+
+  const handleModalClose = () => {
+    setIsModalActive(prev => ({ ...prev, isActive: false }));
+  };
+
+  const handleKeyup: KeyboardEventHandler<HTMLInputElement> = e => {
+    if (e.key === 'Enter') {
+      validatePassword();
+    }
+  };
+
+  const handleClick = () => {
+    validatePassword();
+  };
+
+  const validatePassword = () => {
+    if (isModalActive.roomData?.password === passwordInputRef.current?.value) {
+      router.push(`/room/${isModalActive.roomData?.id}/lobby`);
+    } else {
+      alert('비밀번호가 일치하지 않습니다.');
+    }
   };
 
   const pagination = {
@@ -167,19 +79,17 @@ export default function RoomList({ roomList }: Props) {
         className="room-list-swiper w-full h-full rounded-tl-xl"
         modules={[Scrollbar, Mousewheel, FreeMode, Pagination]}
       >
-        {dummy.concat(roomList).map((v, i) => (
+        {roomList.map((roomData, i) => (
           <SwiperSlide
             key={`room${i}`}
             className="h-full w-1/3 border-r-2 border-black"
           >
-            <RoomCard roomData={v} />
+            <RoomCard {...{ roomData, setIsModalActive }} />
           </SwiperSlide>
         ))}
         <div
           className={`swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal absolute z-10 bottom-0 w-full pt-[0.18rem] pb-[0.05rem] px-[1px] h-[0.6rem] bg-black ${
-            roomList?.concat(dummy).length > 3 && paginationVisible
-              ? 'flex'
-              : 'hidden'
+            roomList.length > 3 && paginationVisible ? 'flex' : 'hidden'
           }`}
         ></div>
       </Swiper>
@@ -188,6 +98,27 @@ export default function RoomList({ roomList }: Props) {
           아직 방이 없습니다.
         </div>
       ) : null}
+      <ModalLayout
+        background="dark"
+        isActive={isModalActive.isActive}
+        handleClose={handleModalClose}
+      >
+        <div className="w-[30vw] h-fit bg-white px-6 py-4 flex ">
+          <input
+            ref={passwordInputRef}
+            onKeyUp={handleKeyup}
+            type="password"
+            placeholder="비밀번호를 입력해주세요."
+            className="w-full p-2 border-b-2 border-black focus:outline-none"
+          />
+          <button
+            onClick={handleClick}
+            className="h-fulll px-4 whitespace-nowrap bg-black text-white rounded-sm"
+          >
+            확인
+          </button>
+        </div>
+      </ModalLayout>
     </div>
   );
 }

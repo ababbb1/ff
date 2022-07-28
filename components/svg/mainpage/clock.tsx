@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function Clock({ className }: Props) {
+export default function ClockIcon({ className }: Props) {
   return (
     <svg className={className} viewBox="0 0 18 18" fill="none">
       <path

@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function Triangle({ className }: Props) {
+export default function TriangleIcon({ className }: Props) {
   return (
     <svg
       className={className}

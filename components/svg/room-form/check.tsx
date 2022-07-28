@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function Check({ className }: Props) {
+export default function CheckIcon({ className }: Props) {
   return (
     <svg
       className={className}

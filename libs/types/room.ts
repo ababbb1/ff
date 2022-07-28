@@ -1,5 +1,5 @@
+import { Session } from 'next-auth';
 import { Dispatch } from 'react';
-import { UserSession } from './user';
 
 export interface RoomData {
   count: number;
@@ -33,7 +33,7 @@ export interface CurrentUser {
 
 export interface MessageInfo {
   message: string;
-  user: UserSession;
+  user: Session;
   at: string;
 }
 
@@ -43,7 +43,7 @@ export interface UpdateRoomResponse {
 }
 
 export interface ImageData {
-  id: string;
+  id: string | null;
   x: number;
   y: number;
   isDropped: boolean;

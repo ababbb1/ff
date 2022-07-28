@@ -23,16 +23,18 @@ import { createPeer, getMedia } from '../../../libs/peer';
 import { Session } from 'next-auth';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 
-const RoomHint = dynamic(() => import('../../../components/room/room-hint'), {
-  ssr: false,
-});
+const RoomHint = dynamic(
+  () => import('../../../components/room/hint/room-hint'),
+  {
+    ssr: false,
+  },
+);
 const RoomReasoning = dynamic(
   () => import('../../../components/room/reasoning/room-reasoning'),
   { ssr: false },
 );
 
 const Room = ({ userSession }: { userSession: Session }) => {
-  console.log('userSession:', userSession);
   const router = useRouter();
   const roomId = router.query.id;
   const roomUniqueId = router.query.roomUniqueId;
@@ -43,6 +45,7 @@ const Room = ({ userSession }: { userSession: Session }) => {
   const streamIntervalRef = useRef<NodeJS.Timer>();
 
   const onBeforeUnload = () => {
+    console.log(userSession.userId);
     exitRoom({ roomId: router.query.id, userId: userSession.userId });
     socketRemoveAllListeners();
   };
@@ -111,6 +114,7 @@ const Room = ({ userSession }: { userSession: Session }) => {
   }, [peers]);
 
   useUpdateEffect(() => {
+    console.log(userSession);
     console.log(currentUsers);
     if (
       currentUsers.find(cUser => cUser.userId === userSession.userId)

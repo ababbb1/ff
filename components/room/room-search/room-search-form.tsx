@@ -39,7 +39,7 @@ export default function RoomSearchForm({
   };
 
   return (
-    <div className="w-full justify-center items-center flex">
+    <div className="w-full">
       <form
         onSubmit={handleSubmit(onValid)}
         className="flex flex-col items-center gap-4 px-4 pt-24 w-full max-w-sm"

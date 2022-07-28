@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { useEffect, useRef } from 'react';
 import useToggle from '../../../libs/hooks/useToggle';
-import Mic from '../../svg/lobby/mic';
+import MicroPhoneIcon from '../../svg/lobby/mic';
 import Video from '../../svg/lobby/video';
 
 interface Props {
@@ -22,7 +22,7 @@ export default function MyDeviceButton({ type }: Props) {
     type === 'VIDEO' ? (
       <Video className={symbolClassName} />
     ) : (
-      <Mic className={symbolClassName} />
+      <MicroPhoneIcon className={symbolClassName} />
     );
 
   // const deviceKind = type === 'VIDEO' ? 'videoinput' : 'audioinput';

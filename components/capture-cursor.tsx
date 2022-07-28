@@ -3,20 +3,14 @@ import { cls, imagedataToImageUrl } from '../libs/utils';
 import html2canvas from 'html2canvas';
 
 interface Props {
-  width: number;
-  height: number;
   target?: RefObject<HTMLElement>;
   onCapture: (imgUrl: string) => unknown | void;
   isActive: boolean;
 }
 
-export default function CaptureCursor({
-  width,
-  height,
-  target,
-  onCapture,
-  isActive,
-}: Props) {
+export default function CaptureCursor({ target, onCapture, isActive }: Props) {
+  const width = 480;
+  const height = 360;
   const bg = useRef<HTMLDivElement>(null);
   const flash = useRef<HTMLDivElement>(null);
 
@@ -24,6 +18,7 @@ export default function CaptureCursor({
     if (flash.current) flash.current.style.display = 'block';
 
     setTimeout(async () => {
+      const DPR = window.devicePixelRatio;
       if (bg.current) bg.current.style.display = 'none';
       if (flash.current) flash.current.style.display = 'none';
       const canvas = await html2canvas(document.body);
@@ -31,14 +26,14 @@ export default function CaptureCursor({
         canvas
           .getContext('2d')
           ?.getImageData(
-            e.pageX - width / 2,
-            e.pageY - height / 2,
-            width,
-            height,
+            Math.round((e.pageX - width / 2) * DPR),
+            Math.round((e.pageY - height / 2) * DPR),
+            Math.round(width * DPR),
+            Math.round(height * DPR),
           ),
       );
       if (imageUrl) onCapture(imageUrl);
-    }, 120);
+    }, 300);
   };
 
   const isOnTarget = (clientX: number, clientY: number): boolean => {
@@ -100,12 +95,29 @@ export default function CaptureCursor({
         onClick={captureEvent}
         className={cls(
           isActive ? 'block' : 'hidden',
-          'text-center box-border border-solid border-[#00000090] fixed z-40 top-0 left-0 w-full h-full hover:cursor-crosshair',
+          'text-center box-border border-solid border-[#00000090] w-screen h-screen fixed z-40 top-0 left-0 hover:cursor-none',
         )}
-      ></div>
+      >
+        <div className="w-full h-full relative">
+          <div className="absolute top-[50%] left-[50%] -translate-x-[50%] translate-y-[50%] w-10 h-[2px] bg-black"></div>
+          <div className="absolute top-[50%] left-[50%] -translate-x-[50%] translate-y-[50%] w-10 h-[2px] rotate-90 bg-black"></div>
+
+          <div className="absolute top-4 left-4 w-28 h-[2px] bg-black"></div>
+          <div className="absolute top-4 left-4 h-28 w-[2px] bg-black"></div>
+
+          <div className="absolute top-4 right-4 w-28 h-[2px] bg-black"></div>
+          <div className="absolute top-4 right-4 h-28 w-[2px] bg-black"></div>
+
+          <div className="absolute bottom-4 left-4 w-28 h-[2px] bg-black"></div>
+          <div className="absolute bottom-4 left-4 h-28 w-[2px] bg-black"></div>
+
+          <div className="absolute bottom-4 right-4 w-28 h-[2px] bg-black"></div>
+          <div className="absolute bottom-4 right-4 h-28 w-[2px] bg-black"></div>
+        </div>
+      </div>
       <div
         ref={flash}
-        className="hidden fixed top-0 left-0 w-full h-screen bg-white"
+        className="hidden fixed top-0 left-0 w-full h-screen bg-[#ffffffef]"
       ></div>
     </>
   );

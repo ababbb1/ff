@@ -20,7 +20,7 @@ export default function TopbarLayout({ children }: Props) {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="py-[1rem] px-[1.5rem] flex justify-between h-[8%] top-0 w-full">
+      <div className="py-[1rem] px-[1.5rem] flex justify-between h-[8%] top-0 w-full border-2 border-black border-b-0">
         <div className="h-full">
           <img
             src="/assets/logo-black-sm.webp"

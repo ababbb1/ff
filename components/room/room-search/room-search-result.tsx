@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { RoomData } from '../../libs/types/room';
+import { RoomData } from '../../../libs/types/room';
 import { RoomSearchApiResponse } from './room-search';
 
 export default function RoomSearchResult({

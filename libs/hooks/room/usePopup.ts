@@ -10,7 +10,6 @@ export default function usePopup() {
   };
 
   const onClickDocument = (e: MouseEvent) => {
-    console.log(e.target);
     if (popupButtonRef.current && popupRef.current) {
       if (
         !e.composedPath().includes(popupButtonRef.current) &&

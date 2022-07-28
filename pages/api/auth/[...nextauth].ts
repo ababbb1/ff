@@ -62,6 +62,8 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         else return token;
       },
 
+      // eslint-disable-next-line
+      // @ts-ignore:next-line
       async session({ session, token }) {
         console.log('session', session);
         console.log('token', token);
@@ -80,7 +82,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
               ...session,
               ...token,
               token: _token,
-              userId: user.userId,
+              userId: user.id,
               nickname: user.nickname,
               email: user.email,
             };

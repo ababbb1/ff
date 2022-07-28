@@ -2,7 +2,7 @@ interface Props {
   className?: string;
 }
 
-export default function Video({ className }: Props) {
+export default function VideoIcon({ className }: Props) {
   return (
     <svg className={className} viewBox="0 0 21 21" fill="none">
       <rect

@@ -10,7 +10,7 @@ import TimeCard from './time-card';
 import useToggle from '../../libs/hooks/useToggle';
 import LockClosed from '../svg/room-form/lock-closed';
 import LockOpen from '../svg/room-form/lock-open';
-import Check from '../svg/room-form/check';
+import CheckIcon from '../svg/room-form/check';
 import IsRandomSelecter from './is-random-selecter';
 
 interface Props {
@@ -141,7 +141,7 @@ export default function RoomForm({
             autoComplete="off"
             maxLength={24}
           />
-          <Check
+          <CheckIcon
             className={`w-5 h-5 2xl:w-7 2xl:h-7 ${
               errors.title?.message || !watch('title')
                 ? 'text-gray-500'
@@ -235,7 +235,7 @@ export default function RoomForm({
                 maxLength={8}
               />
               {isPrivate ? (
-                <Check
+                <CheckIcon
                   className={`w-5 h-5 2xl:w-7 2xl:h-7 ${
                     errors.password?.message || !watch('password')
                       ? 'text-gray-500'
