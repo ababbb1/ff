@@ -112,7 +112,9 @@ export default function EpisodeSelecter({
           <div
             className={`swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal flex w-[10rem] h-[6px] bg-gray-100 border border-white `}
           ></div>
-          <span>{`0${EPISODES.length}`}</span>
+          <span>{`0${
+            initEpisode ? EPISODES.length - 1 : EPISODES.length
+          }`}</span>
         </div>
         {/* </div> */}
       </Swiper>

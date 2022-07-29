@@ -66,12 +66,12 @@ export default function RoomLobby() {
             </div>
 
             <div className="w-1/2 flex flex-col border-l-2 border-black">
-              <div className="w-full h-[86.6%]">
+              <div className="w-full h-[86.66%]">
                 <MessageInterface />
               </div>
 
               <div
-                className={`w-full h-[13.4%] border-black border-t-2  disable-dragging`}
+                className={`w-full h-[13.33%] border-black border-t-2  disable-dragging`}
               >
                 <StartReadyButton
                   {...{

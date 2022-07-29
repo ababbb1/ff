@@ -47,9 +47,12 @@ img {
   background: #17ef46;
 }
 
-.episode-selecter .swiper-pagination-bullet-active,
 .hint-page-swiper .swiper-pagination-bullet-active {
   background: #222;
+}
+
+.episode-selecter .swiper-pagination-bullet-active {
+  background: #17ef46;
 }
 
 /* .swiper-pagination-fraction {

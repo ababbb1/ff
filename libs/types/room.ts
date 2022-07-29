@@ -10,7 +10,7 @@ export interface RoomData {
   master: string;
   password?: string;
   reasoningTime: string;
-  roomState: string;
+  roomState: 'standby' | 'hintTime' | 'hintReady' | 'reasoningTime';
   roomUniqueId: string;
   title: string;
   userId: number;
@@ -44,6 +44,7 @@ export interface UpdateRoomResponse {
 
 export interface ImageData {
   id: string | null;
+  userId: number;
   x: number;
   y: number;
   isDropped: boolean;

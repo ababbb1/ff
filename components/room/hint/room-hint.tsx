@@ -12,6 +12,7 @@ import {
   hintReady,
   hintRegister,
   hintTimeStart,
+  reasoningTime,
 } from '../../../libs/socket.io';
 import { useSession } from 'next-auth/react';
 import HintReadySlide from './hint-ready-slide';
@@ -28,7 +29,7 @@ export default function RoomHint() {
   const IMAGE_LIST_MAX_LENGTH = 10;
   const { data: userSession } = useSession();
 
-  const [{ roomInfo, currentUsers }] = useRoomContext();
+  const [{ roomInfo, currentUsers }, dispatch] = useRoomContext();
 
   const [camera, toggleCamera] = useToggle();
   const [isLoading, toggleIsLoading] = useToggle();
@@ -39,6 +40,7 @@ export default function RoomHint() {
     insert: imageInsert,
     remove: imageRemove,
     push: imagePush,
+    setArray: setCurrentImageList,
   } = useArray<ImageData | null>(Array(IMAGE_LIST_MAX_LENGTH).fill(null));
   const imageCount = currentImageList.filter(x => x).length;
 
@@ -46,6 +48,7 @@ export default function RoomHint() {
   const mapRef = useRef<HTMLDivElement>(null);
   const timeBarRef = useRef<HTMLDivElement>(null);
   const lastImageRef = useRef<HTMLDivElement>(null);
+  const preScrollRef = useRef<HTMLDivElement>(null);
 
   const isHintTime = roomInfo?.roomState === 'hintTime';
 
@@ -57,6 +60,7 @@ export default function RoomHint() {
 
     if (imgURL) {
       toggleIsLoading(true);
+
       const file = base64ToFile(imgURL, 'image');
       const formData = new FormData();
       formData.append('file', file);
@@ -83,6 +87,7 @@ export default function RoomHint() {
 
         imageInsert(imageCount, {
           id,
+          userId: userSession.userId,
           x: 0,
           y: 0,
           isDropped: false,
@@ -114,12 +119,26 @@ export default function RoomHint() {
     setIsOverview(false);
   };
 
+  const handleGoNextPage = () => {
+    const resultImageList = currentImageList.filter(x => x);
+    dispatch({ type: 'IMAGE_LIST', payload: resultImageList as ImageData[] });
+
+    if (roomInfo) {
+      reasoningTime({ roomId: roomInfo.id });
+      router.replace(`/room/${roomInfo.id}/reasoning`);
+    }
+  };
+
+  const handleClickDeleteAll = () => {
+    setCurrentImageList(Array(IMAGE_LIST_MAX_LENGTH).fill(null));
+  };
+
   useEffect(() => {
     setIsOverview(true);
 
     if (roomInfo && timeBarRef.current) {
       const convertedHintTime = +roomInfo.hintTime * 60;
-      timeBarRef.current.style.transition = `width ${convertedHintTime}s`;
+      timeBarRef.current.style.transition = `width linear ${convertedHintTime}s`;
     }
 
     // if (roomInfo) {
@@ -146,13 +165,13 @@ export default function RoomHint() {
   }, [currentUsers, roomInfo, userSession?.userId]);
 
   useEffect(() => {
-    if (lastImageRef.current) {
-      lastImageRef.current.scrollIntoView({
+    if (preScrollRef.current && isLoading) {
+      preScrollRef.current.scrollIntoView({
         block: 'end',
         behavior: 'smooth',
       });
     }
-  }, [currentImageList]);
+  }, [isLoading]);
 
   return (
     <>
@@ -176,7 +195,7 @@ export default function RoomHint() {
           <div className="w-24 2xl:w-28 border-r-2 border-black"></div>
           <div className="grow flex justify-between items-center px-4">
             <span className="font-semibold">전체지도</span>
-            <div className="flex gap-10">
+            <div className="flex gap-6">
               <span className="font-semibold">조사시간</span>
               <Timer
                 seconds={roomInfo?.hintTime ? +roomInfo.hintTime * 60 : 0}
@@ -184,7 +203,12 @@ export default function RoomHint() {
                 className="text-[#a11111]"
               />
             </div>
-            <span className="font-semibold opacity-0">전체지도</span>
+            <span
+              onClick={handleGoNextPage}
+              className="font-semibold opacity-0"
+            >
+              전체지도
+            </span>
           </div>
           <div className="w-52 2xl:w-56 border-l-2 border-black flex">
             <div className="grow flex items-center px-3 justify-between">
@@ -197,7 +221,10 @@ export default function RoomHint() {
                 {imageCount}/{IMAGE_LIST_MAX_LENGTH}
               </span>
             </div>
-            <div className="h-full aspect-square flex justify-center items-center border-l-2 border-black hover:cursor-pointer hover:bg-black hover:text-white">
+            <div
+              onClick={handleClickDeleteAll}
+              className="h-full aspect-square flex justify-center items-center border-l-2 border-black hover:cursor-pointer hover:bg-black hover:text-white"
+            >
               <XIcon className="w-6 h-6" strokeWidth={2} />
             </div>
           </div>
@@ -271,7 +298,13 @@ export default function RoomHint() {
                 {currentImageList.map((imageData, index) => (
                   <div
                     key={`image${index}`}
-                    ref={imageData ? lastImageRef : null}
+                    ref={
+                      imageData
+                        ? lastImageRef
+                        : currentImageList[index - 1]
+                        ? preScrollRef
+                        : null
+                    }
                   >
                     <HintImageLayout
                       {...{

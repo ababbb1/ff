@@ -37,7 +37,7 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
     dispatch({ type: 'ADD_MESSAGE', payload: messageInfo });
   });
 
-  socket.on('board_image', (imageInfo: ImageData) => {
+  socket.on('hint_board', (imageInfo: ImageData) => {
     dispatch({ type: 'BOARD_IMAGE_LIST_PUSH', payload: imageInfo });
   });
 };
@@ -95,6 +95,7 @@ export const hintReady = emit('hint_ready');
 export const hintTimeStart = emit('hint_start');
 export const hintPostOnBoard = emit('hint_board');
 export const kickUser = emit('kick_user');
+export const reasoningTime = emit('reasoning_time');
 
 export const streamEmit = emit('stream');
 export const peerJoin = emit('peer_join');

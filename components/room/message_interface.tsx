@@ -6,16 +6,31 @@ import { getItemsFromDateObject, splitByColon } from '../../libs/utils';
 import { useEffect, useRef } from 'react';
 import useScrollbar from '../../libs/hooks/room/useScrollbar';
 
-export default function MessageInterface() {
+interface Props {
+  scrollDownControl?: boolean;
+  scrollDownControlDelay?: number;
+}
+
+export default function MessageInterface({
+  scrollDownControl,
+  scrollDownControlDelay = 0,
+}: Props) {
   const { data: userSession } = useSession();
   const [{ messageList }] = useRoomContext();
   const { message, onMessageChange, handleSubmitMessage, handleKeyup } =
     useRoomMessage();
 
   const lastMessageRef = useRef<HTMLDivElement>(null);
+  const messageInputRef = useRef<HTMLInputElement>(null);
 
   const { isScrollbarVisible, scrollTargetRef, scrollbarRef, scrollThumbRef } =
     useScrollbar();
+
+  const handleClickMessageArea = () => {
+    if (messageInputRef.current) {
+      messageInputRef.current.focus();
+    }
+  };
 
   useEffect(() => {
     if (scrollTargetRef.current && lastMessageRef.current) {
@@ -43,14 +58,27 @@ export default function MessageInterface() {
         });
       }
     }
-  }, [messageList]);
+  }, [messageList, scrollTargetRef, userSession?.userId]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (scrollDownControl && lastMessageRef.current) {
+        lastMessageRef.current.scrollIntoView({
+          block: 'end',
+        });
+      }
+    }, scrollDownControlDelay);
+  }, [scrollDownControl, scrollDownControlDelay]);
 
   return (
-    <div className="w-full h-full flex flex-col text-white">
-      <div className="flex items-center px-6 border-b-2 border-black grow-[0.2]">
+    <div
+      onClick={handleClickMessageArea}
+      className="w-full h-full flex flex-col text-white relative pb-24 2xl:pb-28 pt-10 2xl:pt-12"
+    >
+      <div className="absolute top-0 w-full h-10 2xl:h-12 flex items-center px-6 border-b-2 border-black">
         <span className="font-hanson-bold text-black pt-1">Chat</span>
       </div>
-      <div className="relative w-full h-1/2 flex flex-col justify-between gap-4 2xl:gap-6 bg-[#000000b2] grow">
+      <div className="relative w-full h-full flex flex-col justify-between gap-4 2xl:gap-6 bg-[#000000b2]">
         <div
           ref={scrollbarRef}
           className={`absolute top-0 right-0 w-[8px] pl-[2px] h-full bg-[#191919] rounded-full transition-opacity duration-300 ${
@@ -98,9 +126,10 @@ export default function MessageInterface() {
           ))}
         </div>
       </div>
-      <div className="px-6 2xl:px-8 flex grow-[0.4] items-center bg-[#000000b2]">
+      <div className="absolute bottom-0 w-full px-6 2xl:px-8 h-24 2xl:h-28 flex items-center bg-[#000000b2]">
         <div className="flex items-center gap-2 p-2 w-full border-b-2 border-animate-layout-border">
           <input
+            ref={messageInputRef}
             value={message}
             onChange={onMessageChange}
             placeholder="메시지를 입력해주세요."

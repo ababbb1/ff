@@ -114,17 +114,17 @@ const Room = ({ userSession }: { userSession: Session }) => {
   }, [peers]);
 
   useUpdateEffect(() => {
-    console.log(userSession);
+    // console.log(userSession);
     console.log(currentUsers);
-    if (
-      currentUsers.find(cUser => cUser.userId === userSession.userId)
-        ?.streamId &&
-      !peers.find(peer => +peer.userId === userSession.userId)
-    ) {
-      if (myStreamInfo.stream) {
-        createPeer(`${userSession.userId}`, myStreamInfo.stream);
-      }
-    }
+    // if (
+    //   currentUsers.find(cUser => cUser.userId === userSession.userId)
+    //     ?.streamId &&
+    //   !peers.find(peer => +peer.userId === userSession.userId)
+    // ) {
+    //   if (myStreamInfo.stream) {
+    //     createPeer(`${userSession.userId}`, myStreamInfo.stream);
+    //   }
+    // }
   }, [currentUsers]);
 
   useUpdateEffect(() => {
@@ -132,6 +132,10 @@ const Room = ({ userSession }: { userSession: Session }) => {
       dispatch({ type: 'SHIFT_MESSAGE' });
     }
   }, [messageList]);
+
+  useUpdateEffect(() => {
+    console.log(roomInfo);
+  }, [roomInfo]);
 
   if (!roomInfo) return <LoadingScreen fullScreen />;
 
