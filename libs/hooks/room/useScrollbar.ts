@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-export default function useScrollbar() {
+export default function useScrollbar(padding: number) {
   const scrollTargetRef = useRef<HTMLDivElement>(null);
   const scrollbarRef = useRef<HTMLDivElement>(null);
   const scrollThumbRef = useRef<HTMLDivElement>(null);
 
   const [isScrollbarVisible, setIsScrollbarVisible] = useState(false);
 
-  const handleMouseEnterUlElement = () => {
+  const handleMouseEnterTarget = useCallback(() => {
     if (scrollTargetRef.current) {
       const ulScrollHeight = scrollTargetRef.current.scrollHeight;
       const ulHeight = scrollTargetRef.current.clientHeight;
@@ -15,13 +15,13 @@ export default function useScrollbar() {
         setIsScrollbarVisible(true);
       }
     }
-  };
+  }, []);
 
-  const handleMouseLeaveUlElement = () => {
+  const handleMouseLeaveUlElement = useCallback(() => {
     setIsScrollbarVisible(false);
-  };
+  }, []);
 
-  const handleScrollTarget = () => {
+  const handleScrollTarget = useCallback(() => {
     if (
       scrollTargetRef.current &&
       scrollbarRef.current &&
@@ -32,44 +32,48 @@ export default function useScrollbar() {
       const ulHeight = scrollTargetRef.current.clientHeight;
       const scrollbarHeight = scrollbarRef.current.offsetHeight;
 
-      const top = (ulScrollTop / ulScrollHeight) * (scrollbarHeight - 6);
-      scrollThumbRef.current.style.top = `${top + 3}px`;
+      const top =
+        (ulScrollTop / ulScrollHeight) * (scrollbarHeight - padding * 2);
+      scrollThumbRef.current.style.top = `${top + padding}px`;
 
-      const height = (ulHeight / ulScrollHeight) * (scrollbarHeight - 6);
+      const height =
+        (ulHeight / ulScrollHeight) * (scrollbarHeight - padding * 2);
       scrollThumbRef.current.style.height = `${height}px`;
     }
-  };
+  }, []);
 
   useEffect(() => {
-    if (scrollTargetRef.current) {
-      scrollTargetRef.current.addEventListener(
+    const scrollCurrentTargetRef = scrollTargetRef.current;
+
+    if (scrollCurrentTargetRef) {
+      scrollCurrentTargetRef.addEventListener(
         'mouseenter',
-        handleMouseEnterUlElement,
+        handleMouseEnterTarget,
       );
-      scrollTargetRef.current.addEventListener(
+      scrollCurrentTargetRef.addEventListener(
         'mouseleave',
         handleMouseLeaveUlElement,
       );
-      scrollTargetRef.current.addEventListener('scroll', handleScrollTarget);
+      scrollCurrentTargetRef.addEventListener('scroll', handleScrollTarget);
 
       return () => {
-        if (scrollTargetRef.current) {
-          scrollTargetRef.current.removeEventListener(
+        if (scrollCurrentTargetRef) {
+          scrollCurrentTargetRef.removeEventListener(
             'mouseenter',
-            handleMouseEnterUlElement,
+            handleMouseEnterTarget,
           );
-          scrollTargetRef.current.removeEventListener(
+          scrollCurrentTargetRef.removeEventListener(
             'mouseenter',
             handleMouseLeaveUlElement,
           );
-          scrollTargetRef.current.removeEventListener(
+          scrollCurrentTargetRef.removeEventListener(
             'scroll',
             handleScrollTarget,
           );
         }
       };
     }
-  }, []);
+  }, [handleMouseEnterTarget, handleMouseLeaveUlElement, handleScrollTarget]);
 
   return {
     isScrollbarVisible,

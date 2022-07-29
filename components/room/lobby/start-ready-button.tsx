@@ -1,9 +1,5 @@
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
-import { ROLES } from '../../../libs/const';
-import usePopup from '../../../libs/hooks/room/usePopup';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import ModalLayout from '../../modal-layout';
 import CogIcon from '../../svg/lobby/cog';
 
 interface Props {
@@ -33,11 +29,6 @@ export default function StartReadyButton({
   const isAllReady =
     currentUsersExeptMaster.length > 0 &&
     currentUsersExeptMaster.every(cUser => cUser.readyState);
-
-  const handleClickCogIconButton = () => {
-    setIsActive(false);
-    setIsModalActive(true);
-  };
 
   return (
     <div className="flex w-full h-full">

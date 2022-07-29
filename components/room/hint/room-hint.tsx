@@ -53,7 +53,7 @@ export default function RoomHint() {
   const isHintTime = roomInfo?.roomState === 'hintTime';
 
   const { isScrollbarVisible, scrollTargetRef, scrollbarRef, scrollThumbRef } =
-    useScrollbar();
+    useScrollbar(3);
 
   const onCapture = async (imgURL: string) => {
     toggleCamera(false);
@@ -122,6 +122,7 @@ export default function RoomHint() {
   const handleGoNextPage = () => {
     const resultImageList = currentImageList.filter(x => x);
     dispatch({ type: 'IMAGE_LIST', payload: resultImageList as ImageData[] });
+    dispatch({ type: 'CLEAR_MESSAGE', payload: [] });
 
     if (roomInfo) {
       reasoningTime({ roomId: roomInfo.id });

@@ -88,6 +88,10 @@ export type RoomStateAction =
       payload: MessageInfo;
     }
   | {
+      type: 'CLEAR_MESSAGE';
+      payload: MessageInfo[];
+    }
+  | {
       type: 'SHIFT_MESSAGE';
     }
   | {

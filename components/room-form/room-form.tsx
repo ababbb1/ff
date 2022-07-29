@@ -90,20 +90,19 @@ export default function RoomForm({
   }, [isPrivate, setValue]);
 
   useEffect(() => {
-    console.log(watch('isRandom'));
     // eslint-disable-next-line
-    const regExp = /^[1-5][0-9]*$|^[6][0]*$/;
+    const regExp = /^[1-2][0-9]*$|^[3][0]*$/;
     if (!regExp.test(watch('hintTime')) && watch('hintTime') !== '') {
       setValue('hintTime', '10');
     }
     if (!regExp.test(watch('reasoningTime')) && watch('reasoningTime') !== '') {
       setValue('reasoningTime', '10');
     }
-  }, [setValue, watch('hintTime'), watch('reasoningTime')]);
+  }, [setValue, watch]);
 
   useEffect(() => {
-    console.log(getValues('isRandom'));
-  }, [getValues('isRandom')]);
+    console.log(watch('isRandom'));
+  }, [watch('isRandom')]);
 
   return (
     <form

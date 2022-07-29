@@ -125,6 +125,11 @@ const Room = ({ userSession }: { userSession: Session }) => {
     //     createPeer(`${userSession.userId}`, myStreamInfo.stream);
     //   }
     // }
+
+    if (!currentUsers.find(cUser => cUser.userId === userSession.userId)) {
+      alert('방장에의해 추방 당했습니다.');
+      router.back();
+    }
   }, [currentUsers]);
 
   useUpdateEffect(() => {

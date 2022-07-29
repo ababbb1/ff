@@ -8,12 +8,15 @@ interface Props {
 }
 
 export default function IsRandomSelecter({ setValue, getValues }: Props) {
+  const handleClick = () => {
+    console.log(getValues('isRandom'));
+    setValue('isRandom', getValues('isRandom') === '1' ? '0' : '1');
+  };
+
   return (
     <div className="bg-[#D9D9D9] w-full h-full relative p-4 2xl:p-6 disable-dragging">
       <div
-        onClick={() =>
-          setValue('isRandom', getValues('isRandom') === '1' ? '0' : '1')
-        }
+        onClick={handleClick}
         className="absolute top-4 right-4 2xl:top-6 2xl:right-6 hover:cursor-pointer hover:animate-bounce"
       >
         <TriangleIcon className="w-4 h-4 2xl:w-5 2xl:h-5 rotate-90" />

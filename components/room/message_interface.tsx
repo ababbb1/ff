@@ -24,7 +24,7 @@ export default function MessageInterface({
   const messageInputRef = useRef<HTMLInputElement>(null);
 
   const { isScrollbarVisible, scrollTargetRef, scrollbarRef, scrollThumbRef } =
-    useScrollbar();
+    useScrollbar(3);
 
   const handleClickMessageArea = () => {
     if (messageInputRef.current) {
