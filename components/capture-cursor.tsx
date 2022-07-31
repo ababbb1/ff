@@ -1,6 +1,7 @@
 import { MouseEventHandler, RefObject, useEffect, useRef } from 'react';
 import { cls, imagedataToImageUrl } from '../libs/utils';
 import html2canvas from 'html2canvas';
+import { IMAGE_SIZE_HORIZONTAL } from '../libs/const';
 
 interface Props {
   target?: RefObject<HTMLElement>;
@@ -9,8 +10,7 @@ interface Props {
 }
 
 export default function CaptureCursor({ target, onCapture, isActive }: Props) {
-  const width = 480;
-  const height = 360;
+  const [width, height] = IMAGE_SIZE_HORIZONTAL;
   const bg = useRef<HTMLDivElement>(null);
   const flash = useRef<HTMLDivElement>(null);
 

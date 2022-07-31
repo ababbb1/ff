@@ -15,6 +15,8 @@ module.exports = {
         note: "url('/assets/note.webp')",
         'note-sm': "url('/assets/note-sm.webp')",
         'room-card': "url('/assets/room-card.webp')",
+        'hint-info-white': "url('/assets/hint-info-white.webp')",
+        'hint-info-black': "url('/assets/hint-info-black.webp')",
       },
       keyframes: {
         'text-move-right': {

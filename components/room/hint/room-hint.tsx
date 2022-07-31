@@ -15,7 +15,6 @@ import {
   reasoningTime,
 } from '../../../libs/socket.io';
 import { useSession } from 'next-auth/react';
-import HintReadySlide from './hint-ready-slide';
 import CameraIcon from '../../svg/hint/camera';
 import ProfileIcon from '../../svg/hint/profile';
 import NoteIcon from '../../svg/hint/note';
@@ -24,6 +23,7 @@ import useScrollbar from '../../../libs/hooks/room/useScrollbar';
 import useArray from '../../../libs/hooks/useArray';
 import { ImageData } from '../../../libs/types/room';
 import HintImageLayout from './hint-image-layout';
+import HintInfoPreview from './hint-info/hint-preview';
 
 export default function RoomHint() {
   const IMAGE_LIST_MAX_LENGTH = 10;
@@ -33,7 +33,7 @@ export default function RoomHint() {
 
   const [camera, toggleCamera] = useToggle();
   const [isLoading, toggleIsLoading] = useToggle();
-  const [isOverview, setIsOverview] = useState(false);
+  const [isOverview, setIsOverview] = useState(true);
 
   const {
     array: currentImageList,
@@ -135,8 +135,6 @@ export default function RoomHint() {
   };
 
   useEffect(() => {
-    setIsOverview(true);
-
     if (roomInfo && timeBarRef.current) {
       const convertedHintTime = +roomInfo.hintTime * 60;
       timeBarRef.current.style.transition = `width linear ${convertedHintTime}s`;
@@ -181,10 +179,9 @@ export default function RoomHint() {
         isActive={isOverview}
         handleClose={isHintTime ? handleCloseOverviewModal : undefined}
       >
-        <div className="h-[75vh] w-[75vw] bg-white rounded-xl">
-          <HintReadySlide {...{ handleHintReadyButton, isHintTime }} />
-        </div>
+        <HintInfoPreview />
       </ModalLayout>
+
       <div className="w-full h-full flex flex-col disable-dragging">
         <div className="w-full h-2 border-b-2 border-black">
           <div

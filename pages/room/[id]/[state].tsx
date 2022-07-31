@@ -6,7 +6,6 @@ import RoomLobby from '../../../components/room/lobby/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
 import Layout from '../../../components/layout/layout';
-import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import RoomStateProvider from '../../../components/room/room-state-provider';
 import {
@@ -22,6 +21,8 @@ import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import { createPeer, getMedia } from '../../../libs/peer';
 import { Session } from 'next-auth';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
+import ScrollObserver from '../../../components/scroll-observer';
+import DndProvider from '../../../components/dnd-provider';
 
 const RoomHint = dynamic(
   () => import('../../../components/room/hint/room-hint'),
@@ -155,9 +156,11 @@ const Room = ({ userSession }: { userSession: Session }) => {
               </Suspense>
             ) : roomState === 'reasoning' ? (
               <Suspense fallback={<LoadingScreen fullScreen />}>
-                <DndProvider backend={HTML5Backend}>
-                  <RoomReasoning />
-                </DndProvider>
+                <ScrollObserver>
+                  <DndProvider>
+                    <RoomReasoning />
+                  </DndProvider>
+                </ScrollObserver>
               </Suspense>
             ) : (
               <RoomLobby />

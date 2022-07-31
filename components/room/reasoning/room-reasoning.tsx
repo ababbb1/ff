@@ -4,48 +4,64 @@ import { ImageData } from '../../../libs/types/room';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import { hintPostOnBoard } from '../../../libs/socket.io';
 import ModalLayout from '../../modal-layout';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import MessageInterface from '../message_interface';
 import useToggle from '../../../libs/hooks/useToggle';
 import RoundedTriangleIcon from '../../svg/reasoning/rounded-triangle';
 import HintImage from './hint-image';
 import HintBoard from './hint-board';
+import { ScrollContext } from '../../scroll-observer';
+import { DndContext } from '../../dnd-provider';
 
 export default function RoomReasoning() {
   const [{ roomInfo, imageList, boardImageList }, dispatch] = useRoomContext();
   const [isVoteModal, setIsVoteModal] = useState(false);
   const [hintListVisible, toggleHintListVisible] = useToggle();
   const [camVisible, toggleCamVisible] = useToggle();
-  const [dropCoords, setDropCoords] = useState({ x: 0, y: 0 });
+  const [boardScrollX, setBoardScrollX] = useState(0);
+  const [boardScrollY, setBoardScrollY] = useState(0);
+  const [documentDragEndX, setDocumentDragEndX] = useState(0);
+  const [documentDragEndY, setDocumentDragEndY] = useState(0);
+
+  const { draggable, onDropHandler, isDragging } = useContext(DndContext);
 
   const boardRef = useRef<HTMLDivElement>(null);
+  const imageRefs = useRef<HTMLDivElement[]>([]);
 
   // const handleDrop = (item: ImageData, monitor: DropTargetMonitor) => {
-  //   console.log(monitor.getSourceClientOffset());
-  //   const coords = dropCoords;
-  //   const board = boardRef.current;
-  //   if (board && coords) {
-  //     console.log('getClientOffset:', monitor.getClientOffset());
-  //     console.log('drop event:', dropCoords);
-  //     const percentX =
-  //       ((coords.x - board.offsetLeft) / board.offsetWidth) * 100;
-
-  //     const percentY =
-  //       ((coords.y - board.offsetTop) / board.offsetHeight) * 100;
-
-  //     item.isDropped = true;
-  //     item.x = percentX;
-  //     item.y = percentY;
-
-  //     console.log('coord ratio:', percentX, percentY);
-
-  //     const imageListWithoutDroppedItem = imageList.map(v =>
-  //       v.id === item.id ? item : v,
-  //     );
-
-  //     dispatch({ type: 'IMAGE_LIST', payload: imageListWithoutDroppedItem });
-  //     hintPostOnBoard({ imageInfo: item, roomId: roomInfo?.id });
+  //   // console.log('getClientOffset', monitor.getSourceClientOffset());
+  //   const clientOffset = monitor.getClientOffset();
+  //   console.log('dragEndX', documentDragEndX);
+  //   console.log('dragEndY', documentDragEndY);
+  //   if (clientOffset) {
+  //     item.x = clientOffset.x + boardScrollX;
+  //     item.y = clientOffset.y + boardScrollY;
+  //     dispatch({ type: 'BOARD_IMAGE_LIST_PUSH', payload: item });
   //   }
+  //   // const coords = dropCoords;
+  //   // const board = boardRef.current;
+  //   // if (board && coords) {
+  //   //   console.log('getClientOffset:', monitor.getClientOffset());
+  //   //   console.log('drop event:', dropCoords);
+  //   //   const percentX =
+  //   //     ((coords.x - board.offsetLeft) / board.offsetWidth) * 100;
+
+  //   //   const percentY =
+  //   //     ((coords.y - board.offsetTop) / board.offsetHeight) * 100;
+
+  //   //   item.isDropped = true;
+  //   //   item.x = percentX;
+  //   //   item.y = percentY;
+
+  //   //   console.log('coord ratio:', percentX, percentY);
+
+  //   //   const imageListWithoutDroppedItem = imageList.map(v =>
+  //   //     v.id === item.id ? item : v,
+  //   //   );
+
+  //   //   dispatch({ type: 'IMAGE_LIST', payload: imageListWithoutDroppedItem });
+  //   //   hintPostOnBoard({ imageInfo: item, roomId: roomInfo?.id });
+  //   // }
   // };
 
   // const handler = (e: MouseEvent) => {
@@ -53,15 +69,57 @@ export default function RoomReasoning() {
   //   setDropCoords({ x: e.clientX, y: e.clientY });
   // };
 
-  // useEffect(() => {
-  //   document.addEventListener('drop', handler);
-  //   () => document.removeEventListener('drop', handler);
+  // const handleScrollBoard = useCallback(() => {
+  //   const boardContainer = boardContainerRef.current;
+  //   if (boardContainer) {
+  //     setBoardScrollX(boardContainer.scrollLeft);
+  //     setBoardScrollY(boardContainer.scrollTop);
+  //   }
   // }, []);
+
+  // const handleDragEndDocument = useCallback((e: MouseEvent) => {
+  //   setDocumentDragEndX(e.pageX);
+  //   setDocumentDragEndY(e.pageY);
+  // }, []);
+
+  // useEffect(() => {
+  //   const boardContainer = boardContainerRef.current;
+  //   if (boardContainer) {
+  //     boardContainer.addEventListener('scroll', handleScrollBoard);
+  //     return () =>
+  //       boardContainer.removeEventListener('scroll', handleScrollBoard);
+  //   }
+
+  //   document.addEventListener('dragend', handleDragEndDocument);
+  //   return () => {
+  //     const boardContainer = boardContainerRef.current;
+  //     if (boardContainer) {
+  //       boardContainer.removeEventListener('scroll', handleScrollBoard);
+  //     }
+  //     document.removeEventListener('dragend', handleDragEndDocument);
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    if (onDropHandler) {
+      onDropHandler.current = (pageX: number, pageY: number) => {
+        console.log(pageX, pageY);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isDragging) {
+      toggleHintListVisible(false);
+    } else {
+      toggleHintListVisible(true);
+    }
+  }, [isDragging]);
 
   return (
     <>
       <div className="w-full h-full flex">
-        <div className="w-3/4 h-full flex flex-col disable-dragging relative pt-10 2xl:pt-10 pb-10 2xl:pb-12">
+        <div className="w-3/4 h-full flex flex-col disable-dragging relative pt-10 2xl:pt-12 pb-10 2xl:pb-12">
           <div className="absolute top-0 bg-crumpled-paper w-full z-30 h-10 2xl:h-12 border-b-2 border-black flex justify-between items-center">
             <span className="px-8 font-hanson-bold pt-1 text-xl">GAME</span>
             <div className="flex gap-6">
@@ -82,12 +140,11 @@ export default function RoomReasoning() {
             </button>
           </div>
 
-          <div ref={boardRef} className="w-full h-full bg-black">
-            {/* <HintBoard
-              accept={'hint_image'}
-              onDrop={(item, monitor) => handleDrop(item, monitor)}
-              boardImageList={boardImageList}
-            /> */}
+          <div
+            // ref={boardContainerRef}
+            className="w-full h-full bg-black overflow-auto"
+          >
+            <HintBoard boardImageList={boardImageList} />
           </div>
 
           <div
@@ -115,18 +172,18 @@ export default function RoomReasoning() {
               }`}
             >
               <div className="w-full h-full overflow-x-auto flex gap-2 p-3">
-                {imageList.map(({ id, isDropped, previewUrl }, i) =>
-                  id && !isDropped ? (
+                {imageList.map((imageData, index) =>
+                  imageData.id && !imageData.isDropped ? (
                     <div
-                      key={`image${i}`}
+                      key={`image${index}`}
                       className="h-full aspect-square p-1 flex items-center bg-[#00000075]"
                     >
                       <HintImage
                         {...{
-                          id,
+                          draggable,
+                          index,
                           type: 'hint_image',
-                          isDropped,
-                          previewUrl,
+                          imageData,
                           toggleHintListVisible,
                         }}
                       />

@@ -1,5 +1,6 @@
 import { Session } from 'next-auth';
 import { Dispatch } from 'react';
+import { EpisodeInfo } from './game';
 
 export interface RoomData {
   count: number;
@@ -120,8 +121,3 @@ export type RoomStateAction =
     };
 
 export type RoomContextType = [RoomState, Dispatch<RoomStateAction>];
-
-export interface EpisodeInfo {
-  title: string;
-  description: string;
-}
