@@ -126,10 +126,10 @@ const Room = ({ userSession }: { userSession: Session }) => {
     //   }
     // }
 
-    if (!currentUsers.find(cUser => cUser.userId === userSession.userId)) {
-      alert('방장에의해 추방 당했습니다.');
-      router.back();
-    }
+    // if (!currentUsers.find(cUser => cUser.userId === userSession.userId)) {
+    //   alert('방장에의해 추방 당했습니다.');
+    //   router.back();
+    // }
   }, [currentUsers]);
 
   useUpdateEffect(() => {
