@@ -3,6 +3,8 @@ import { splitByColon } from '../../libs/utils';
 import { RoomData } from '../../libs/types/room';
 import RoomList from './room-list';
 import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+import LoadingScreen from '../loading-screen';
 
 interface Props {
   roomList: RoomData[];
@@ -15,8 +17,15 @@ export default function MainpageInterface({
 }: Props) {
   const { data: userSession } = useSession();
 
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  if (!bgLoaded) return <LoadingScreen fullScreen />;
+
   return (
-    <div className="w-full h-full bg-crumpled-paper bg-cover flex flex-col border-b-2 border-black">
+    <div
+      onLoad={() => setBgLoaded(true)}
+      className="w-full h-full bg-crumpled-paper bg-cover flex flex-col border-b-2 border-black"
+    >
       <div className="flex max-h-[20%]">
         <div className="w-1/3 border-l-2 border-r border-b rounded-br-2xl border-black">
           <div className="flex h-full gap-4 px-6 py-4">
