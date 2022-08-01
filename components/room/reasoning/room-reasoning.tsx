@@ -128,7 +128,6 @@ export default function RoomReasoning() {
                 seconds={
                   roomInfo?.reasoningTime ? +roomInfo.reasoningTime * 60 : 0
                 }
-                isActive={roomInfo?.roomState === 'reasoningTime'}
                 className="text-[#a11111]"
               />
             </div>
