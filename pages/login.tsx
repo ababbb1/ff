@@ -8,6 +8,7 @@ import ErrorMessage from '../components/error-message';
 import Link from 'next/link';
 import Layout from '../components/layout/layout';
 import AnimatedTextLayout from '../components/layout/animated-text-layout';
+import API from '../libs/api';
 
 export interface LoginFormData {
   email: string;
@@ -22,11 +23,15 @@ export default function Login() {
   } = useForm<LoginFormData>({ mode: 'onChange' });
 
   const onValid: SubmitHandler<LoginFormData> = async (data: LoginFormData) => {
-    signIn('credentials', {
-      callbackUrl: '/',
+    API.post('local/login', {
       email: data.email,
       password: data.password,
-    });
+    }).then(res => console.log(res.data));
+    // signIn('credentials', {
+    //   callbackUrl: '/',
+    //   email: data.email,
+    //   password: data.password,
+    // });
   };
 
   return (
