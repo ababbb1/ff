@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { HintInfoContentItem, RoleInfo } from '../../../../libs/types/game';
+import { useState } from 'react';
+import { HintInfoContentItem } from '../../../../libs/types/game';
 import TriangleIcon from '../../../svg/room-form/triangle';
 
 interface Props {

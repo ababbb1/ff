@@ -1,32 +1,28 @@
 import Timer from '../../timer';
-import { DropTargetMonitor } from 'react-dnd';
-import { ImageData } from '../../../libs/types/room';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import { hintPostOnBoard } from '../../../libs/socket.io';
 import ModalLayout from '../../modal-layout';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import MessageInterface from '../message_interface';
 import useToggle from '../../../libs/hooks/useToggle';
 import RoundedTriangleIcon from '../../svg/reasoning/rounded-triangle';
 import HintImage from './hint-image';
 import HintBoard from './hint-board';
-import { ScrollContext } from '../../scroll-observer';
 import { DndContext } from '../../dnd-provider';
 
 export default function RoomReasoning() {
-  const [{ roomInfo, imageList, boardImageList }, dispatch] = useRoomContext();
+  const [{ roomInfo, imageList, boardImageList }] = useRoomContext();
   const [isVoteModal, setIsVoteModal] = useState(false);
   const [hintListVisible, toggleHintListVisible] = useToggle();
   const [camVisible, toggleCamVisible] = useToggle();
-  const [boardScrollX, setBoardScrollX] = useState(0);
-  const [boardScrollY, setBoardScrollY] = useState(0);
-  const [documentDragEndX, setDocumentDragEndX] = useState(0);
-  const [documentDragEndY, setDocumentDragEndY] = useState(0);
+  // const [boardScrollX, setBoardScrollX] = useState(0);
+  // const [boardScrollY, setBoardScrollY] = useState(0);
+  // const [documentDragEndX, setDocumentDragEndX] = useState(0);
+  // const [documentDragEndY, setDocumentDragEndY] = useState(0);
 
   const { draggable, onDropHandler, isDragging } = useContext(DndContext);
 
-  const boardRef = useRef<HTMLDivElement>(null);
-  const imageRefs = useRef<HTMLDivElement[]>([]);
+  // const boardRef = useRef<HTMLDivElement>(null);
+  // const imageRefs = useRef<HTMLDivElement[]>([]);
 
   // const handleDrop = (item: ImageData, monitor: DropTargetMonitor) => {
   //   // console.log('getClientOffset', monitor.getSourceClientOffset());

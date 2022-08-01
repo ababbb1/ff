@@ -1,7 +1,4 @@
-import { RefObject, useEffect, useRef } from 'react';
-import { useDrag } from 'react-dnd';
 import { ToggleHandler } from '../../../libs/hooks/useToggle';
-import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import { ImageData } from '../../../libs/types/room';
 import { Draggable } from '../../dnd-provider';
 
@@ -15,9 +12,7 @@ export interface Props {
 
 export default function HintImage({
   draggable,
-  index,
   imageData,
-  type,
   toggleHintListVisible,
 }: Props) {
   // const [{ isDragging, cursor }, drag] = useDrag(

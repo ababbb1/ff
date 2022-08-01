@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ROLES } from '../../../../libs/const';
 import useRoomContext from '../../../../libs/hooks/room/useRoomContext';
 import useTimeout from '../../../../libs/hooks/useTimeout';
 import useUpdateEffect from '../../../../libs/hooks/useUpdateEffect';
 import { hintRoleChoiceTime } from '../../../../libs/socket.io';
-import { RoleInfo } from '../../../../libs/types/game';
 import HintCharacters from './hint-characters';
-import HintInfoContent from './hint-info-content';
 import HintInfoLayout from './hint-info-layout';
 import HintOverview from './hint-overview';
 
@@ -64,7 +62,10 @@ export default function HintInfoPreview() {
           </span>
           <div className="w-full h-full flex gap-4 pt-2 pb-14 2x:pb-16">
             {ROLES.filter(role => role.name !== '장세민').map(role => (
-              <div className="grow h-full p-2 bg-[#e9e9e9] hover:bg-[#adadad] hover:cursor-pointer">
+              <div
+                key={role.name}
+                className="grow h-full p-2 bg-[#e9e9e9] hover:bg-[#adadad] hover:cursor-pointer"
+              >
                 <div className="w-full aspect-square">
                   <img src={role.imageSrc} className="w-full h-full" />
                 </div>

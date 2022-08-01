@@ -1,5 +1,5 @@
 import { XIcon } from '@heroicons/react/outline';
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { PropsWithChildren, useEffect, useRef } from 'react';
 import Timer from '../../../timer';
 
 interface Props extends PropsWithChildren {

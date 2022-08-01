@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Description1 = (
-  <div className="w-full h-full flex">
+  <div key={1} className="w-full h-full flex">
     <div className="p-16 2xl:p-20 h-full">
       <h1 className="font-bold text-xl 2xl:text-2xl whitespace-nowrap">
         대저택에서 발생한
@@ -46,7 +46,7 @@ const Description1 = (
   </div>
 );
 const Description2 = (
-  <div className="w-full h-full flex">
+  <div key={2} className="w-full h-full flex">
     <div className="p-16 2xl:p-20 h-full">
       <h1 className="font-bold text-xl 2xl:text-2xl whitespace-nowrap">
         피해자 X 장세민

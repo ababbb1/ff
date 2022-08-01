@@ -1,8 +1,4 @@
-import { RefObject, useRef } from 'react';
-import { useDrop, DropTargetMonitor } from 'react-dnd';
 import { IMAGE_SIZE_HORIZONTAL } from '../../../libs/const';
-import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import { ImageData } from '../../../libs/types/room';
 
 export interface HintBoardProps {

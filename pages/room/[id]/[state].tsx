@@ -6,7 +6,6 @@ import RoomLobby from '../../../components/room/lobby/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
 import Layout from '../../../components/layout/layout';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import RoomStateProvider from '../../../components/room/room-state-provider';
 import {
   connectRoomSocket,

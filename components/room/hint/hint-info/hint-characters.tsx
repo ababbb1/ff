@@ -5,7 +5,7 @@ import HintInfoContent from './hint-info-content';
 import { PreviewContentType } from './hint-preview';
 
 const descriptions = [
-  <div className="w-full h-full flex">
+  <div key={1} className="w-full h-full flex">
     <div className="p-16 2xl:p-20 h-full">
       <h1 className="font-bold text-xl 2xl:text-2xl whitespace-nowrap">
         인물관계도
@@ -128,7 +128,7 @@ const descriptions = [
       </div>
     </div>
   </div>,
-  <div className="w-full h-full flex">
+  <div key={2} className="w-full h-full flex">
     <div className="py-16 px-10 2xl:py-20 2xl:px-12 h-full">
       <h1 className="font-bold text-2xl 2xl:text-3xl whitespace-nowrap">
         용의자01
@@ -165,7 +165,7 @@ const descriptions = [
       </div>
     </div>
   </div>,
-  <div className="w-full h-full flex">
+  <div key={3} className="w-full h-full flex">
     <div className="py-16 px-10 2xl:px-12 2xl:py-20 h-full">
       <h1 className="font-bold text-2xl 2xl:text-3xl whitespace-nowrap">
         용의자02
@@ -202,7 +202,7 @@ const descriptions = [
       </div>
     </div>
   </div>,
-  <div className="w-full h-full flex">
+  <div key={4} className="w-full h-full flex">
     <div className="py-16 px-10 2xl:px-12 2xl:py-20 h-full">
       <h1 className="font-bold text-2xl 2xl:text-3xl whitespace-nowrap">
         용의자03
@@ -243,7 +243,7 @@ const descriptions = [
       </div>
     </div>
   </div>,
-  <div className="w-full h-full flex">
+  <div key={5} className="w-full h-full flex">
     <div className="py-16 px-10 2xl:px-12 2xl:py-20 h-full">
       <h1 className="font-bold text-2xl 2xl:text-3xl whitespace-nowrap">
         용의자04
@@ -280,7 +280,7 @@ const descriptions = [
       </div>
     </div>
   </div>,
-  <div className="w-full h-full flex">
+  <div key={6} className="w-full h-full flex">
     <div className="py-16 px-10 2xl:px-12 2xl:py-20 h-full">
       <h1 className="font-bold text-2xl 2xl:text-3xl whitespace-nowrap">
         용의자05

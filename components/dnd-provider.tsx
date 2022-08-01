@@ -1,6 +1,5 @@
 import React, {
   MouseEvent,
-  RefObject,
   useCallback,
   useEffect,
   useRef,
@@ -30,10 +29,9 @@ export const DndContext = React.createContext<DndContext>({
 export default function DndProvider({ children }: Props) {
   const targetRefs = useRef<Element[]>([]);
   const onDropHandler = useRef<any>((_: number, __: number) => {
-    return;
+    return _ + __;
   });
   const [isDragging, setIsDragging] = useState(false);
-  const currentDroppable = useRef<any>(null);
 
   const draggableMaker = (): Draggable => {
     let currentIndex = 0;

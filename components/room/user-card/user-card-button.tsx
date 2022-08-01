@@ -1,4 +1,3 @@
-import React from 'react';
 // import Mic from '../../svg/lobby/mic';
 // import { ChevronDownIcon } from '@heroicons/react/outline';
 // import useToggle from '../../../libs/hooks/useToggle';
@@ -15,13 +14,9 @@ import React from 'react';
 //   // ) => (e: ChangeEvent<HTMLInputElement>) => void;
 // }
 
-// export default function UserCardButton({
-//   onClick,
-//   state,
-//   video,
-//   audio,
-//   // onMediaDeviceChange,
-// }: Props) {
+export default function UserCardButton() {
+  return null;
+}
 //   const [deviceListSelecterState, toggleDeviceListSelecterState] = useToggle();
 //   const refContainer = useRef<HTMLDivElement>(null);
 //   const selecterRefContainer = useRef<HTMLButtonElement>(null);

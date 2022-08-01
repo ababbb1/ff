@@ -11,7 +11,6 @@ import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import {
   hintReady,
   hintRegister,
-  hintTimeStart,
   reasoningTime,
 } from '../../../libs/socket.io';
 import { useSession } from 'next-auth/react';
@@ -29,7 +28,7 @@ export default function RoomHint() {
   const IMAGE_LIST_MAX_LENGTH = 10;
   const { data: userSession } = useSession();
 
-  const [{ roomInfo, currentUsers }, dispatch] = useRoomContext();
+  const [{ roomInfo }, dispatch] = useRoomContext();
 
   const [camera, toggleCamera] = useToggle();
   const [isLoading, toggleIsLoading] = useToggle();
@@ -99,12 +98,12 @@ export default function RoomHint() {
     }
   };
 
-  const handleHintReadyButton = () => {
-    hintReady({
-      roomId: roomInfo?.id,
-      userId: userSession?.userId,
-    });
-  };
+  // const handleHintReadyButton = () => {
+  //   hintReady({
+  //     roomId: roomInfo?.id,
+  //     userId: userSession?.userId,
+  //   });
+  // };
 
   const handleClickCameraButton = () => {
     if (
