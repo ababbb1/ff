@@ -1,5 +1,8 @@
 import { XIcon } from '@heroicons/react/outline';
+import { useSession } from 'next-auth/react';
 import { PropsWithChildren, useEffect, useRef } from 'react';
+import useRoomContext from '../../../../libs/hooks/room/useRoomContext';
+import { hintReady } from '../../../../libs/socket.io';
 import Timer from '../../../timer';
 
 interface Props extends PropsWithChildren {
@@ -23,6 +26,8 @@ export default function HintInfoLayout({
   const border = `border-${oppositeColor}`;
   const text = `text-${oppositeColor}`;
 
+  const { data: userSession } = useSession();
+  const [{ roomInfo, currentUsers }] = useRoomContext();
   const timeBarRef = useRef<HTMLDivElement>(null);
 
   const timeBarActive = (timeLimit: number) => {
@@ -36,6 +41,10 @@ export default function HintInfoLayout({
         }
       }, 100);
     }
+  };
+
+  const handleClickReadyButton = () => {
+    hintReady({ userId: userSession?.userId, roomId: roomInfo?.id });
   };
 
   useEffect(() => {
@@ -62,9 +71,27 @@ export default function HintInfoLayout({
           <div className="w-1/3 h-full flex items-center justify-center font-semibold text-xl">
             {title}
           </div>
-          <div className="w-1/3 h-full flex items-center justify-end hover:cursor-pointer">
+          <div className="w-1/3 h-full flex items-center justify-end hover:cursor-pointer gap-4">
             {timer && currentTimeLimit && <Timer seconds={currentTimeLimit} />}
             {closeButon && <XIcon className={`w-6 h-6 2xl:w-7 2x:h-7`} />}
+            {roomInfo?.roomState !== 'roleChoice' && (
+              <div
+                onClick={handleClickReadyButton}
+                className={`font-semibold py-3 px-6 rounded-md hover:bg-animate-layout-border hover:text-black ${
+                  currentUsers.find(
+                    cUser => cUser.userId === userSession?.userId,
+                  )?.hintReady
+                    ? 'bg-animate-layout-border text-black'
+                    : 'bg-black text-animate-layout-border hover:cursor-pointer'
+                }`}
+              >
+                {currentUsers.find(
+                  cUser => cUser.userId === userSession?.userId,
+                )?.hintReady
+                  ? 'Waiting...'
+                  : 'Ready'}
+              </div>
+            )}
           </div>
         </div>
 

@@ -71,7 +71,11 @@ export default function HintInfoContent({ theme, items, savedIndex }: Props) {
         </div>
       </div>
 
-      <div className={`grow h-full bg-hint-info-${theme} bg-cover`}>
+      <div
+        className={`grow h-full bg-cover ${
+          theme === 'white' ? 'bg-hint-info-white' : 'bg-hint-info-black'
+        }`}
+      >
         <div className="w-full h-full">{currentItem.description}</div>
       </div>
 

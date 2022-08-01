@@ -12,6 +12,7 @@ import { kickUser } from '../../../libs/socket.io';
 import TriangleIcon from '../../svg/room-form/triangle';
 import usePopup from '../../../libs/hooks/room/usePopup';
 import { Session } from 'next-auth';
+import { splitByColon } from '../../../libs/utils';
 
 interface Props {
   user: Session | CurrentUser;
@@ -195,7 +196,9 @@ export default function UserCard({ user, userStream }: Props) {
             ) : null}
           </div>
           <div className="flex justify-between items-center h-fit z-10">
-            <span className="font-bold 2xl:text-xl">캐릭터 이름</span>
+            <span className="font-bold 2xl:text-xl whitespace-nowrap overflow-hidden text-ellipsis">
+              {splitByColon(user.nickname, 'name')}
+            </span>
           </div>
         </div>
       </div>

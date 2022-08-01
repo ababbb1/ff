@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, signIn } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import SocialLoginButtons from '../components/socialLoginButtons';
 import { emailCheck } from '../libs/utils';
@@ -7,7 +7,6 @@ import ErrorMessage from '../components/error-message';
 import Link from 'next/link';
 import Layout from '../components/layout/layout';
 import AnimatedTextLayout from '../components/layout/animated-text-layout';
-import API from '../libs/api';
 
 export interface LoginFormData {
   email: string;
@@ -22,15 +21,15 @@ export default function Login() {
   } = useForm<LoginFormData>({ mode: 'onChange' });
 
   const onValid: SubmitHandler<LoginFormData> = async (data: LoginFormData) => {
-    API.post('local/login', {
-      email: data.email,
-      password: data.password,
-    }).then(res => console.log(res.data));
-    // signIn('credentials', {
-    //   callbackUrl: '/',
+    // API.post('local/login', {
     //   email: data.email,
     //   password: data.password,
-    // });
+    // }).then(res => console.log(res.data));
+    signIn('credentials', {
+      callbackUrl: '/',
+      email: data.email,
+      password: data.password,
+    });
   };
 
   return (

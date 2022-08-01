@@ -15,7 +15,7 @@ export interface PreviewContentType {
 }
 
 export default function HintInfoPreview() {
-  const [{ roomInfo }] = useRoomContext();
+  const [{ roomInfo, currentUsers }] = useRoomContext();
   const [content, setContent] = useState<PreviewContentType>({
     name: 'overview',
     index: 0,
@@ -26,7 +26,13 @@ export default function HintInfoPreview() {
     if (roomInfo) {
       hintRoleChoiceTime({ roomId: roomInfo.id });
     }
-  }, 10 * 1000 + 1000);
+  }, 2 * 60 * 1000 + 1000);
+
+  useUpdateEffect(() => {
+    if (currentUsers.every(cUser => cUser.hintReady)) {
+      hintRoleChoiceTime({ roomId: roomInfo?.id });
+    }
+  }, [currentUsers]);
 
   useUpdateEffect(() => {
     if (roomInfo?.roomState === 'roleChoice') {
