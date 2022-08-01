@@ -26,6 +26,7 @@ const onlyMasterIsReady = (currentUsers: CurrentUser[], roomInfo: RoomData) =>
 
 export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
   socket.on('update_room', ({ roomInfo, currentUser }: UpdateRoomResponse) => {
+    console.log('socket update current user', currentUser);
     dispatch({ type: 'ROOM_INFO', payload: roomInfo });
     dispatch({
       type: 'CURRENT_USERS',
