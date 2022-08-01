@@ -13,9 +13,12 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     secret: process.env.SECRET,
     providers: [
       CredentialsProvider({
-        credentials: {},
+        credentials: {
+          email: { type: 'email' },
+          password: { type: 'password' },
+        },
         name: 'Credentials',
-        authorize: async (credentials: Record<string, string> | undefined) => {
+        authorize: async credentials => {
           console.log('credentials', credentials);
           const res = await API.post('local/login', {
             email: credentials?.email,
