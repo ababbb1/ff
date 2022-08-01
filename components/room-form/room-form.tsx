@@ -3,7 +3,7 @@ import 'swiper/css/navigation';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import { cls, roomPasswordCheck } from '../../libs/utils';
-import { EpisodeInfo, RoomData } from '../../libs/types/room';
+import { RoomData } from '../../libs/types/room';
 import { EPISODES } from '../../libs/const';
 import { XIcon } from '@heroicons/react/outline';
 import TimeCard from './time-card';
@@ -12,6 +12,7 @@ import LockClosed from '../svg/room-form/lock-closed';
 import LockOpen from '../svg/room-form/lock-open';
 import CheckIcon from '../svg/room-form/check';
 import IsRandomSelecter from './is-random-selecter';
+import { EpisodeInfo } from '../../libs/types/game';
 
 interface Props {
   onValid: (data: RoomFormData) => void | unknown;
