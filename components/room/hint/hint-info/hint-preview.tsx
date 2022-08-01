@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ROLES } from '../../../../libs/const';
 import useRoomContext from '../../../../libs/hooks/room/useRoomContext';
 import useTimeout from '../../../../libs/hooks/useTimeout';
 import useUpdateEffect from '../../../../libs/hooks/useUpdateEffect';
-import { hintRoleChoiceTime } from '../../../../libs/socket.io';
+import { hintRoleChoiceTime, SocketEmitData } from '../../../../libs/socket.io';
 import HintCharacters from './hint-characters';
 import HintInfoLayout from './hint-info-layout';
 import HintOverview from './hint-overview';
@@ -14,6 +14,8 @@ export interface PreviewContentType {
   index: number;
 }
 
+type RoleChoiceTime = (data?: SocketEmitData | undefined) => void;
+
 export default function HintInfoPreview() {
   const [{ roomInfo, currentUsers }] = useRoomContext();
   const [content, setContent] = useState<PreviewContentType>({
@@ -22,15 +24,21 @@ export default function HintInfoPreview() {
   });
   const [currentTimeLimit, setCurrentTimeLimit] = useState(2 * 60);
 
+  const roleChoiceTimeFxRef = useRef<RoleChoiceTime | null>(hintRoleChoiceTime);
+
   const timeout = useTimeout(() => {
-    if (roomInfo) {
-      hintRoleChoiceTime({ roomId: roomInfo.id });
+    if (roomInfo && roleChoiceTimeFxRef.current) {
+      roleChoiceTimeFxRef.current({ roomId: roomInfo.id });
     }
   }, currentTimeLimit * 1000 + 1000);
 
   useUpdateEffect(() => {
-    if (currentUsers.every(cUser => cUser.hintReady)) {
-      hintRoleChoiceTime({ roomId: roomInfo?.id });
+    if (
+      currentUsers.every(cUser => cUser.hintReady) &&
+      roleChoiceTimeFxRef.current
+    ) {
+      roleChoiceTimeFxRef.current({ roomId: roomInfo?.id });
+      roleChoiceTimeFxRef.current = null;
     }
   }, [currentUsers]);
 
