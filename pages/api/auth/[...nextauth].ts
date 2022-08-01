@@ -16,7 +16,11 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         credentials: {},
         name: 'Credentials',
         authorize: async (credentials: Record<string, string> | undefined) => {
-          const res = await API.post('local/login', credentials);
+          console.log('credentials', credentials);
+          const res = await API.post('local/login', {
+            email: credentials?.email,
+            password: credentials?.password,
+          });
 
           const token = res.data.token;
           console.log('jwt decode', jwt_decode(token));
