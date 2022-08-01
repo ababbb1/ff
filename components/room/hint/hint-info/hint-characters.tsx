@@ -142,7 +142,9 @@ const descriptions = [
           <br />
           한달 전에서야 만나게 된 아버지
         </p>
-        <p className="leading-6 2xl:leading-7">'이게 다 무슨 일이랍니까....'</p>
+        <p className="leading-6 2xl:leading-7">
+          &apos;이게 다 무슨 일이랍니까....&apos;
+        </p>
         <p className="leading-6 2xl:leading-7">
           한 달 전, 뒤늦게 찾아 대저택에 데려온 피해자의 친아들.
           <br />
@@ -160,7 +162,7 @@ const descriptions = [
           <span className="font-bold text-xl 2xl:text-2xl">알리바이</span>
         </div>
         <span className="font-semibold">
-          " 전 제 방에서 자고 있었는데요...? "
+          &quot; 전 제 방에서 자고 있었는데요...? &quot;
         </span>
       </div>
     </div>
@@ -180,7 +182,7 @@ const descriptions = [
           피해자의 유일한 피붙이였던 외손녀
         </p>
         <p className="leading-6 2xl:leading-7">
-          '제 유일한 가족이었죠. 저를 많이 아끼고 예뻐해 주셨는데...'
+          &apos;제 유일한 가족이었죠. 저를 많이 아끼고 예뻐해 주셨는데...&apos;
         </p>
         <p className="leading-6 2xl:leading-7">
           금수저 물고 태어나 허영심과 사치가 심한 부잣집 공주님.
@@ -195,9 +197,9 @@ const descriptions = [
           <span className="font-bold text-xl 2xl:text-2xl">알리바이</span>
         </div>
         <span className="font-semibold">
-          " 제가 원래 야행성이라 좀 늦게 자는 편이거든요...
+          &quot; 제가 원래 야행성이라 좀 늦게 자는 편이거든요...
           <br />그 시간이면 2층 제 방에서 음악도 듣다 영화도 보다 그러고
-          있었어요. "
+          있었어요. &quot;
         </span>
       </div>
     </div>
@@ -217,9 +219,9 @@ const descriptions = [
           일하고 있는 전문 간병인
         </p>
         <p className="leading-6 2xl:leading-7">
-          '작가님께서 좀 까다로운 편이시라...
+          &apos;작가님께서 좀 까다로운 편이시라...
           <br />
-          그걸 맞출 수 있는 사람은 저뿐이었죠.'
+          그걸 맞출 수 있는 사람은 저뿐이었죠.&apos;
         </p>
         <p className="leading-6 2xl:leading-7">
           피해자의 음식, 건강 등을 전반적으로 케어해 왔음.
@@ -234,11 +236,11 @@ const descriptions = [
           <span className="font-bold text-xl 2xl:text-2xl">알리바이</span>
         </div>
         <span className="font-semibold">
-          " 작가님께서 항상 2시쯤부터 반신욕을 하시거든요.
+          &quot; 작가님께서 항상 2시쯤부터 반신욕을 하시거든요.
           <br />
           저는 나가 있다가 3시쯤 마무리하곤 했는데...
           <br />
-          오늘은 평소보다 조금 늦게 3시 반쯤 정리하러 갔더니 이렇게... "
+          오늘은 평소보다 조금 늦게 3시 반쯤 정리하러 갔더니 이렇게... &quot;
         </span>
       </div>
     </div>
@@ -256,11 +258,11 @@ const descriptions = [
           3년째 일하고 있는 피해자의 개인 변호사
         </p>
         <p className="leading-6 2xl:leading-7">
-          '작가님께서 워낙 완벽하신 편이라
+          &apos;작가님께서 워낙 완벽하신 편이라
           <br />
           저는 서포트해드리는 정도로 돕고 있었고...
           <br />
-          신뢰가 두터운 편이었죠. 그런 저를 의심하시는 겁니까?'
+          신뢰가 두터운 편이었죠. 그런 저를 의심하시는 겁니까?&apos;
         </p>
         <p className="leading-6 2xl:leading-7">
           대저택의 별채에서 머물며 피해자의 법적 사항들을 관리하고 있음.
@@ -275,7 +277,7 @@ const descriptions = [
           <span className="font-bold text-xl 2xl:text-2xl">알리바이</span>
         </div>
         <span className="font-semibold">
-          " 일찍 자는 타입은 아니라서... 별채에서 일하고 있었습니다. "
+          &quot; 일찍 자는 타입은 아니라서... 별채에서 일하고 있었습니다. &quot;
         </span>
       </div>
     </div>
@@ -290,9 +292,9 @@ const descriptions = [
     <div className="text-sm 2xl:text-base py-16 pl-10 2xl:py-20 pr-8 2xl:pr-8 h-full grow flex flex-col gap-12 2xl:gap-14">
       <div className="pl-2 2xl:pl-4 flex flex-col gap-4 2xl:gap-6">
         <p className="leading-6 2xl:leading-7">
-          '작가님께서 새로 집필하는 소설 관련해 자문하러 온 손님입니다.
+          &apos;작가님께서 새로 집필하는 소설 관련해 자문하러 온 손님입니다.
           <br />
-          오늘이 떠나는 날이었는데... 하필 저렇게 되시다니...'
+          오늘이 떠나는 날이었는데... 하필 저렇게 되시다니...&apos;
         </p>
         <p className="leading-6 2xl:leading-7">
           피해자의 차기작 집필과 자문을 위해
@@ -309,7 +311,8 @@ const descriptions = [
           <span className="font-bold text-xl 2xl:text-2xl">알리바이</span>
         </div>
         <span className="font-semibold">
-          " 전 그냥 손님방에 있었죠. 그러다 3시 30분에 비명 소리를 들었고요. "
+          &quot; 전 그냥 손님방에 있었죠. 그러다 3시 30분에 비명 소리를
+          들었고요. &quot;
         </span>
       </div>
     </div>

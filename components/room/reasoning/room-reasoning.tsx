@@ -1,7 +1,7 @@
 import Timer from '../../timer';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import ModalLayout from '../../modal-layout';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import MessageInterface from '../message_interface';
 import useToggle from '../../../libs/hooks/useToggle';
 import RoundedTriangleIcon from '../../svg/reasoning/rounded-triangle';

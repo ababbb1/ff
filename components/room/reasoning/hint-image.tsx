@@ -10,11 +10,7 @@ export interface Props {
   toggleHintListVisible: ToggleHandler;
 }
 
-export default function HintImage({
-  draggable,
-  imageData,
-  toggleHintListVisible,
-}: Props) {
+export default function HintImage({ draggable, imageData }: Props) {
   // const [{ isDragging, cursor }, drag] = useDrag(
   //   () => ({
   //     type,
