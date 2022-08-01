@@ -3,8 +3,6 @@ import { splitByColon } from '../../libs/utils';
 import { RoomData } from '../../libs/types/room';
 import RoomList from './room-list';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
-import LoadingScreen from '../loading-screen';
 
 interface Props {
   roomList: RoomData[];
