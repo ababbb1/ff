@@ -1,11 +1,11 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import { UserSession } from '../../libs/types/user';
 import AnimatedTextLayout from '../../components/layout/animated-text-layout';
 import Layout from '../../components/layout/layout';
 import { signOut } from 'next-auth/react';
+import { Session } from 'next-auth';
 
-export default function Mypage({ user }: { user: UserSession }) {
+export default function Mypage({ user }: { user: Session }) {
   const handleLogout = () => {
     alert('로그아웃 되었습니다.');
     signOut();
