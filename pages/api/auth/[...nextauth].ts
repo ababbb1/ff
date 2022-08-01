@@ -94,7 +94,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     pages: {
       signIn: '/',
       signOut: '/',
-      error: '/error/login-error',
+      // error: '/error/login-error',
     },
   });
 }
