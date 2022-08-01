@@ -92,6 +92,7 @@ export const gameStart = emit('game_start');
 export const gameReady = emit('ready_state');
 export const hintRegister = emit('hint_register');
 export const hintReady = emit('hint_ready');
+export const hintRoleChoiceTime = emit('role_choice_time');
 export const hintTimeStart = emit('hint_start');
 export const hintPostOnBoard = emit('hint_board');
 export const kickUser = emit('kick_user');

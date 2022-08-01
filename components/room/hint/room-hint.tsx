@@ -147,21 +147,18 @@ export default function RoomHint() {
     // }
   }, []);
 
-  useEffect(() => {
-    if (roomInfo) {
-      if (
-        roomInfo.roomState !== 'hintTime' &&
-        currentUsers.every(v => v.hintReady)
-      ) {
-        hintTimeStart({ roomId: roomInfo.id, userId: userSession?.userId });
-        setIsOverview(false);
+  // useEffect(() => {
+  //   if (roomInfo) {
+  //     if (roomInfo.roomState !== 'hintTime') {
+  //       hintTimeStart({ roomId: roomInfo.id, userId: userSession?.userId });
+  //       setIsOverview(false);
 
-        if (timeBarRef.current) {
-          timeBarRef.current.style.width = '0';
-        }
-      }
-    }
-  }, [currentUsers, roomInfo, userSession?.userId]);
+  //       if (timeBarRef.current) {
+  //         timeBarRef.current.style.width = '0';
+  //       }
+  //     }
+  //   }
+  // }, [currentUsers, roomInfo, userSession?.userId]);
 
   useEffect(() => {
     if (preScrollRef.current && isLoading) {
@@ -196,8 +193,9 @@ export default function RoomHint() {
             <div className="flex gap-6">
               <span className="font-semibold">조사시간</span>
               <Timer
-                seconds={roomInfo?.hintTime ? +roomInfo.hintTime * 60 : 0}
-                isActive={isHintTime}
+                seconds={
+                  isHintTime && roomInfo?.hintTime ? +roomInfo.hintTime * 60 : 0
+                }
                 className="text-[#a11111]"
               />
             </div>

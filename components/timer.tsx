@@ -1,26 +1,31 @@
 import { useEffect, useState } from 'react';
+import useUpdateEffect from '../libs/hooks/useUpdateEffect';
 
 interface Props {
-  seconds?: number;
-  isActive: boolean;
+  seconds: number;
   className?: string;
 }
 
-export default function Timer({ seconds = 0, isActive, className }: Props) {
-  const [t, setT] = useState<number>(Math.floor(seconds));
+export default function Timer({ seconds, className }: Props) {
+  const [t, setT] = useState<number>(0);
   const h = Math.floor(t / 3600);
   const m = Math.floor((t % 3600) / 60);
   const s = Math.floor((t % 3600) % 60);
 
   useEffect(() => {
-    const decrease =
-      isActive && setInterval(() => setT(prev => prev - 1), 1000);
-    if (!isActive || t < 1) clearInterval(decrease as NodeJS.Timer);
+    setT(seconds);
+  }, [seconds]);
 
+  useUpdateEffect(() => {
+    const decrease = setInterval(() => {
+      setT(prev => prev - 1);
+    }, 1000);
+
+    if (t < 1) clearInterval(decrease as NodeJS.Timer);
     return () => {
       clearInterval(decrease as NodeJS.Timer);
     };
-  }, [isActive, t]);
+  }, [t]);
 
   return (
     <div className={className}>

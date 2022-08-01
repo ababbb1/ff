@@ -18,6 +18,7 @@ export interface RoleInfo {
   gender: '남성' | '여성';
   age: number;
   job: string;
+  description: string;
 }
 
 export interface HintInfoContentItem {

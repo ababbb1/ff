@@ -18,7 +18,7 @@ const Description1 = (
         미스터리한 살인사건
       </h1>
     </div>
-    <div className="text-sm 2xl:text-base py-14 2xl:py-16 h-full grow flex flex-col gap-8 2xl:gap-10">
+    <div className="text-sm 2xl:text-base py-14 2xl:py-20 h-full grow flex flex-col gap-8 2xl:gap-10">
       <p className="leading-7 2xl:leading-9">
         2017년 6월 23일 새벽
         <br />
@@ -54,7 +54,7 @@ const Description2 = (
         (남, 70세)
       </h1>
     </div>
-    <div className="text-sm 2xl:text-base py-14 2xl:py-16 h-full grow flex flex-col gap-8 2xl:gap-10">
+    <div className="text-sm 2xl:text-base py-14 2xl:py-20 h-full grow flex flex-col gap-8 2xl:gap-10">
       <p className="leading-7 2xl:leading-9">
         23년 전 발표한 추리소설 &lt;1588 살인사건&gt; 이
         <br />

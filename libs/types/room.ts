@@ -11,7 +11,12 @@ export interface RoomData {
   master: string;
   password?: string;
   reasoningTime: string;
-  roomState: 'standby' | 'hintTime' | 'hintReady' | 'reasoningTime';
+  roomState:
+    | 'standby'
+    | 'hintTime'
+    | 'hintReady'
+    | 'reasoningTime'
+    | 'roleChoice';
   roomUniqueId: string;
   title: string;
   userId: number;

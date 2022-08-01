@@ -21,6 +21,7 @@ export const ROLES: RoleInfo[] = [
     age: 70,
     job: '추리소설 작가',
     imageSrc: '/assets/jang.png',
+    description: '',
   },
   {
     name: '장아들',
@@ -29,6 +30,7 @@ export const ROLES: RoleInfo[] = [
     age: 21,
     job: '무직',
     imageSrc: '/assets/son.png',
+    description: '장세민의 친아들',
   },
   {
     name: '정손녀',
@@ -37,6 +39,7 @@ export const ROLES: RoleInfo[] = [
     age: 20,
     job: '금수저',
     imageSrc: '/assets/jung.png',
+    description: '장세민의 외손녀',
   },
 
   {
@@ -46,6 +49,7 @@ export const ROLES: RoleInfo[] = [
     age: 41,
     job: '전문 간병인',
     imageSrc: '/assets/park.png',
+    description: '장세민의 간병인',
   },
   {
     name: '홍변호',
@@ -54,6 +58,7 @@ export const ROLES: RoleInfo[] = [
     age: 40,
     job: '변호사',
     imageSrc: '/assets/hong.png',
+    description: '장세민의 변호사',
   },
 
   {
@@ -63,5 +68,6 @@ export const ROLES: RoleInfo[] = [
     age: 45,
     job: '손님',
     imageSrc: '/assets/yang.png',
+    description: '장세민의 손님',
   },
 ];
