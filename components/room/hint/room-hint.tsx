@@ -8,11 +8,7 @@ import { useRouter } from 'next/router';
 import ModalLayout from '../../modal-layout';
 import useToggle from '../../../libs/hooks/useToggle';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import {
-  hintReady,
-  hintRegister,
-  reasoningTime,
-} from '../../../libs/socket.io';
+import { hintRegister, reasoningTime } from '../../../libs/socket.io';
 import { useSession } from 'next-auth/react';
 import CameraIcon from '../../svg/hint/camera';
 import ProfileIcon from '../../svg/hint/profile';
