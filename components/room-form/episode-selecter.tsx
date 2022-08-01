@@ -4,7 +4,7 @@ import { Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { NavigationOptions } from 'swiper/types';
 import { EPISODES } from '../../libs/const';
-import { EpisodeInfo } from '../../libs/types/room';
+import { EpisodeInfo } from '../../libs/types/game';
 
 interface Props {
   initEpisode?: EpisodeInfo;
