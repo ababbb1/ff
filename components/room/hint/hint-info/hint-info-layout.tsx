@@ -95,11 +95,11 @@ export default function HintInfoLayout({
           </div>
         </div>
 
-        {timer && (
+        {currentTimeLimit && (
           <div className="w-full h-2 border-b-2 border-black">
             <div
               ref={timeBarRef}
-              className="h-full w-full bg-animate-layout-border transition-all"
+              className="h-full bg-animate-layout-border transition-all"
             ></div>
           </div>
         )}

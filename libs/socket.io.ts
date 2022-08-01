@@ -12,7 +12,7 @@ import {
 import { API_DOMAIN } from './api';
 import { addPeer, createPeer } from './peer';
 
-type SocketEmitData = { [k: string | number]: unknown };
+export type SocketEmitData = { [k: string | number]: unknown };
 
 const socket = io(API_DOMAIN, {
   transports: ['websocket'],

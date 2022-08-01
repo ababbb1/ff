@@ -26,7 +26,7 @@ export default function HintInfoPreview() {
     if (roomInfo) {
       hintRoleChoiceTime({ roomId: roomInfo.id });
     }
-  }, 2 * 60 * 1000 + 1000);
+  }, currentTimeLimit * 1000 + 1000);
 
   useUpdateEffect(() => {
     if (currentUsers.every(cUser => cUser.hintReady)) {
