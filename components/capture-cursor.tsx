@@ -1,43 +1,39 @@
-import { RefObject, useEffect, useRef } from 'react';
-import { cls, imagedataToImageUrl } from '../libs/client/utils';
+import { MouseEventHandler, RefObject, useEffect, useRef } from 'react';
+import { cls, imagedataToImageUrl } from '../libs/utils';
 import html2canvas from 'html2canvas';
+import { IMAGE_SIZE_HORIZONTAL } from '../libs/const';
 
 interface Props {
-  width: number;
-  height: number;
   target?: RefObject<HTMLElement>;
   onCapture: (imgUrl: string) => unknown | void;
   isActive: boolean;
 }
 
-export default function CaptureCursor({
-  width,
-  height,
-  target,
-  onCapture,
-  isActive,
-}: Props) {
+export default function CaptureCursor({ target, onCapture, isActive }: Props) {
+  const [width, height] = IMAGE_SIZE_HORIZONTAL;
   const bg = useRef<HTMLDivElement>(null);
   const flash = useRef<HTMLDivElement>(null);
 
-  const captureEvent = (e: MouseEvent) => {
+  const captureEvent: MouseEventHandler<HTMLDivElement> = e => {
     if (flash.current) flash.current.style.display = 'block';
+
     setTimeout(async () => {
+      const DPR = window.devicePixelRatio;
+      if (bg.current) bg.current.style.display = 'none';
       if (flash.current) flash.current.style.display = 'none';
       const canvas = await html2canvas(document.body);
-      const imgUrl = imagedataToImageUrl(
+      const imageUrl = imagedataToImageUrl(
         canvas
           .getContext('2d')
           ?.getImageData(
-            e.pageX - width / 2,
-            e.pageY - height / 2,
-            width,
-            height,
+            Math.round((e.pageX - width / 2) * DPR),
+            Math.round((e.pageY - height / 2) * DPR),
+            Math.round(width * DPR),
+            Math.round(height * DPR),
           ),
       );
-
-      if (imgUrl) onCapture(imgUrl);
-    }, 120);
+      if (imageUrl) onCapture(imageUrl);
+    }, 300);
   };
 
   const isOnTarget = (clientX: number, clientY: number): boolean => {
@@ -61,15 +57,18 @@ export default function CaptureCursor({
   const mouseMove = (e: MouseEvent) => {
     if (bg.current) {
       if (isActive && isOnTarget(e.clientX, e.clientY)) {
+        const borderTop = e.clientY - height / 2;
+        const borderRight = window.innerWidth - e.clientX - width / 2;
+        const borderBottom = window.innerHeight - e.clientY - height / 2;
+        const borderLeft = e.clientX - width / 2;
+
+        const calWidth = (n: number) => (n < 0 ? 0 : n);
+
         bg.current.style.display = 'block';
-        bg.current.style.borderTopWidth = `${e.clientY - height / 2}px`;
-        bg.current.style.borderRightWidth = `${
-          window.innerWidth - e.clientX - width / 2
-        }px`;
-        bg.current.style.borderBottomWidth = `${
-          window.innerHeight - e.clientY - height / 2
-        }px`;
-        bg.current.style.borderLeftWidth = `${e.clientX - width / 2}px`;
+        bg.current.style.borderTopWidth = `${calWidth(borderTop)}px`;
+        bg.current.style.borderRightWidth = `${calWidth(borderRight)}px`;
+        bg.current.style.borderBottomWidth = `${calWidth(borderBottom)}px`;
+        bg.current.style.borderLeftWidth = `${calWidth(borderLeft)}px`;
       } else {
         bg.current.style.display = 'none';
       }
@@ -80,13 +79,11 @@ export default function CaptureCursor({
     const captureScreen = bg.current;
     if (captureScreen) {
       document.addEventListener('mousemove', mouseMove);
-      captureScreen.addEventListener('click', captureEvent);
     }
 
     return () => {
       if (captureScreen) {
         document.removeEventListener('mousemove', mouseMove);
-        captureScreen.removeEventListener('click', captureEvent);
       }
     };
   });
@@ -95,14 +92,32 @@ export default function CaptureCursor({
     <>
       <div
         ref={bg}
+        onClick={captureEvent}
         className={cls(
           isActive ? 'block' : 'hidden',
-          'text-center box-border border-solid border-[#00000090] fixed z-40 top-0 left-0 w-full h-full hover:cursor-crosshair',
+          'text-center box-border border-solid border-[#00000090] w-screen h-screen fixed z-40 top-0 left-0 hover:cursor-none',
         )}
-      ></div>
+      >
+        <div className="w-full h-full relative">
+          <div className="absolute top-[50%] left-[50%] -translate-x-[50%] translate-y-[50%] w-10 h-[2px] bg-black"></div>
+          <div className="absolute top-[50%] left-[50%] -translate-x-[50%] translate-y-[50%] w-10 h-[2px] rotate-90 bg-black"></div>
+
+          <div className="absolute top-4 left-4 w-28 h-[2px] bg-black"></div>
+          <div className="absolute top-4 left-4 h-28 w-[2px] bg-black"></div>
+
+          <div className="absolute top-4 right-4 w-28 h-[2px] bg-black"></div>
+          <div className="absolute top-4 right-4 h-28 w-[2px] bg-black"></div>
+
+          <div className="absolute bottom-4 left-4 w-28 h-[2px] bg-black"></div>
+          <div className="absolute bottom-4 left-4 h-28 w-[2px] bg-black"></div>
+
+          <div className="absolute bottom-4 right-4 w-28 h-[2px] bg-black"></div>
+          <div className="absolute bottom-4 right-4 h-28 w-[2px] bg-black"></div>
+        </div>
+      </div>
       <div
         ref={flash}
-        className="hidden fixed top-0 left-0 w-full h-screen bg-white"
+        className="hidden fixed top-0 left-0 w-full h-screen bg-[#ffffffef]"
       ></div>
     </>
   );

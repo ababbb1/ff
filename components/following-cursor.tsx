@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { fromEvent, merge } from 'rxjs';
-import { cls } from '../libs/client/utils';
+import { cls } from '../libs/utils';
 
 interface Props {
   visible: boolean;

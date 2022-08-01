@@ -2,12 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+*:not(.font-hanson-bold) {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', sans-serif;
+}
+
+@font-face {
+  font-family: 'Hanson-Bold';
+  src: url('/fonts/Hanson-Bold.woff');
+}
+
+.font-hanson-bold {
+  font-family: 'Hanson-Bold';
+  letter-spacing: 0.05rem;
+}
+
 html,
 body {
+  background: black;
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 a {
@@ -15,6 +32,34 @@ a {
   text-decoration: none;
 }
 
-* {
-  box-sizing: border-box;
+img {
+  -webkit-user-drag: none;
+}
+
+.disable-dragging {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.room-list-swiper .swiper-pagination-bullet-active {
+  background: #17ef46;
+}
+
+.hint-page-swiper .swiper-pagination-bullet-active {
+  background: #222;
+}
+
+.episode-selecter .swiper-pagination-bullet-active {
+  background: #17ef46;
+}
+
+/* .swiper-pagination-fraction {
+  z-index: 20 !important;
+  bottom: 6px !important;
+} */
+
+.current-users-card:nth-child(4) {
+  border-bottom-right-radius: 1rem;
 }

@@ -1,71 +1,76 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import Layout from '../components/layout';
-import AnimatedTextLayout from '../components/animated-text-layout';
-import Link from 'next/link';
-import ModalLayout from '../components/modal-layout';
-import { RoomData, UserSession } from '../libs/types/user';
-import API, { authHeaders } from '../libs/client/api';
+import Layout from '../components/layout/layout';
+import AnimatedTextLayout from '../components/layout/animated-text-layout';
+import API, { authHeaders } from '../libs/api';
 import { useQuery } from 'react-query';
 import LoadingScreen from '../components/loading-screen';
-import RoomSearch from '../components/room/room-search';
 import { useState } from 'react';
+import MainpageInterface from '../components/mainpage/mainpage-interface';
+import ModalLayout from '../components/modal-layout';
+import { Session } from 'next-auth';
+import RoomSearch from '../components/room/room-search/room-search';
 
 interface Props {
-  user: UserSession;
-  initRoomList: RoomData[];
+  userSession: Session;
 }
 
-export default function Home({ user }: Props) {
+export default function Home({ userSession }: Props) {
   const { isLoading, data } = useQuery(
     'getRoomListAll',
-    () => API.get('rooms', { headers: authHeaders(user.token) }),
+    () => API.get('room/list', { headers: authHeaders(userSession.token) }),
     {
       refetchOnWindowFocus: true,
       refetchIntervalInBackground: true,
     },
   );
-  const roomList = data?.data.result.roomList;
 
-  const [searchModal, setSearchModal] = useState<boolean>(false);
+  const roomList = data?.data.result?.roomList || [];
+  const [searchModal, setSearchModal] = useState(false);
+  const [logoLoaded, setLogoLoaded] = useState(false);
 
-  if (isLoading) return <LoadingScreen />;
+  const handleSearchButton = () => {
+    setSearchModal(true);
+  };
+
+  const handleLogoLoaded = () => {
+    setLogoLoaded(true);
+  };
+
+  if (isLoading) return <LoadingScreen fullScreen />;
 
   return (
     <Layout>
       <AnimatedTextLayout>
-        <div>
-          <span>{user.nickname} 님</span>
-          <Link href={'/mypage'}>마이페이지</Link>
-          <div>
-            <div>방목록</div>
-            <ul>
-              {!roomList ? (
-                <div>아직 방이 없습니다.</div>
-              ) : (
-                roomList.map((v: RoomData) => (
-                  <li key={`room${v.id}`} className="w-30 h-20 bg-red-300">
-                    <span>{v.title}</span>
-                    <Link href={`/room/${v.id}/lobby`}>입장</Link>
-                  </li>
-                ))
-              )}
-            </ul>
+        <div className="flex flex-col w-full h-full border-black">
+          <div className="w-full px-32 py-10 h-full max-h-[42%] 2xl:max-h-[45%] flex justify-center items-center">
+            <div
+              className={`transition-all delay-300 duration-1000 ${
+                logoLoaded ? 'opacity-100' : 'opacity-0 -translate-y-4'
+              }`}
+            >
+              <img
+                src="/assets/mainpage-logo.webp"
+                alt="mainpage-logo"
+                onLoad={handleLogoLoaded}
+              />
+            </div>
           </div>
-          <button onClick={() => setSearchModal(!searchModal)}>방찾기</button>
-          <Link href={'/room/create'}>방만들기</Link>
+          <MainpageInterface
+            roomList={roomList}
+            searchButtonHandler={handleSearchButton}
+          />
         </div>
 
-        {searchModal && (
-          <ModalLayout
-            background="dark"
-            handleClose={() => {
-              setSearchModal(!searchModal);
-            }}
-          >
-            <RoomSearch {...{ user }} />
-          </ModalLayout>
-        )}
+        <ModalLayout
+          background="dark"
+          handleClose={() => {
+            setSearchModal(false);
+          }}
+          isActive={searchModal}
+        >
+          <RoomSearch {...{ setSearchModal }} />
+        </ModalLayout>
       </AnimatedTextLayout>
     </Layout>
   );
@@ -85,7 +90,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      user: session,
+      userSession: session,
     },
   };
 };

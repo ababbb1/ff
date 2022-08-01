@@ -7,6 +7,17 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        'animate-layout-border': '#17EF46',
+      },
+      backgroundImage: {
+        'crumpled-paper': "url('/assets/crumpled-paper.webp')",
+        note: "url('/assets/note.webp')",
+        'note-sm': "url('/assets/note-sm.webp')",
+        'room-card': "url('/assets/room-card.webp')",
+        'hint-info-white': "url('/assets/hint-info-white.webp')",
+        'hint-info-black': "url('/assets/hint-info-black.webp')",
+      },
       keyframes: {
         'text-move-right': {
           '0%': { transform: 'translateX(0px)' },
@@ -14,17 +25,23 @@ module.exports = {
         },
         'text-move-down': {
           '0%': {
-            transform: 'rotate(90deg) translateY(0.875rem) translateX(0px)',
+            transform: 'rotate(90deg) translateY(1rem) translateX(0px)',
           },
-          '100%': { transform: 'rotate(90deg) translateY(0.875rem) translateX(100vh)' },
+          '100%': {
+            transform: 'rotate(90deg) translateY(1rem) translateX(100vh)',
+          },
         },
         'text-move-left': {
           '0%': { transform: 'rotate(180deg) translateX(0)' },
           '100%': { transform: 'rotate(180deg) translateX(100vw)' },
         },
         'text-move-top': {
-          '0%': { transform: 'rotate(-90deg) translateY(0.875rem) translateX(0)' },
-          '100%': { transform: 'rotate(-90deg) translateY(0.875rem) translateX(100vh)' },
+          '0%': {
+            transform: 'rotate(-90deg) translateY(1rem) translateX(0)',
+          },
+          '100%': {
+            transform: 'rotate(-90deg) translateY(1rem) translateX(100vh)',
+          },
         },
       },
       animation: {
@@ -35,5 +52,12 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tw-elements/dist/plugin')],
+  plugins: [
+    require('tw-elements/dist/plugin'),
+    require('tailwind-scrollbar-hide'),
+    require('tailwind-scrollbar'),
+  ],
+  variants: {
+    scrollbar: ['rounded'],
+  },
 };

@@ -1,98 +1,183 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Suspense, useEffect, useState } from 'react';
-import io from 'socket.io-client';
-import { API_DOMAIN } from '../../../libs/client/api';
-import { CurrentUser, RoomData, UserSession } from '../../../libs/types/user';
-import RoomLobby from '../../../components/room/room-lobby';
+import React, { Suspense, useEffect, useRef } from 'react';
+import RoomLobby from '../../../components/room/lobby/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
-import Layout from '../../../components/layout';
+import Layout from '../../../components/layout/layout';
+import RoomStateProvider from '../../../components/room/room-state-provider';
+import {
+  connectRoomSocket,
+  createRoom,
+  exitRoom,
+  joinRoom,
+  socketRemoveAllListeners,
+} from '../../../libs/socket.io';
+import AnimatedTextLayout from '../../../components/layout/animated-text-layout';
+import TopbarLayout from '../../../components/layout/topbar-layout';
+import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
+import { getMedia } from '../../../libs/peer';
+import { Session } from 'next-auth';
+import useRoomContext from '../../../libs/hooks/room/useRoomContext';
+import ScrollObserver from '../../../components/scroll-observer';
+import DndProvider from '../../../components/dnd-provider';
 
-const RoomHint = dynamic(() => import('../../../components/room/room-hint'), {
-  ssr: false,
-});
+const RoomHint = dynamic(
+  () => import('../../../components/room/hint/room-hint'),
+  {
+    ssr: false,
+  },
+);
 const RoomReasoning = dynamic(
-  () => import('../../../components/room/room-reasoning'),
+  () => import('../../../components/room/reasoning/room-reasoning'),
   { ssr: false },
 );
 
-export interface UpdateRoomResponse {
-  roomInfo: RoomData;
-  currentUser: CurrentUser[];
-}
-
-export default function Room({ user }: { user: UserSession }) {
+const Room = ({ userSession }: { userSession: Session }) => {
   const router = useRouter();
-  const [roomInfo, setRoomInfo] = useState<RoomData>();
-  const [currentUsers, setCurrentUsers] = useState<CurrentUser[]>();
-  const { id: roomId, state: roomState, roomUniqueId } = router.query;
+  const roomId = router.query.id;
+  const roomUniqueId = router.query.roomUniqueId;
+  const roomState = router.query.state;
 
-  const socket = io(API_DOMAIN, {
-    transports: ['websocket'],
-    closeOnBeforeunload: false,
-  });
-
-  const onUpdateRoom = (data: UpdateRoomResponse) => {
-    setCurrentUsers(data.currentUser);
-    setRoomInfo(data.roomInfo);
-  };
+  const [state, dispatch] = useRoomContext();
+  const { roomInfo, peers, currentUsers, messageList, myStreamInfo } = state;
+  const streamIntervalRef = useRef<NodeJS.Timer>();
 
   const onBeforeUnload = () => {
-    socket.emit('exit_room', { roomId, userId: user.id });
+    console.log(userSession.userId);
+    exitRoom({ roomId: router.query.id, userId: userSession.userId });
+    socketRemoveAllListeners();
   };
 
   useEffect(() => {
-    window.addEventListener('beforeunload', onBeforeUnload);
+    connectRoomSocket(dispatch);
+    if (!roomInfo) {
+      if (router.query.roomUniqueId) {
+        createRoom({ roomId, roomUniqueId });
+      } else {
+        joinRoom({
+          roomId,
+          userId: userSession.userId,
+          email: userSession.email,
+          nickname: userSession.nickname,
+        });
+      }
+    }
+
     router.beforePopState(() => {
-      socket.emit('exit_room', { roomId, userId: user.id });
-      router.replace('/');
+      onBeforeUnload();
+      router.reload();
       return false;
     });
 
-    if (roomUniqueId) {
-      socket.emit('create_room', { roomId, roomUniqueId });
-    } else {
-      socket.emit('join_room', {
-        userId: user.id,
-        roomId,
-        email: user.email,
-        nickname: user.nickname,
-      });
-    }
-
-    socket.on('update_room', onUpdateRoom);
-
+    window.addEventListener('beforeunload', onBeforeUnload);
     return () => {
-      socket.off('update_room', onUpdateRoom);
       window.removeEventListener('beforeunload', onBeforeUnload);
     };
   }, []);
 
+  // useUpdateEffect(() => {
+  //   console.log('myStream updated:', myStream);
+  //   if (myStream && peers.length === 0) {
+  //     peerJoin({ roomId: roomId });
+  //     afterUpdateStream(`${userSession.userSessionId}`, myStream, peers, dispatch);
+  //   }
+  // }, [myStream]);
+
+  useUpdateEffect(() => {
+    clearInterval(streamIntervalRef.current);
+    streamIntervalRef.current = setInterval(() => {
+      if (myStreamInfo.stream) {
+        const videoTrack = myStreamInfo.stream.getVideoTracks()[0];
+        if (videoTrack.readyState === 'ended') {
+          getMedia({
+            video: {
+              ...myStreamInfo.videoTrackconstraints,
+              deviceId: myStreamInfo.videoDeviceId,
+            },
+            audio: {
+              ...myStreamInfo.audioTrackconstraints,
+              deviceId: myStreamInfo.audioDeviceId,
+            },
+          }).then(stream => {
+            dispatch({ type: 'MY_STREAM', payload: stream });
+          });
+        }
+      }
+    }, 100);
+  }, [myStreamInfo]);
+
+  useUpdateEffect(() => {
+    console.log('peers updated:');
+    console.log(peers);
+  }, [peers]);
+
+  useUpdateEffect(() => {
+    // console.log(userSession);
+    console.log(currentUsers);
+    // if (
+    //   currentUsers.find(cUser => cUser.userId === userSession.userId)
+    //     ?.streamId &&
+    //   !peers.find(peer => +peer.userId === userSession.userId)
+    // ) {
+    //   if (myStreamInfo.stream) {
+    //     createPeer(`${userSession.userId}`, myStreamInfo.stream);
+    //   }
+    // }
+
+    if (!currentUsers.find(cUser => cUser.userId === userSession.userId)) {
+      alert('방장에의해 추방 당했습니다.');
+      router.back();
+    }
+  }, [currentUsers]);
+
+  useUpdateEffect(() => {
+    if (messageList.length > 150) {
+      dispatch({ type: 'SHIFT_MESSAGE' });
+    }
+  }, [messageList]);
+
+  useUpdateEffect(() => {
+    console.log(roomInfo);
+  }, [roomInfo]);
+
+  if (!roomInfo) return <LoadingScreen fullScreen />;
+
   return (
-    <Layout>
-      {roomState === 'hint' ? (
-        <Suspense fallback={<LoadingScreen />}>
-          <RoomHint {...{ roomInfo }} />
-        </Suspense>
-      ) : roomState === 'reasoning' ? (
-        <Suspense fallback={<LoadingScreen />}>
-          <RoomReasoning />
-        </Suspense>
-      ) : (
-        <RoomLobby
-          {...{
-            user,
-            currentUsers,
-            roomInfo,
-            socket,
-          }}
-        />
-      )}
+    <Layout title={roomInfo.title}>
+      <AnimatedTextLayout>
+        <div className="w-full h-full bg-crumpled-paper object-cover">
+          <TopbarLayout>
+            {roomState === 'hint' ? (
+              <Suspense fallback={<LoadingScreen fullScreen />}>
+                <RoomHint />
+              </Suspense>
+            ) : roomState === 'reasoning' ? (
+              <Suspense fallback={<LoadingScreen fullScreen />}>
+                <ScrollObserver>
+                  <DndProvider>
+                    <RoomReasoning />
+                  </DndProvider>
+                </ScrollObserver>
+              </Suspense>
+            ) : (
+              <RoomLobby />
+            )}
+          </TopbarLayout>
+        </div>
+      </AnimatedTextLayout>
     </Layout>
   );
-}
+};
+
+const RoomPage = ({ userSession }: { userSession: Session }) => (
+  <RoomStateProvider>
+    <Room {...{ userSession }} />
+  </RoomStateProvider>
+);
+
+export default RoomPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
@@ -106,7 +191,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  if (!req.headers.referer) {
+  const referer = req.headers.referer;
+  console.log(referer);
+  if (!referer) {
     return {
       redirect: {
         destination: '/error/access-denied',
@@ -117,7 +204,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      user: session,
+      userSession: session,
     },
   };
 };

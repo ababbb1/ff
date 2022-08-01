@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
-import { contentTypeHeaders, authHeaders } from '../../libs/client/api';
+import { contentTypeHeaders, authHeaders } from '../../libs/api';
 
 export default async function handler(
   req: NextApiRequest,
