@@ -6,10 +6,10 @@ import AnimatedTextLayout from '../../components/layout/animated-text-layout';
 import Layout from '../../components/layout/layout';
 import RoomForm, { RoomFormData } from '../../components/room-form/room-form';
 import { useState } from 'react';
-import { EpisodeInfo } from '../../libs/types/room';
 import { EPISODES } from '../../libs/const';
 import EpisodeSelecter from '../../components/room-form/episode-selecter';
 import { Session } from 'next-auth';
+import { EpisodeInfo } from '../../libs/types/game';
 
 export default function CreateRoom({ userSession }: { userSession: Session }) {
   const router = useRouter();

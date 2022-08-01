@@ -18,7 +18,7 @@ import {
 import AnimatedTextLayout from '../../../components/layout/animated-text-layout';
 import TopbarLayout from '../../../components/layout/topbar-layout';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
-import { createPeer, getMedia } from '../../../libs/peer';
+import { getMedia } from '../../../libs/peer';
 import { Session } from 'next-auth';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import ScrollObserver from '../../../components/scroll-observer';
