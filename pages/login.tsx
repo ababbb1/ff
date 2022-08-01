@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { signIn } from 'next-auth/react';
 import SocialLoginButtons from '../components/socialLoginButtons';
 import { emailCheck } from '../libs/utils';
 import ErrorMessage from '../components/error-message';
