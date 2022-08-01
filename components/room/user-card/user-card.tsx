@@ -5,7 +5,6 @@ import { CurrentUser } from '../../../libs/types/room';
 import Mic from '../../svg/lobby/mic';
 import VideoIcon from '../../svg/lobby/video';
 import StarIcon from '../../svg/lobby/star';
-import useRoomLobby from '../../../libs/hooks/room/useRoomLobby';
 import VideochatIcon from '../../svg/lobby/video-chat';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import { useRef } from 'react';
@@ -23,7 +22,6 @@ export default function UserCard({ user, userStream }: Props) {
   const { data: userSession } = useSession();
 
   const [{ roomInfo, currentUsers, myStreamInfo }] = useRoomContext();
-  const { handleGetUserStream } = useRoomLobby();
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
@@ -126,7 +124,7 @@ export default function UserCard({ user, userStream }: Props) {
             </>
           ) : (
             <div
-              onClick={handleGetUserStream}
+              onClick={() => alert('화상 채팅은 아직 준비중인 기능입니다.')}
               className="w-full h-full flex justify-center items-center 2xl:text-base hover:cursor-pointer hover:text-white hover:bg-[#000000b2]"
             >
               <VideochatIcon className="w-8 h-8 2xl:w-10 2xl:h-10" />
