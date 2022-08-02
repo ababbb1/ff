@@ -33,8 +33,10 @@ export default function Layout({ children, title }: Props) {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
       </Head>
-      <div className="w-screen h-screen flex justify-center items-center text-[#222] max-w-[1920px] max-h-[1080px] fixed top-0 left-0">
-        <main className="w-full h-full">{children}</main>
+      <div className="w-screen h-screen flex justify-center items-center text-[#222]">
+        <main className="w-full h-full max-w-[1920px] max-h-[1080px]">
+          {children}
+        </main>
       </div>
     </>
   );

@@ -1,9 +1,15 @@
+import { useSession } from 'next-auth/react';
 import { useRef, useState } from 'react';
 import { ROLES } from '../../../../libs/const';
 import useRoomContext from '../../../../libs/hooks/room/useRoomContext';
 import useTimeout from '../../../../libs/hooks/useTimeout';
 import useUpdateEffect from '../../../../libs/hooks/useUpdateEffect';
-import { hintRoleChoiceTime, SocketEmitData } from '../../../../libs/socket.io';
+import {
+  choiceRole,
+  hintRoleChoiceTime,
+  hintTimeStart,
+  SocketEmitData,
+} from '../../../../libs/socket.io';
 import HintCharacters from './hint-characters';
 import HintInfoLayout from './hint-info-layout';
 import HintOverview from './hint-overview';
@@ -17,6 +23,7 @@ export interface PreviewContentType {
 type RoleChoiceTime = (data?: SocketEmitData | undefined) => void;
 
 export default function HintInfoPreview() {
+  const { data: userSession } = useSession();
   const [{ roomInfo, currentUsers }] = useRoomContext();
   const [content, setContent] = useState<PreviewContentType>({
     name: 'overview',
@@ -31,6 +38,14 @@ export default function HintInfoPreview() {
       roleChoiceTimeFxRef.current({ roomId: roomInfo.id });
     }
   }, currentTimeLimit * 1000 + 1000);
+
+  const handleClickRoleChoiceButton = (role: string) => () => {
+    choiceRole({
+      roomId: roomInfo?.id,
+      selectedUserId: userSession?.userId,
+      role,
+    });
+  };
 
   useUpdateEffect(() => {
     if (
@@ -47,6 +62,9 @@ export default function HintInfoPreview() {
       timeout.clear();
       setCurrentTimeLimit(20);
       setContent({ name: 'roleChoice', index: 0 });
+      setTimeout(() => {
+        hintTimeStart({ roomId: roomInfo.id });
+      }, 20 * 1000);
     }
   }, [roomInfo]);
 
@@ -78,6 +96,7 @@ export default function HintInfoPreview() {
             {ROLES.filter(role => role.name !== '장세민').map(role => (
               <div
                 key={role.name}
+                onClick={handleClickRoleChoiceButton(role.name)}
                 className="grow h-full p-2 bg-[#e9e9e9] hover:bg-[#adadad] hover:cursor-pointer"
               >
                 <div className="w-full aspect-square">

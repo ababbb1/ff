@@ -1,7 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import {
+  ComponentType,
+  Dispatch,
+  SetStateAction,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import CaptureCursor from '../../capture-cursor';
 import axios from 'axios';
-import { base64ToFile, getImageUrl } from '../../../libs/utils';
+import {
+  base64ToFile,
+  getImageUrl,
+  getSectionTitle,
+} from '../../../libs/utils';
 import LoadingScreen from '../../loading-screen';
 import Timer from '../../timer';
 import { useRouter } from 'next/router';
@@ -19,6 +31,37 @@ import useArray from '../../../libs/hooks/useArray';
 import { ImageData } from '../../../libs/types/room';
 import HintImageLayout from './hint-image-layout';
 import HintInfoPreview from './hint-info/hint-preview';
+import dynamic from 'next/dynamic';
+
+export type SectionNameType =
+  | 'map'
+  | 'jangroom'
+  | 'bathroom'
+  | 'library'
+  | 'livingroom'
+  | 'parkroom'
+  | 'yangroom'
+  | 'sonroom'
+  | 'jungroom'
+  | 'hongroom';
+
+export interface SectionComponentProps {
+  setCurrentSection: Dispatch<SetStateAction<Section>>;
+}
+
+export interface Section {
+  name: SectionNameType;
+  component: ComponentType<SectionComponentProps>;
+}
+
+const HintMap = dynamic(
+  () => import('../../../components/room/hint/map/hint-map'),
+  {
+    ssr: false,
+  },
+);
+
+const sections: Section[] = [{ name: 'map', component: HintMap }];
 
 export default function RoomHint() {
   const IMAGE_LIST_MAX_LENGTH = 10;
@@ -29,6 +72,10 @@ export default function RoomHint() {
   const [camera, toggleCamera] = useToggle();
   const [isLoading, toggleIsLoading] = useToggle();
   const [isOverview, setIsOverview] = useState(true);
+  const [currentSection, setCurrentSection] = useState<Section>({
+    name: 'map',
+    component: HintMap,
+  });
 
   const {
     array: currentImageList,
@@ -142,18 +189,15 @@ export default function RoomHint() {
     // }
   }, []);
 
-  // useEffect(() => {
-  //   if (roomInfo) {
-  //     if (roomInfo.roomState !== 'hintTime') {
-  //       hintTimeStart({ roomId: roomInfo.id, userId: userSession?.userId });
-  //       setIsOverview(false);
+  useEffect(() => {
+    if (roomInfo?.roomState === 'hintTime') {
+      setIsOverview(false);
 
-  //       if (timeBarRef.current) {
-  //         timeBarRef.current.style.width = '0';
-  //       }
-  //     }
-  //   }
-  // }, [currentUsers, roomInfo, userSession?.userId]);
+      if (timeBarRef.current) {
+        timeBarRef.current.style.width = '0';
+      }
+    }
+  }, [roomInfo, userSession?.userId]);
 
   useEffect(() => {
     if (preScrollRef.current && isLoading) {
@@ -184,13 +228,13 @@ export default function RoomHint() {
         <div className="w-full h-10 2xl:h-12 border-b-2 border-black flex">
           <div className="w-24 2xl:w-28 border-r-2 border-black"></div>
           <div className="grow flex justify-between items-center px-4">
-            <span className="font-semibold">전체지도</span>
+            <span className="font-semibold">
+              {getSectionTitle(currentSection)}
+            </span>
             <div className="flex gap-6">
               <span className="font-semibold">조사시간</span>
               <Timer
-                seconds={
-                  isHintTime && roomInfo?.hintTime ? +roomInfo.hintTime * 60 : 0
-                }
+                seconds={isHintTime ? +roomInfo.hintTime * 60 : 0}
                 className="text-[#a11111]"
               />
             </div>
@@ -198,7 +242,7 @@ export default function RoomHint() {
               onClick={handleGoNextPage}
               className="font-semibold opacity-0"
             >
-              전체지도
+              {getSectionTitle(currentSection)}
             </span>
           </div>
           <div className="w-52 2xl:w-56 border-l-2 border-black flex">
@@ -264,7 +308,12 @@ export default function RoomHint() {
                 </div>
               </div>
               <div className="w-full aspect-square flex justify-center items-center border-b-2 border-black p-2">
-                <div className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white">
+                <div
+                  onClick={() =>
+                    setCurrentSection({ name: 'map', component: HintMap })
+                  }
+                  className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white"
+                >
                   <ProfileIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
                   <span className="whitespace-nowrap text-xs 2xl:text-sm font-semibold">
                     지도
@@ -275,7 +324,22 @@ export default function RoomHint() {
             <div className="w-full h-10 2xl:h-12 border-t-2 border-black"></div>
           </div>
           <div className="grow h-full flex flex-col">
-            <div ref={mapRef} className="w-full grow"></div>
+            <div ref={mapRef} className="w-full grow relative">
+              {sections.map((section, i) => (
+                <div
+                  key={`section${i}`}
+                  className={`w-full h-full transition-all duration-1000 absolute top-0 left-0 ${
+                    currentSection.name === section.name
+                      ? 'opacity-100'
+                      : 'opacity-0'
+                  }`}
+                >
+                  <Suspense>
+                    <section.component {...{ setCurrentSection }} />
+                  </Suspense>
+                </div>
+              ))}
+            </div>
             <div className="w-full h-10 2xl:h-12 border-t-2 border-black flex justify-center items-center">
               <span className="font-hanson-bold text-xl pt-1">GAME</span>
             </div>

@@ -1,3 +1,5 @@
+import { Section } from '../components/room/hint/room-hint';
+
 export function cls(...classnames: string[]) {
   return classnames.join(' ');
 }
@@ -89,4 +91,29 @@ export const getItemsFromDateObject = (_date: Date) => {
     notThisYear,
     notThisYearKor,
   };
+};
+
+export const getSectionTitle = (section: Section) => {
+  switch (section.name) {
+    case 'map':
+      return '전체지도';
+    case 'jangroom':
+      return '1F 장세민 침실';
+    case 'bathroom':
+      return '욕실';
+    case 'library':
+      return '1F 장세민 서재';
+    case 'livingroom':
+      return '1F 대저택 거실';
+    case 'parkroom':
+      return '1F 박케어 방';
+    case 'yangroom':
+      return '2F 양손님 객실';
+    case 'sonroom':
+      return '2F 장아들 방';
+    case 'jungroom':
+      return '2F 정손녀 방';
+    case 'hongroom':
+      return '별채 홍변호 방';
+  }
 };
