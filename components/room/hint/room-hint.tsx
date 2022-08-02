@@ -333,6 +333,14 @@ export default function RoomHint() {
                   </span>
                 </div>
               </div>
+              <div className="w-full aspect-square flex justify-center items-center border-b-2 border-black p-2">
+                <div className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white">
+                  <ProfileIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
+                  <span className="whitespace-nowrap text-xs 2xl:text-sm font-semibold">
+                    동기
+                  </span>
+                </div>
+              </div>
             </div>
             <div className="w-full h-10 2xl:h-12 border-t-2 border-black"></div>
           </div>

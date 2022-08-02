@@ -78,7 +78,7 @@ export default function HintOverview({ setContent, savedIndex }: Props) {
     {
       title: '사건개요',
       index: 1,
-      roleInfo: roles && roles[5],
+      roleInfo: roles[0],
       description: Description1,
       prevButtonHandler: null,
       nextButtonHandler: null,
@@ -86,7 +86,7 @@ export default function HintOverview({ setContent, savedIndex }: Props) {
     {
       title: '장세민',
       index: 1,
-      roleInfo: roles && roles[5],
+      roleInfo: roles[0],
       description: Description2,
       prevButtonHandler: null,
       nextButtonHandler: setContent

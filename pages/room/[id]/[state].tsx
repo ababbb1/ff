@@ -8,15 +8,11 @@ import LoadingScreen from '../../../components/loading-screen';
 import Layout from '../../../components/layout/layout';
 import RoomStateProvider from '../../../components/room/room-state-provider';
 import {
-  choiceRole,
   connectRoomSocket,
   createRoom,
   exitRoom,
-  forceQuit,
   getRoles,
-  hintPostOnBoard,
   joinRoom,
-  reasoningTime,
   socketRemoveAllListeners,
 } from '../../../libs/socket.io';
 import AnimatedTextLayout from '../../../components/layout/animated-text-layout';
@@ -71,10 +67,10 @@ const Room = ({ userSession }: { userSession: Session }) => {
     }
 
     getRoles();
-    reasoningTime({ roomId: 1 });
-    hintPostOnBoard({ imageInfo: { id: '111', x: 1, y: 1 }, roomId: 1 });
-    choiceRole({ roomId: 1, selectedUserId: 1, role: 1 });
-    forceQuit({ roomId: 111, exitedUserId: 111 });
+    // reasoningTime({ roomId: 1 });
+    // hintPostOnBoard({ imageInfo: { id: '111', x: 1, y: 1 }, roomId: 1 });
+    // choiceRole({ roomId: 1, selectedUserId: 1, role: 1 });
+    // forceQuit({ roomId: 111, exitedUserId: 111 });
     // gameEnd({ roomId: 1 });
 
     router.beforePopState(() => {

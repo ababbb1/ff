@@ -46,7 +46,7 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
 
   socket.on('role_info', (roles: RoleInfo[]) => {
     console.log('roles', roles);
-    dispatch({ type: 'ROLE_INFO', payload: roles });
+    dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
   });
 };
 
@@ -87,7 +87,8 @@ export const afterUpdateStream = (
 };
 
 const emit = (e: string) => (data?: SocketEmitData) => {
-  console.log(`socket emit ${e}: ${data}`);
+  console.log(`socket emit`, e);
+  console.dir(data);
   socket.emit(e, data);
 };
 

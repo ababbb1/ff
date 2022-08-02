@@ -79,7 +79,7 @@ export interface RoomState {
   boardImageList: ImageData[];
   myStreamInfo: StreamInfo;
   peers: IPeer[];
-  roles?: RoleInfo[];
+  roles: RoleInfo[];
 }
 
 export type RoomStateAction =

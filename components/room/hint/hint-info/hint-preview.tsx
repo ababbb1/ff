@@ -40,13 +40,18 @@ export default function HintInfoPreview() {
     }
   }, currentTimeLimit * 1000 + 1000);
 
-  const handleClickRoleChoiceButton = (role: number) => () => {
-    choiceRole({
-      roomId: roomInfo?.id,
-      selectedUserId: userSession?.userId,
-      role,
-    });
+  const handleClickRoleChoiceButton = (episodeId: number) => () => {
+    if (!isSelectedRole(episodeId)) {
+      choiceRole({
+        roomId: roomInfo?.id,
+        userId: userSession?.userId,
+        episodeId,
+      });
+    }
   };
+
+  const isSelectedRole = (roleId: number) =>
+    currentUsers.find(cUser => cUser.episodeId === roleId);
 
   useUpdateEffect(() => {
     if (
@@ -103,7 +108,11 @@ export default function HintInfoPreview() {
                   <div
                     key={role.id}
                     onClick={handleClickRoleChoiceButton(role.id)}
-                    className="grow h-full p-2 bg-[#e9e9e9] hover:bg-[#adadad] hover:cursor-pointer"
+                    className={`grow h-full p-2 bg-[#e6e6e6] hover:bg-[#adadad] border-2 ${
+                      isSelectedRole(role.id)
+                        ? 'border-black bg-[#8f8f8f]'
+                        : 'hover:cursor-pointer border-[#00000000]'
+                    }`}
                   >
                     <div className="w-full aspect-square">
                       <img src={role.imageSrc} className="w-full h-full" />
@@ -115,14 +124,21 @@ export default function HintInfoPreview() {
                         </span>
                         <span>{role.description}</span>
                       </div>
-                      <div className="w-fit max-w-[60%] text-white bg-[#3c3c3c] py-1 px-2 rounded-sm whitespace-nowrap text-ellipsis overflow-hidden">
-                        {splitByColon(
-                          currentUsers?.find(
-                            cUser => cUser.episodeId === role.id,
-                          )?.nickname || '',
-                          'name',
-                        )}
-                      </div>
+                      {isSelectedRole(role.id) && (
+                        <div
+                          className={`w-fit max-w-[60%] bg-[#3c3c3c] py-1 px-2 rounded-sm whitespace-nowrap text-ellipsis overflow-hidden ${
+                            isSelectedRole(role.id)?.userId ===
+                            userSession?.userId
+                              ? 'text-animate-layout-border'
+                              : 'text-white'
+                          }`}
+                        >
+                          {splitByColon(
+                            isSelectedRole(role.id)?.nickname || '',
+                            'name',
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
