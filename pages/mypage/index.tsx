@@ -4,6 +4,7 @@ import AnimatedTextLayout from '../../components/layout/animated-text-layout';
 import Layout from '../../components/layout/layout';
 import { signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
+import { splitByColon } from '../../libs/utils';
 
 export default function Mypage({ user }: { user: Session }) {
   const handleLogout = () => {
@@ -14,8 +15,8 @@ export default function Mypage({ user }: { user: Session }) {
   return (
     <Layout>
       <AnimatedTextLayout>
-        <div>
-          <span>{user.nickname}</span>
+        <div className="flex flex-col gap-3 text-white">
+          <span>{splitByColon(user.nickname, 'name')}</span>
           <span>{user.email}</span>
           <button onClick={handleLogout}>로그아웃</button>
         </div>
