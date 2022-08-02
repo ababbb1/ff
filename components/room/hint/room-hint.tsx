@@ -20,7 +20,7 @@ import { useRouter } from 'next/router';
 import ModalLayout from '../../modal-layout';
 import useToggle from '../../../libs/hooks/useToggle';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import { getRoles, hintRegister, reasoningTime } from '../../../libs/socket.io';
+import { hintRegister, reasoningTime } from '../../../libs/socket.io';
 import { useSession } from 'next-auth/react';
 import CameraIcon from '../../svg/hint/camera';
 import ProfileIcon from '../../svg/hint/profile';
@@ -186,8 +186,6 @@ export default function RoomHint() {
   };
 
   useEffect(() => {
-    getRoles();
-
     if (roomInfo && timeBarRef.current) {
       const convertedHintTime = +roomInfo.hintTime * 60;
       timeBarRef.current.style.transition = `width linear ${convertedHintTime}s`;

@@ -11,6 +11,7 @@ import {
   connectRoomSocket,
   createRoom,
   exitRoom,
+  getRoles,
   joinRoom,
   socketRemoveAllListeners,
 } from '../../../libs/socket.io';
@@ -64,6 +65,8 @@ const Room = ({ userSession }: { userSession: Session }) => {
         });
       }
     }
+
+    getRoles();
 
     router.beforePopState(() => {
       onBeforeUnload();
