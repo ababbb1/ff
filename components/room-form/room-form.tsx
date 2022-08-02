@@ -99,7 +99,7 @@ export default function RoomForm({
     if (!regExp.test(watch('reasoningTime')) && watch('reasoningTime') !== '') {
       setValue('reasoningTime', '10');
     }
-  }, [setValue, watch]);
+  }, [setValue, watch('hintTime'), watch('reasoningTime')]);
 
   useEffect(() => {
     console.log(watch('isRandom'));
