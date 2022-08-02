@@ -18,7 +18,9 @@ export default function Mypage({ user }: { user: Session }) {
         <div className="flex flex-col gap-3 text-white">
           <span>{splitByColon(user.nickname, 'name')}</span>
           <span>{user.email}</span>
-          <button onClick={handleLogout}>로그아웃</button>
+          <button onClick={handleLogout} className="text-left w-fit">
+            로그아웃
+          </button>
         </div>
       </AnimatedTextLayout>
     </Layout>
