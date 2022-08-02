@@ -79,12 +79,12 @@ export default function RoomList({ roomList }: Props) {
         className="room-list-swiper w-full h-full rounded-tl-xl"
         modules={[Scrollbar, Mousewheel, FreeMode, Pagination]}
       >
-        {roomList.map((roomData, i) => (
+        {roomList.map((roomData, index) => (
           <SwiperSlide
-            key={`room${i}`}
-            className="h-full w-1/3 border-r-2 border-black"
+            key={`room${index}`}
+            className="h-full w-1/3 border-r-2 border-animate-layout-border"
           >
-            <RoomCard {...{ roomData, setIsModalActive }} />
+            <RoomCard {...{ roomData, setIsModalActive, index }} />
           </SwiperSlide>
         ))}
         <div

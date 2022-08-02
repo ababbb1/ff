@@ -46,7 +46,7 @@ export type SectionNameType =
   | 'hongroom';
 
 export interface SectionComponentProps {
-  setCurrentSection: Dispatch<SetStateAction<Section>>;
+  setCurrentSection?: Dispatch<SetStateAction<Section>>;
 }
 
 export interface Section {
@@ -60,8 +60,17 @@ const HintMap = dynamic(
     ssr: false,
   },
 );
+const BathRoomSection = dynamic(
+  () => import('../../../components/room/hint/map/bathroom-section'),
+  {
+    ssr: false,
+  },
+);
 
-const sections: Section[] = [{ name: 'map', component: HintMap }];
+const sections: Section[] = [
+  { name: 'map', component: HintMap },
+  { name: 'bathroom', component: BathRoomSection },
+];
 
 export default function RoomHint() {
   const IMAGE_LIST_MAX_LENGTH = 10;
@@ -331,7 +340,7 @@ export default function RoomHint() {
                   className={`w-full h-full transition-all duration-1000 absolute top-0 left-0 ${
                     currentSection.name === section.name
                       ? 'opacity-100'
-                      : 'opacity-0'
+                      : 'opacity-0 -z-10'
                   }`}
                 >
                   <Suspense>

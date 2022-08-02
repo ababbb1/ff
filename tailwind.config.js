@@ -14,7 +14,9 @@ module.exports = {
         'crumpled-paper': "url('/assets/crumpled-paper.webp')",
         note: "url('/assets/note.webp')",
         'note-sm': "url('/assets/note-sm.webp')",
-        'room-card': "url('/assets/room-card.webp')",
+        'room-card1': "url('/assets/room-card.webp')",
+        'room-card2': "url('/assets/room-card2.png')",
+        'room-card3': "url('/assets/room-card3.png')",
         'hint-info-white': "url('/assets/hint-info-white.webp')",
         'hint-info-black': "url('/assets/hint-info-black.webp')",
       },
@@ -41,6 +43,54 @@ module.exports = {
           },
           '100%': {
             transform: 'rotate(-90deg) translateY(1rem) translateX(100vh)',
+          },
+        },
+        'mainpage-magnifying-glass': {
+          '0%': {
+            opacity: '0',
+          },
+          '50%': {
+            transform: 'translateX(-4rem)',
+            opacity: '1',
+          },
+          '75%': {
+            transform: 'translateX(-4rem)',
+            opacity: '0',
+          },
+          '100%': {
+            transform: 'translateX(-4rem)',
+            opacity: '0',
+          },
+        },
+        'mainpage-magnifying-glass-sm': {
+          '0%': {
+            opacity: '0',
+          },
+          '50%': {
+            transform: 'translateX(-3rem)',
+            opacity: '1',
+          },
+          '75%': {
+            transform: 'translateX(-3rem)',
+            opacity: '0',
+          },
+          '100%': {
+            transform: 'translateX(-3rem)',
+            opacity: '0',
+          },
+        },
+        'mainpage-gun': {
+          '0%': {
+            opacity: '1',
+          },
+          '25%': {
+            opacity: '0',
+          },
+          '50%': {
+            opacity: '0',
+          },
+          '100%': {
+            opacity: '1',
           },
         },
       },

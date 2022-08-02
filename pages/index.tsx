@@ -10,6 +10,7 @@ import MainpageInterface from '../components/mainpage/mainpage-interface';
 import ModalLayout from '../components/modal-layout';
 import { Session } from 'next-auth';
 import RoomSearch from '../components/room/room-search/room-search';
+import Image from 'next/image';
 
 interface Props {
   userSession: Session;
@@ -43,23 +44,43 @@ export default function Home({ userSession }: Props) {
     <Layout>
       <AnimatedTextLayout>
         <div className="flex flex-col w-full h-full border-black">
-          <div className="w-full px-32 py-10 h-full max-h-[42%] 2xl:max-h-[45%] flex justify-center items-center">
-            <div
-              className={`transition-all delay-300 duration-1000 ${
-                logoLoaded ? 'opacity-100' : 'opacity-0 -translate-y-4'
-              }`}
-            >
-              <img
-                src="/assets/mainpage-logo.webp"
-                alt="mainpage-logo"
-                onLoad={handleLogoLoaded}
+          <div className="w-full px-4 py-8 2xl:py-10 h-[20rem] 2xl:h-[26rem] flex flex-col gap-1 items-center z-[13] relative">
+            <div className="absolute -right-[10rem] 2xl:-right-[17rem] top-0 w-1/2 h-full z-[12] animate-[mainpage-magnifying-glass-sm_infinite_14s] 2xl:animate-[mainpage-magnifying-glass_infinite_14s]">
+              <Image
+                src="/assets/mainpage-magnifying-glass.png"
+                layout="fill"
+                alt="magnifying-glass"
               />
             </div>
+            <div className="absolute top-0 w-1/3 h-full z-[12] animate-[mainpage-gun_infinite_14s]">
+              <Image src="/assets/mainpage-gun.png" layout="fill" alt="gun" />
+            </div>
+            <div className="w-full h-full border-t-2 border-b-2 border-white flex justify-center items-center relative z-[11]">
+              <div
+                className={`w-full flex justify-center px-48 2xl:px-40 py-8 2x:py-4 items-center h-full transition-all delay-100 duration-1000 ${
+                  logoLoaded ? 'opacity-100' : 'opacity-0 -translate-y-2'
+                }`}
+              >
+                <Image
+                  src="/assets/mainpage-logo.png"
+                  alt="mainpage-logo"
+                  width={1428}
+                  height={267}
+                  priority
+                  onLoad={handleLogoLoaded}
+                />
+              </div>
+            </div>
+            <span className="text-white text-sm tracking-wider font-normal">
+              Convinced myself, I seek not to convince.
+            </span>
           </div>
-          <MainpageInterface
-            roomList={roomList}
-            searchButtonHandler={handleSearchButton}
-          />
+          <div className="w-full grow">
+            <MainpageInterface
+              roomList={roomList}
+              searchButtonHandler={handleSearchButton}
+            />
+          </div>
         </div>
 
         <ModalLayout
