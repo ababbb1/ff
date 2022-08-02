@@ -105,6 +105,8 @@ export const peerJoin = emit('peer_join');
 export const sendSignal = emit('send_signal');
 export const returnSignal = emit('return_signal');
 
+export const test = emit('test');
+
 export const socketRemoveAllListeners = () => {
   socket.removeAllListeners();
 };
