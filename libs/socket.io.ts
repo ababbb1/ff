@@ -40,7 +40,8 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
   });
 
   socket.on('hint_board', (imageInfo: ImageData) => {
-    dispatch({ type: 'BOARD_IMAGE_LIST_PUSH', payload: imageInfo });
+    console.log(imageInfo);
+    // dispatch({ type: 'BOARD_IMAGE_LIST_PUSH', payload: imageInfo });
   });
 
   socket.on('role_info', (roles: RoleInfo[]) => {
@@ -106,6 +107,8 @@ export const hintTimeStart = emit('hint_start');
 export const hintPostOnBoard = emit('hint_board');
 export const kickUser = emit('kick_user');
 export const reasoningTime = emit('reasoning_time');
+export const forceQuit = emit('force_quit');
+export const gameEnd = emit('game_end');
 
 export const streamEmit = emit('stream');
 export const peerJoin = emit('peer_join');
