@@ -35,6 +35,7 @@ export interface CurrentUser {
   hintReady: boolean;
   streamId: string;
   userId: number;
+  episodeId: number;
 }
 
 export interface MessageInfo {

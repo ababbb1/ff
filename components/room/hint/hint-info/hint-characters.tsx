@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { ROLES } from '../../../../libs/const';
+import useRoomContext from '../../../../libs/hooks/room/useRoomContext';
 import { HintInfoContentItem } from '../../../../libs/types/game';
 import HintInfoContent from './hint-info-content';
 import { PreviewContentType } from './hint-preview';
@@ -325,12 +325,15 @@ interface Props {
 }
 
 export default function HintCharacters({ setContent, savedIndex }: Props) {
+  const [{ roles }] = useRoomContext();
+  const rolesWithoutJang = roles.slice(0, 5);
+
   const items: HintInfoContentItem[] = Array(6)
     .fill(null)
     .map((_, i) => ({
-      title: i === 0 ? '인물관계도' : ROLES[i].name,
+      title: i === 0 ? '인물관계도' : rolesWithoutJang[i].name,
       index: 2,
-      roleInfo: ROLES[i],
+      roleInfo: rolesWithoutJang[i],
       description: descriptions[i],
       prevButtonHandler:
         i === 0 && setContent

@@ -12,6 +12,7 @@ export type RoleNames =
   | '양손님';
 
 export interface RoleInfo {
+  id: number;
   name: RoleNames;
   kind: string;
   imageSrc: string;

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { ROLES } from '../../../../libs/const';
+import useRoomContext from '../../../../libs/hooks/room/useRoomContext';
 import { HintInfoContentItem } from '../../../../libs/types/game';
 import HintInfoContent from './hint-info-content';
 import { PreviewContentType } from './hint-preview';
@@ -72,11 +72,13 @@ const Description2 = (
 );
 
 export default function HintOverview({ setContent, savedIndex }: Props) {
+  const [{ roles }] = useRoomContext();
+
   const items: HintInfoContentItem[] = [
     {
       title: '사건개요',
       index: 1,
-      roleInfo: ROLES[0],
+      roleInfo: roles[5],
       description: Description1,
       prevButtonHandler: null,
       nextButtonHandler: null,
@@ -84,7 +86,7 @@ export default function HintOverview({ setContent, savedIndex }: Props) {
     {
       title: '장세민',
       index: 1,
-      roleInfo: ROLES[0],
+      roleInfo: roles[5],
       description: Description2,
       prevButtonHandler: null,
       nextButtonHandler: setContent

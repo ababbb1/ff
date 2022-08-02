@@ -1,4 +1,4 @@
-import { EpisodeInfo, RoleInfo } from './types/game';
+import { EpisodeInfo } from './types/game';
 
 export const ROOM_USER_COUNT_LIMIT = 2;
 export const EPISODES: EpisodeInfo[] = [
@@ -13,60 +13,60 @@ export const EPISODES: EpisodeInfo[] = [
 export const IMAGE_SIZE_HORIZONTAL = [520, 400];
 export const IMAGE_SIZE_VERTICAL = [400, 520];
 
-export const ROLES: RoleInfo[] = [
-  {
-    name: '장세민',
-    kind: '피해자',
-    gender: '남성',
-    age: 70,
-    job: '추리소설 작가',
-    imageSrc: '/assets/jang.png',
-    description: '',
-  },
-  {
-    name: '장아들',
-    kind: '용의자1',
-    gender: '남성',
-    age: 21,
-    job: '무직',
-    imageSrc: '/assets/son.png',
-    description: '장세민의 친아들',
-  },
-  {
-    name: '정손녀',
-    kind: '용의자2',
-    gender: '여성',
-    age: 20,
-    job: '금수저',
-    imageSrc: '/assets/jung.png',
-    description: '장세민의 외손녀',
-  },
+// export const ROLES: RoleInfo[] = [
+//   {
+//     name: '장세민',
+//     kind: '피해자',
+//     gender: '남성',
+//     age: 70,
+//     job: '추리소설 작가',
+//     imageSrc: '/assets/jang.png',
+//     description: '',
+//   },
+//   {
+//     name: '장아들',
+//     kind: '용의자1',
+//     gender: '남성',
+//     age: 21,
+//     job: '무직',
+//     imageSrc: '/assets/son.png',
+//     description: '장세민의 친아들',
+//   },
+//   {
+//     name: '정손녀',
+//     kind: '용의자2',
+//     gender: '여성',
+//     age: 20,
+//     job: '금수저',
+//     imageSrc: '/assets/jung.png',
+//     description: '장세민의 외손녀',
+//   },
 
-  {
-    name: '박케어',
-    kind: '용의자3',
-    gender: '여성',
-    age: 41,
-    job: '전문 간병인',
-    imageSrc: '/assets/park.png',
-    description: '장세민의 간병인',
-  },
-  {
-    name: '홍변호',
-    kind: '용의자4',
-    gender: '남성',
-    age: 40,
-    job: '변호사',
-    imageSrc: '/assets/hong.png',
-    description: '장세민의 변호사',
-  },
-  {
-    name: '양손님',
-    kind: '용의자5',
-    gender: '남성',
-    age: 45,
-    job: '손님',
-    imageSrc: '/assets/yang.png',
-    description: '장세민의 손님',
-  },
-];
+//   {
+//     name: '박케어',
+//     kind: '용의자3',
+//     gender: '여성',
+//     age: 41,
+//     job: '전문 간병인',
+//     imageSrc: '/assets/park.png',
+//     description: '장세민의 간병인',
+//   },
+//   {
+//     name: '홍변호',
+//     kind: '용의자4',
+//     gender: '남성',
+//     age: 40,
+//     job: '변호사',
+//     imageSrc: '/assets/hong.png',
+//     description: '장세민의 변호사',
+//   },
+//   {
+//     name: '양손님',
+//     kind: '용의자5',
+//     gender: '남성',
+//     age: 45,
+//     job: '손님',
+//     imageSrc: '/assets/yang.png',
+//     description: '장세민의 손님',
+//   },
+// ];
