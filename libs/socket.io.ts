@@ -44,7 +44,7 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
   });
 
   socket.on('role_info', (roles: RoleInfo[]) => {
-    console.log(roles);
+    console.log('roles', roles);
     dispatch({ type: 'ROLE_INFO', payload: roles });
   });
 };
