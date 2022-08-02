@@ -5,6 +5,7 @@ import { cls } from '../../../libs/utils';
 import { ToggleHandler } from '../../../libs/hooks/useToggle';
 import { RoomSearchApiResponse } from './room-search';
 import { useSession } from 'next-auth/react';
+import MagnifyingGlassIcon from '../../svg/mainpage/magnifying-glass';
 
 interface Props {
   setSearchResult: Dispatch<SetStateAction<RoomSearchApiResponse | undefined>>;
@@ -39,38 +40,42 @@ export default function RoomSearchForm({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full h-14 bg-white">
       <form
         onSubmit={handleSubmit(onValid)}
-        className="flex flex-col items-center gap-4 px-4 pt-24 w-full max-w-sm"
+        className="flex items-center w-full h-full"
       >
-        <div className="w-full flex flex-col gap-1">
+        <div className="flex justify-center w-[20%] h-full border-r-2 border-black px-2">
+          <select
+            {...register('type')}
+            className="w-full focus:outline-none px-2"
+          >
+            <option value="TITLE" defaultChecked>
+              방 제목
+            </option>
+            <option value="NICKNAME">방장</option>
+          </select>
+        </div>
+        <div className="w-full h-full flex gap-1">
           <input
             {...register('inputValue', {
               required: '검색 키워드를 입력해주세요.',
             })}
-            placeholder="방장 닉네임 또는 방 제목"
+            placeholder="방장 닉네임 또는 방 제목을 입력해주세요."
             type="text"
-            className={cls('w-full h-12 border rounded-md p-2')}
+            className={cls(
+              'w-full h-full focus:outline-none bg-[#d4d4d4] px-4',
+            )}
+            autoComplete="off"
           />
         </div>
 
-        <div className="flex justify-center">
-          <div className="mb-3 xl:w-96">
-            <select
-              {...register('type')}
-              className="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-              aria-label="Default select example"
-            >
-              <option value="TITLE" defaultChecked>
-                방 제목
-              </option>
-              <option value="NICKNAME">방장</option>
-            </select>
-          </div>
-        </div>
-
-        <button type="submit">찾기</button>
+        <button
+          type="submit"
+          className="h-full aspect-square flex justify-center items-center border-l-2 border-black"
+        >
+          <MagnifyingGlassIcon className="w-4 h-4" />
+        </button>
       </form>
     </div>
   );

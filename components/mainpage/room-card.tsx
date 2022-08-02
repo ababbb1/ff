@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { RoomData } from '../../libs/types/room';
 import { splitByColon } from '../../libs/utils';
-import RoomCardLockBackground from '../svg/mainpage/clock copy';
+import RoomCardLockBackground from '../svg/mainpage/room-card-lock-background';
 import LockClosedIcon from '../svg/room-form/lock-closed';
 import LockOpenIcon from '../svg/room-form/lock-open';
 import { ModalPasswordValidateProps } from './room-list';

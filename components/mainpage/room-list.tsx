@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 
 interface Props {
   roomList: RoomData[];
+  isSearch?: boolean;
 }
 
 export interface ModalPasswordValidateProps {
@@ -18,7 +19,7 @@ export interface ModalPasswordValidateProps {
   roomData?: RoomData;
 }
 
-export default function RoomList({ roomList }: Props) {
+export default function RoomList({ roomList, isSearch = false }: Props) {
   const router = useRouter();
   const [paginationVisible, setPaginationVisible] = useState(false);
   const [isModalActive, setIsModalActive] =
@@ -76,7 +77,9 @@ export default function RoomList({ roomList }: Props) {
         mousewheel={true}
         freeMode={true}
         slidesPerView={3}
-        className="room-list-swiper w-full h-full rounded-tl-xl"
+        className={`room-list-swiper w-full h-full ${
+          isSearch ? '' : 'rounded-tl-xl'
+        }`}
         modules={[Scrollbar, Mousewheel, FreeMode, Pagination]}
       >
         {roomList.map((roomData, index) => (

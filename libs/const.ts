@@ -60,7 +60,6 @@ export const ROLES: RoleInfo[] = [
     imageSrc: '/assets/hong.png',
     description: '장세민의 변호사',
   },
-
   {
     name: '양손님',
     kind: '용의자5',

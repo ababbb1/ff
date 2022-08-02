@@ -20,20 +20,22 @@ export default function RoomSearch({ setSearchModal }: Props) {
   const [isLoading, toggleIsLoading] = useToggle();
 
   return (
-    <div className="w-[40vw] bg-white">
-      <div className="w-full h-10 flex justify-between items-center border-b-2 border-black">
-        <div className="h-full aspect-square opacity-0"></div>
-        <div className="grow flex justify-center">
-          <span className="font-semibold">방찾기</span>
+    <div className="w-[60vw] flex flex-col gap-3">
+      <div className="w-full flex flex-col">
+        <div className="w-full h-10 flex justify-between items-center border-b-2 border-black bg-white">
+          <div className="h-full aspect-square opacity-0"></div>
+          <div className="grow flex justify-center">
+            <span className="font-semibold">방찾기</span>
+          </div>
+          <div
+            onClick={() => setSearchModal(false)}
+            className="h-full flex justify-center items-center aspect-square border-l-2 border-black text-black hover:cursor-pointer hover:bg-black hover:text-white"
+          >
+            <XIcon className="w-6 h-6" />
+          </div>
         </div>
-        <div
-          onClick={() => setSearchModal(false)}
-          className="h-full flex justify-center items-center aspect-square border-l-2 border-black text-black hover:cursor-pointer hover:bg-black hover:text-white"
-        >
-          <XIcon className="w-6 h-6" />
-        </div>
+        <RoomSearchForm {...{ setSearchResult, toggleIsLoading }} />
       </div>
-      <RoomSearchForm {...{ setSearchResult, toggleIsLoading }} />
       <div className="relative">
         {isLoading ? (
           <LoadingScreen />

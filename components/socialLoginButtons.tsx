@@ -26,7 +26,7 @@ export default function SocialLoginButtons() {
             />
           </div>
         </a>
-        <a
+        {/* <a
           onClick={() => handleLogin('naver')}
           className="flex items-center hover:cursor-pointer"
         >
@@ -37,7 +37,7 @@ export default function SocialLoginButtons() {
               style={{ width: '100%', height: '100%' }}
             />
           </div>
-        </a>
+        </a> */}
         <a
           onClick={() => handleLogin('google')}
           className="flex items-center hover:cursor-pointer"

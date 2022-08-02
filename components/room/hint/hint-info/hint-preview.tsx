@@ -52,6 +52,7 @@ export default function HintInfoPreview() {
       currentUsers.every(cUser => cUser.hintReady) &&
       roleChoiceTimeFxRef.current
     ) {
+      console.log('all ready');
       roleChoiceTimeFxRef.current({ roomId: roomInfo?.id });
       roleChoiceTimeFxRef.current = null;
     }

@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { RoomData } from '../../../libs/types/room';
+import RoomList from '../../mainpage/room-list';
 import { RoomSearchApiResponse } from './room-search';
 
 export default function RoomSearchResult({
@@ -10,14 +9,9 @@ export default function RoomSearchResult({
   return (
     <div>
       {searchResult?.roomList.length ? (
-        <ul>
-          {searchResult.roomList?.map((v: RoomData) => (
-            <li key={`room${v.id}`} className="w-full h-20 bg-red-300">
-              <span>{v.title}</span>
-              <Link href={`/room/${v.id}/lobby`}>입장</Link>
-            </li>
-          ))}
-        </ul>
+        <div className="w-full h-[40vh]">
+          <RoomList {...{ roomList: searchResult?.roomList, isSearch: true }} />
+        </div>
       ) : (
         searchResult && <span>검색 결과가 없습니다.</span>
       )}
