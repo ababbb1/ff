@@ -45,7 +45,7 @@ export default function TimeCard({
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#000000f4] via-[#000000af] to-[#00000038]"></div>
         )}
         <div className="w-full h-full flex flex-col justify-between relative z-10">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 pr-6 2xl:pr-8">
             <span>{kind === 'hintTime' ? '조사시간' : '추리시간'}</span>
             <span
               className={`font-hanson-bold text-3xl ${

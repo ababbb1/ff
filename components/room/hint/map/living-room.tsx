@@ -12,9 +12,11 @@ export default function LivingRoom({
         </span>
       </div>
       <div
-        onClick={() =>
-          setCurrentSection({ name: 'livingroom', component: LivingRoom })
-        }
+        onClick={() => {
+          if (setCurrentSection) {
+            setCurrentSection({ name: 'livingroom', component: LivingRoom });
+          }
+        }}
         className="relative flex justify-center items-center w-full h-full px-1 py-3 bg-[#d9d9d9] rounded-xl border border-black hover:bg-animate-layout-border hover:cursor-pointer"
       >
         <div className="absolute flex justify-center items-center bg-[#efefef] border border-black rounded-md w-1/2 h-6 left-[50%] -translate-x-[50%] top-2">

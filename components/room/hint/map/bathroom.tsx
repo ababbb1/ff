@@ -11,9 +11,11 @@ export default function BathRoom({ setCurrentSection }: SectionComponentProps) {
         </span>
       </div>
       <div
-        onClick={() =>
-          setCurrentSection({ name: 'bathroom', component: BathRoom })
-        }
+        onClick={() => {
+          if (setCurrentSection) {
+            setCurrentSection({ name: 'bathroom', component: BathRoom });
+          }
+        }}
         className="relative flex flex-col gap-1 w-full h-full p-2 bg-[#d9d9d9] rounded-xl border border-black hover:bg-animate-layout-border hover:cursor-pointer"
       >
         <div className="w-full h-[35%]">

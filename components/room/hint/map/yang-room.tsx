@@ -10,9 +10,11 @@ export default function YangRoom({ setCurrentSection }: SectionComponentProps) {
         </span>
       </div>
       <div
-        onClick={() =>
-          setCurrentSection({ name: 'yangroom', component: YangRoom })
-        }
+        onClick={() => {
+          if (setCurrentSection) {
+            setCurrentSection({ name: 'yangroom', component: YangRoom });
+          }
+        }}
         className="relative flex w-40 h-24 2xl:w-48 2xl:h-32 px-1 py-1 2xl:py-3 bg-[#d9d9d9] rounded-xl border border-black hover:bg-animate-layout-border hover:cursor-pointer"
       >
         <div className="w-1/3 flex flex-col gap-1">

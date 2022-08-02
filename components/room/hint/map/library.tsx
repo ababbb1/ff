@@ -5,9 +5,11 @@ export default function Library({ setCurrentSection }: SectionComponentProps) {
   return (
     <div className="w-full h-full">
       <div
-        onClick={() =>
-          setCurrentSection({ name: 'library', component: Library })
-        }
+        onClick={() => {
+          if (setCurrentSection) {
+            setCurrentSection({ name: 'library', component: Library });
+          }
+        }}
         className="relative flex w-full h-full px-1 py-3 bg-[#d9d9d9] rounded-xl border border-black hover:bg-animate-layout-border hover:cursor-pointer"
       >
         <div className="w-fit absolute -right-2 -top-2 translate-x-[100%]">

@@ -10,9 +10,11 @@ export default function HongRoom({ setCurrentSection }: SectionComponentProps) {
         </span>
       </div>
       <div
-        onClick={() =>
-          setCurrentSection({ name: 'hongroom', component: HongRoom })
-        }
+        onClick={() => {
+          if (setCurrentSection) {
+            setCurrentSection({ name: 'hongroom', component: HongRoom });
+          }
+        }}
         className="relative flex flex-col w-40 h-44 2xl:w-48 2xl:h-52 p-3 bg-[#d9d9d9] rounded-xl border border-black hover:bg-animate-layout-border hover:cursor-pointer"
       >
         <div className="w-full h-[30%] flex justify-end">

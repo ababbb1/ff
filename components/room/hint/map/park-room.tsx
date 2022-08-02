@@ -10,9 +10,11 @@ export default function ParkRoom({ setCurrentSection }: SectionComponentProps) {
         </span>
       </div>
       <div
-        onClick={() =>
-          setCurrentSection({ name: 'parkroom', component: ParkRoom })
-        }
+        onClick={() => {
+          if (setCurrentSection) {
+            setCurrentSection({ name: 'parkroom', component: ParkRoom });
+          }
+        }}
         className="relative flex w-48 h-28 2xl:w-52 2xl:h-32 px-1 py-2 2xl:py-3 bg-[#d9d9d9] rounded-xl border border-black hover:bg-animate-layout-border hover:cursor-pointer"
       >
         <div className="w-1/3 flex flex-col gap-1">

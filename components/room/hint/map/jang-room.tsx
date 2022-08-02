@@ -11,9 +11,11 @@ export default function JangRoom({ setCurrentSection }: SectionComponentProps) {
         </span>
       </div>
       <div
-        onClick={() =>
-          setCurrentSection({ name: 'jangroom', component: JangRoom })
-        }
+        onClick={() => {
+          if (setCurrentSection) {
+            setCurrentSection({ name: 'jangroom', component: JangRoom });
+          }
+        }}
         className="relative flex flex-col w-full h-full py-1 bg-[#d9d9d9] rounded-xl border border-black hover:bg-animate-layout-border hover:cursor-pointer"
       >
         <div className="w-full h-1/2 flex justify-center">

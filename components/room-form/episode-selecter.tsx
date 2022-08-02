@@ -1,4 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { Navigation, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -67,9 +68,10 @@ export default function EpisodeSelecter({
         className="episode-selecter w-full h-full disable-dragging"
       >
         <SwiperSlide className="">
-          <img
-            src="/assets/episode1.png"
-            style={{ width: '100%', height: '100%' }}
+          <Image
+            src="/assets/episode-image1.webp"
+            layout="fill"
+            alt="episode1"
           />
         </SwiperSlide>
 

@@ -33,6 +33,17 @@ export interface RoomFormData {
   isRandom: '0' | '1';
 }
 
+const difficultyDescriptions = {
+  hintTime: {
+    easy: '단서를 획득할 시간이 충분합니다.',
+    hard: '조사 시간이 부족해 범인 단서 획득에 어려움이 있습니다.',
+  },
+  reasoningTime: {
+    easy: '단서들을 분석하여 범인을 추리할 시간이 충분합니다.',
+    hard: '추리 시간이 부족해 단서들을 분석하고 범인을 찾기가 어려워집니다.',
+  },
+};
+
 export default function RoomForm({
   onValid,
   onClose,
@@ -72,8 +83,8 @@ export default function RoomForm({
   useEffect(() => {
     setValue('title', initData?.title || '');
     setValue('password', initData?.password || '');
-    setValue('hintTime', initData?.hintTime || '10');
-    setValue('reasoningTime', initData?.reasoningTime || '10');
+    setValue('hintTime', initData?.hintTime || '30');
+    setValue('reasoningTime', initData?.reasoningTime || '30');
     setValue('master', master || '');
     setValue('isRandom', initData?.isRandom || '0');
   }, []);
@@ -94,10 +105,10 @@ export default function RoomForm({
     // eslint-disable-next-line
     const regExp = /^[1-2][0-9]*$|^[3][0]*$/;
     if (!regExp.test(watch('hintTime')) && watch('hintTime') !== '') {
-      setValue('hintTime', '10');
+      setValue('hintTime', '30');
     }
     if (!regExp.test(watch('reasoningTime')) && watch('reasoningTime') !== '') {
-      setValue('reasoningTime', '10');
+      setValue('reasoningTime', '30');
     }
   }, [setValue, watch('hintTime'), watch('reasoningTime')]);
 
@@ -157,8 +168,12 @@ export default function RoomForm({
                 required: true,
               })}
               kind="hintTime"
-              difficulty="Hard"
-              description="Hard 설명"
+              difficulty={+watch('hintTime') > 15 ? 'Easy' : 'Hard'}
+              description={
+                +watch('hintTime') > 15
+                  ? difficultyDescriptions.hintTime.easy
+                  : difficultyDescriptions.hintTime.hard
+              }
               watch={watch}
               setValue={setValue}
             />
@@ -169,8 +184,12 @@ export default function RoomForm({
                 required: true,
               })}
               kind="reasoningTime"
-              difficulty="Easy"
-              description="Easy 설명"
+              difficulty={+watch('reasoningTime') > 15 ? 'Easy' : 'Hard'}
+              description={
+                +watch('reasoningTime') > 15
+                  ? difficultyDescriptions.reasoningTime.easy
+                  : difficultyDescriptions.reasoningTime.hard
+              }
               watch={watch}
               setValue={setValue}
             />
