@@ -24,7 +24,7 @@ export interface RoleInfo {
 
 export interface HintInfoContentItem {
   title: string;
-  roleInfo: RoleInfo;
+  roleInfo?: RoleInfo;
   description: JSX.Element;
   index: number;
   prevButtonHandler: (() => void) | null;

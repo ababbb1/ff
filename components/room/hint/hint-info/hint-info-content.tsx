@@ -42,30 +42,30 @@ export default function HintInfoContent({ theme, items, savedIndex }: Props) {
         className={`w-64 2xl:w-80 h-full flex flex-col border-r-2 ${border}`}
       >
         <div className={`w-full aspect-square p-4`}>
-          <img src={currentItem.roleInfo.imageSrc} />
+          <img src={currentItem.roleInfo?.imageSrc} />
         </div>
         <div
           className={`w-full h-12 2xl:h-14 font-semibold flex justify-center items-center text-xl text-white bg-[#484848]`}
         >
-          {currentItem.roleInfo.name}({currentItem.roleInfo.kind})
+          {currentItem.roleInfo?.name}({currentItem.roleInfo?.kind})
         </div>
         <div className={`w-full grow flex flex-col p-10 gap-3`}>
           <div className="flex gap-12 2xl:gap-16">
             <span className="font-semibold whitespace-nowrap">성별</span>
             <span className="whitespace-nowrap">
-              {currentItem.roleInfo.gender}
+              {currentItem.roleInfo?.gender}
             </span>
           </div>
           <div className="flex gap-12 2xl:gap-16">
             <span className="font-semibold whitespace-nowrap">나이</span>
             <span className="whitespace-nowrap">
-              {currentItem.roleInfo.age}세
+              {currentItem.roleInfo?.age}세
             </span>
           </div>
           <div className="flex gap-12 2xl:gap-16">
             <span className="font-semibold whitespace-nowrap">직업</span>
             <span className="whitespace-nowrap">
-              {currentItem.roleInfo.job}
+              {currentItem.roleInfo?.job}
             </span>
           </div>
         </div>
