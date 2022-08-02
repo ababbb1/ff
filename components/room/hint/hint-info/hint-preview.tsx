@@ -1,11 +1,12 @@
 import { useSession } from 'next-auth/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ROLES } from '../../../../libs/const';
 import useRoomContext from '../../../../libs/hooks/room/useRoomContext';
 import useTimeout from '../../../../libs/hooks/useTimeout';
 import useUpdateEffect from '../../../../libs/hooks/useUpdateEffect';
 import {
   choiceRole,
+  getRoles,
   hintRoleChoiceTime,
   hintTimeStart,
   SocketEmitData,
@@ -31,6 +32,7 @@ export default function HintInfoPreview() {
     index: 0,
   });
   const [currentTimeLimit, setCurrentTimeLimit] = useState(2 * 60);
+  // const [roles, setRoles] = useState<RoleInfo[]>([]);
 
   const roleChoiceTimeFxRef = useRef<RoleChoiceTime | null>(hintRoleChoiceTime);
 
@@ -47,6 +49,10 @@ export default function HintInfoPreview() {
       role,
     });
   };
+
+  useEffect(() => {
+    getRoles();
+  }, []);
 
   useUpdateEffect(() => {
     if (

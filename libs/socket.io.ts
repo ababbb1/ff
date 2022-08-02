@@ -11,6 +11,7 @@ import {
 } from './types/room';
 import { API_DOMAIN } from './api';
 import { addPeer, createPeer } from './peer';
+import { RoleInfo } from './types/game';
 
 export type SocketEmitData = { [k: string | number]: unknown };
 
@@ -40,6 +41,10 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
 
   socket.on('hint_board', (imageInfo: ImageData) => {
     dispatch({ type: 'BOARD_IMAGE_LIST_PUSH', payload: imageInfo });
+  });
+
+  socket.on('role_info', (roles: RoleInfo) => {
+    console.log(roles);
   });
 };
 
@@ -93,6 +98,7 @@ export const gameStart = emit('game_start');
 export const gameReady = emit('ready_state');
 export const hintRegister = emit('hint_register');
 export const hintReady = emit('hint_ready');
+export const getRoles = emit('role_info');
 export const hintRoleChoiceTime = emit('role_choice_time');
 export const choiceRole = emit('choice_role');
 export const hintTimeStart = emit('hint_start');
