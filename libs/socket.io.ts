@@ -43,8 +43,9 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
     dispatch({ type: 'BOARD_IMAGE_LIST_PUSH', payload: imageInfo });
   });
 
-  socket.on('role_info', (roles: RoleInfo) => {
+  socket.on('role_info', (roles: RoleInfo[]) => {
     console.log(roles);
+    dispatch({ type: 'ROLE_INFO', payload: roles });
   });
 };
 

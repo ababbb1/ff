@@ -66,6 +66,12 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
           peers: [...state.peers, action.payload],
         };
 
+      case 'ROLE_INFO':
+        return {
+          ...state,
+          roles: action.payload,
+        };
+
       default:
         return state;
     }
@@ -85,6 +91,7 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
       audioTrackconstraints: {},
     },
     peers: [],
+    roles: [],
   });
 
   return (

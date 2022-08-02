@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import { Dispatch } from 'react';
-import { EpisodeInfo } from './game';
+import { EpisodeInfo, RoleInfo } from './game';
 
 export interface RoomData {
   count: number;
@@ -78,6 +78,7 @@ export interface RoomState {
   boardImageList: ImageData[];
   myStreamInfo: StreamInfo;
   peers: IPeer[];
+  roles: RoleInfo[];
 }
 
 export type RoomStateAction =
@@ -123,6 +124,10 @@ export type RoomStateAction =
   | {
       type: 'ADD_PEER';
       payload: IPeer;
+    }
+  | {
+      type: 'ROLE_INFO';
+      payload: RoleInfo[];
     };
 
 export type RoomContextType = [RoomState, Dispatch<RoomStateAction>];

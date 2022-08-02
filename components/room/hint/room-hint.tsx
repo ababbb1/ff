@@ -20,7 +20,7 @@ import { useRouter } from 'next/router';
 import ModalLayout from '../../modal-layout';
 import useToggle from '../../../libs/hooks/useToggle';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import { hintRegister, reasoningTime } from '../../../libs/socket.io';
+import { getRoles, hintRegister, reasoningTime } from '../../../libs/socket.io';
 import { useSession } from 'next-auth/react';
 import CameraIcon from '../../svg/hint/camera';
 import ProfileIcon from '../../svg/hint/profile';
@@ -76,7 +76,7 @@ export default function RoomHint() {
   const IMAGE_LIST_MAX_LENGTH = 10;
   const { data: userSession } = useSession();
 
-  const [{ roomInfo }, dispatch] = useRoomContext();
+  const [{ roomInfo, roles }, dispatch] = useRoomContext();
 
   const [camera, toggleCamera] = useToggle();
   const [isLoading, toggleIsLoading] = useToggle();
@@ -186,6 +186,8 @@ export default function RoomHint() {
   };
 
   useEffect(() => {
+    getRoles();
+
     if (roomInfo && timeBarRef.current) {
       const convertedHintTime = +roomInfo.hintTime * 60;
       timeBarRef.current.style.transition = `width linear ${convertedHintTime}s`;
@@ -216,6 +218,10 @@ export default function RoomHint() {
       });
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    console.log(roles);
+  }, [roles]);
 
   return (
     <>
