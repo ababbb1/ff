@@ -56,7 +56,7 @@ export default function HintInfoPreview() {
       console.log('all ready');
       roleChoiceTimeFxRef.current({ roomId: roomInfo?.id });
       roleChoiceTimeFxRef.current = null;
-      test({ data: 'test' });
+      test({ test: 'test' });
     }
   }, [currentUsers]);
 
