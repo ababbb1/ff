@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import { SectionComponentProps } from '../room-hint';
+import ItemLivingRoomDailySchedule from './items/livingroom/item-livingroom-daily-schedule';
+import ItemLivingRoomRC from './items/livingroom/item-livingroom-RC';
 import SectionLayout from './section-layout';
 
 export default function LivingroomSection({
@@ -8,7 +10,17 @@ export default function LivingroomSection({
   return (
     <SectionLayout>
       <div className="w-full h-full relative z-[3]">
-        <div className="w-[10%] h-[10%] absolute z-[4] left-[9.5%] top-[52%]">
+        <div
+          onClick={() => {
+            if (setCurrentItem) {
+              setCurrentItem({
+                name: 'livingroom-RC',
+                component: ItemLivingRoomRC,
+              });
+            }
+          }}
+          className="w-[10%] h-[10%] absolute z-[4] left-[9.5%] top-[52%] hover:cursor-pointer"
+        >
           <Image
             src="/assets/map/RC-pictogram.png"
             layout="fill"
@@ -23,7 +35,17 @@ export default function LivingroomSection({
           <Image src="/assets/map/pot-2.png" layout="fill" alt="pot" />
         </div>
 
-        <div className="w-[6%] h-[12%] absolute z-[4] right-[36%] top-[38%]">
+        <div
+          onClick={() => {
+            if (setCurrentItem) {
+              setCurrentItem({
+                name: 'livingroom-daily-schedule',
+                component: ItemLivingRoomDailySchedule,
+              });
+            }
+          }}
+          className="w-[6%] h-[12%] absolute z-[4] right-[36%] top-[38%] hover:cursor-pointer"
+        >
           <Image
             src="/assets/map/daily-schedule.png"
             layout="fill"

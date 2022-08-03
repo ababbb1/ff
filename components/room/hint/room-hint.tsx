@@ -131,12 +131,6 @@ const SonSection = dynamic(
   },
 );
 
-const ItemSpeaker = dynamic(
-  () => import('../../../components/room/hint/map/items/bathroom/item-speaker'),
-  {
-    ssr: false,
-  },
-);
 const ItemParkDrawer = dynamic(
   () => import('./map/items/park/item-park-drawer'),
   {
@@ -188,6 +182,69 @@ const ItemParkWithDaughter = dynamic(
 const ItemParkBin = dynamic(() => import('./map/items/park/item-park-bin'), {
   ssr: false,
 });
+const ItemLivingRoomRC = dynamic(
+  () => import('./map/items/livingroom/item-livingroom-RC'),
+  {
+    ssr: false,
+  },
+);
+const ItemLivingRoomDailySchedule = dynamic(
+  () => import('./map/items/livingroom/item-livingroom-daily-schedule'),
+  {
+    ssr: false,
+  },
+);
+const ItemJangBriefcase = dynamic(
+  () => import('./map/items/jang/item-jang-briefcase'),
+  {
+    ssr: false,
+  },
+);
+const ItemJangBriefcasePaper1 = dynamic(
+  () => import('./map/items/jang/item-jang-briefcase-paper1'),
+  {
+    ssr: false,
+  },
+);
+const ItemJangBriefcasePaper2 = dynamic(
+  () => import('./map/items/jang/item-jang-briefcase-paper2'),
+  {
+    ssr: false,
+  },
+);
+const ItemBathroomCorpse = dynamic(
+  () => import('./map/items/bathroom/item-bathroom-corpse'),
+  {
+    ssr: false,
+  },
+);
+const ItemBathroomSpeaker = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/bathroom/item-bathroom-speaker'
+    ),
+  {
+    ssr: false,
+  },
+);
+const ItemBathroomWrist = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/bathroom/item-bathroom-wrist'
+    ),
+  {
+    ssr: false,
+  },
+);
+const ItemBathroomTowel = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/bathroom/item-bathroom-towel'
+    ),
+  {
+    ssr: false,
+  },
+);
 
 const sections: Section[] = [
   { name: 'map', component: HintMap },
@@ -202,7 +259,6 @@ const sections: Section[] = [
   { name: 'sonroom', component: SonSection },
 ];
 const items: HintItem[] = [
-  { name: 'speaker', component: ItemSpeaker },
   { name: 'park-drawer', component: ItemParkDrawer },
   { name: 'park-paper-1', component: ItemParkPaper1 },
   { name: 'park-paper-2', component: ItemParkPaper2 },
@@ -214,6 +270,15 @@ const items: HintItem[] = [
   { name: 'park-resume', component: ItemParkResume },
   { name: 'park-with-daughter', component: ItemParkWithDaughter },
   { name: 'park-bin', component: ItemParkBin },
+  { name: 'livingroom-RC', component: ItemLivingRoomRC },
+  { name: 'livingroom-daily-schedule', component: ItemLivingRoomDailySchedule },
+  { name: 'jang-briefcase', component: ItemJangBriefcase },
+  { name: 'jang-briefcase-paper-1', component: ItemJangBriefcasePaper1 },
+  { name: 'jang-briefcase-paper-2', component: ItemJangBriefcasePaper2 },
+  { name: 'bathroom-corpse', component: ItemBathroomCorpse },
+  { name: 'bathroom-speaker', component: ItemBathroomSpeaker },
+  { name: 'bathroom-wrist', component: ItemBathroomWrist },
+  { name: 'bathroom-towel', component: ItemBathroomTowel },
 ];
 
 export default function RoomHint() {

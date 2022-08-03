@@ -1,7 +1,10 @@
 import Image from 'next/image';
 import { SectionComponentProps } from '../room-hint';
 import SectionLayout from './section-layout';
-import ItemSpeaker from './items/bathroom/item-speaker';
+import ItemBathroomCorpse from './items/bathroom/item-bathroom-corpse';
+import ItemBathroomSpeaker from './items/bathroom/item-bathroom-speaker';
+import ItemBathroomWrist from './items/bathroom/item-bathroom-wrist';
+import ItemBathroomTowel from './items/bathroom/item-bathroom-towel';
 
 export default function BathRoomSection({
   setCurrentItem,
@@ -9,7 +12,17 @@ export default function BathRoomSection({
   return (
     <SectionLayout>
       <div className="w-full h-full relative z-[3]">
-        <div className="w-[12%] h-[14%] absolute z-[4] right-[4%] top-[51%]">
+        <div
+          onClick={() => {
+            if (setCurrentItem) {
+              setCurrentItem({
+                name: 'bathroom-towel',
+                component: ItemBathroomTowel,
+              });
+            }
+          }}
+          className="w-[12%] h-[14%] absolute z-[4] right-[4%] top-[51%] hover:cursor-pointer"
+        >
           <Image src="/assets/map/basket.png" layout="fill" alt="basket" />
         </div>
         <div className="w-[15%] h-[16%] absolute z-[4] right-[29%] top-[37%]">
@@ -24,7 +37,10 @@ export default function BathRoomSection({
         <div
           onClick={() => {
             if (setCurrentItem) {
-              setCurrentItem({ name: 'speaker', component: ItemSpeaker });
+              setCurrentItem({
+                name: 'bathroom-speaker',
+                component: ItemBathroomSpeaker,
+              });
             }
           }}
           className="w-[9%] h-[11%] absolute z-[5] left-[27%] top-[14.3%] hover:cursor-pointer"
@@ -36,13 +52,33 @@ export default function BathRoomSection({
           />
         </div>
 
-        <div className="w-[24%] h-[16%] absolute z-[4] left-[20%] top-[40.5%]">
+        <div
+          onClick={() => {
+            if (setCurrentItem) {
+              setCurrentItem({
+                name: 'bathroom-corpse',
+                component: ItemBathroomCorpse,
+              });
+            }
+          }}
+          className="w-[24%] h-[16%] absolute z-[4] left-[20%] top-[40.5%] hover: cursor-pointer"
+        >
           <Image src="/assets/map/mosaic.png" layout="fill" alt="mosaic" />
         </div>
-        <div className="w-[12%] h-[14%] absolute z-[5] left-[32%] top-[35%] -rotate-[20deg]">
+        <div
+          onClick={() => {
+            if (setCurrentItem) {
+              setCurrentItem({
+                name: 'bathroom-wrist',
+                component: ItemBathroomWrist,
+              });
+            }
+          }}
+          className="w-[12%] h-[14%] absolute z-[5] left-[32%] top-[35%] -rotate-[20deg] hover:cursor-pointer"
+        >
           <Image src="/assets/map/wrist.png" layout="fill" alt="wrist" />
         </div>
-        <div className="w-[40%] h-[35%] absolute z-[6] left-[7%] top-[50%] -translate-y-[50%]">
+        <div className="w-[40%] h-[35%] absolute z-[6] left-[7%] top-[50%] -translate-y-[50%] pointer-events-none">
           <Image src="/assets/map/tub.png" layout="fill" alt="tub" />
         </div>
 

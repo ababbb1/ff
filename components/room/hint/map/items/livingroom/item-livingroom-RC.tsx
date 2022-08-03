@@ -6,7 +6,7 @@ export default function ItemLivingRoomRC({ setCurrentItem }: HintItemProps) {
   return (
     <HintItemLayout title="고장난 RC카" setCurrentItem={setCurrentItem}>
       <div className="flex gap-6 w-full h-full justify-center items-center">
-        <div className="w-[60%] h-[50%] relative">
+        <div className="w-[50%] h-[40%] relative">
           <Image src="/assets/map/RC.png" layout="fill" alt="RC" />
         </div>
       </div>
