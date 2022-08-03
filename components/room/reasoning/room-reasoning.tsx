@@ -1,7 +1,7 @@
 import Timer from '../../timer';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import ModalLayout from '../../modal-layout';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import MessageInterface from '../message_interface';
 import useToggle from '../../../libs/hooks/useToggle';
 import RoundedTriangleIcon from '../../svg/reasoning/rounded-triangle';
@@ -20,8 +20,7 @@ export default function RoomReasoning() {
   // const [documentDragEndY, setDocumentDragEndY] = useState(0);
 
   const { draggable, onDropHandler, isDragging } = useContext(DndContext);
-
-  // const boardRef = useRef<HTMLDivElement>(null);
+  const boardRef = useRef<HTMLDivElement>(null);
   // const imageRefs = useRef<HTMLDivElement[]>([]);
 
   // const handleDrop = (item: ImageData, monitor: DropTargetMonitor) => {
@@ -96,10 +95,44 @@ export default function RoomReasoning() {
   //   };
   // }, []);
 
+  const isOnBoard = (pageX: number, pageY: number): boolean => {
+    if (boardRef.current) {
+      const targetTop =
+        boardRef.current.getBoundingClientRect().top +
+        boardRef.current.scrollTop;
+      const targetLeft =
+        boardRef.current.getBoundingClientRect().left +
+        boardRef.current.scrollLeft;
+      const targetRight =
+        targetLeft + boardRef.current.offsetWidth - window.scrollX;
+      const targetBottom =
+        targetTop + boardRef.current.offsetHeight - window.scrollY;
+
+      console.log('board_top', targetTop);
+      console.log('board_right', targetRight);
+      console.log('board_bottom', targetBottom);
+      console.log('board_left', targetLeft);
+
+      return (
+        pageX > targetLeft &&
+        pageX < targetRight &&
+        pageY > targetTop &&
+        pageY < targetBottom
+      );
+    } else return false;
+  };
+
   useEffect(() => {
     if (onDropHandler) {
       onDropHandler.current = (pageX: number, pageY: number) => {
-        console.log(pageX, pageY);
+        if (boardRef.current) {
+          console.log(
+            'board top',
+            boardRef.current.getBoundingClientRect().top,
+          );
+          console.log(pageX, pageY);
+          console.log(isOnBoard(pageX, pageY));
+        }
       };
     }
   }, []);
@@ -139,7 +172,7 @@ export default function RoomReasoning() {
             // ref={boardContainerRef}
             className="w-full h-full bg-black overflow-auto"
           >
-            <HintBoard boardImageList={boardImageList} />
+            <HintBoard boardRef={boardRef} boardImageList={boardImageList} />
           </div>
 
           <div

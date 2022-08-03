@@ -1,15 +1,23 @@
+import { RefObject } from 'react';
 import { IMAGE_SIZE_HORIZONTAL } from '../../../libs/const';
 import { ImageData } from '../../../libs/types/room';
 
 export interface HintBoardProps {
   boardImageList: ImageData[];
+  boardRef: RefObject<HTMLDivElement>;
 }
 
-export default function HintBoard({ boardImageList }: HintBoardProps) {
+export default function HintBoard({
+  boardImageList,
+  boardRef,
+}: HintBoardProps) {
   const [horizontalImageWidth, horizontalImageHeight] = IMAGE_SIZE_HORIZONTAL;
 
   return (
-    <div className="droppable w-[2000px] h-[2000px] relative bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+    <div
+      ref={boardRef}
+      className="droppable w-full h-[3000px] relative bg-black"
+    >
       <div className="w-full h-full">
         {boardImageList.map((v, i) => {
           // const DPR = window.devicePixelRatio;

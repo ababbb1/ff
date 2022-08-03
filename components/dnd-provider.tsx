@@ -132,12 +132,13 @@ export default function DndProvider({ children }: Props) {
       document.removeEventListener('contextmenu', replace);
 
       const elemBelow = document.elementFromPoint(e.pageX, e.pageY);
-      if (elemBelow?.closest('.droppable')) {
-        console.log(elemBelow?.closest('.droppable'));
+      const onTarget = elemBelow?.closest('.droppable');
+      console.log(onTarget);
+      if (onTarget) {
         console.log('droppable');
+        onDropHandler.current(e.pageX, e.pageY);
         replace();
       } else {
-        console.log(elemBelow?.closest('.droppable'));
         console.log('not droppable');
         replace();
       }

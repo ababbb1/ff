@@ -85,7 +85,6 @@ export default function HintInfoPreview() {
           ? '등장인물'
           : '용의자 리스트'
       }
-      closeButon={false}
       timer
       currentTimeLimit={currentTimeLimit}
     >

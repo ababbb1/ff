@@ -19,6 +19,7 @@ module.exports = {
         'room-card3': "url('/assets/room-card3.png')",
         'hint-info-white': "url('/assets/hint-info-white.webp')",
         'hint-info-black': "url('/assets/hint-info-black.webp')",
+        'section-background': "url('/assets/section-background.webp')",
         free: "url('/assets/free.png')",
         random: "url('/assets/random.png')",
       },

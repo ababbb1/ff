@@ -9,7 +9,7 @@ interface Props extends PropsWithChildren {
   theme?: 'black' | 'white';
   title: string;
   timer?: boolean;
-  closeButon?: boolean;
+  closeButtonHandler?: () => void;
   currentTimeLimit?: number;
 }
 
@@ -18,7 +18,7 @@ export default function HintInfoLayout({
   theme = 'white',
   title,
   timer = false,
-  closeButon = true,
+  closeButtonHandler,
   currentTimeLimit,
 }: Props) {
   const oppositeColor = theme === 'black' ? 'white' : 'black';
@@ -73,25 +73,31 @@ export default function HintInfoLayout({
           </div>
           <div className="w-1/3 h-full flex items-center justify-end hover:cursor-pointer gap-4">
             {timer && currentTimeLimit && <Timer seconds={currentTimeLimit} />}
-            {closeButon && <XIcon className={`w-6 h-6 2xl:w-7 2x:h-7`} />}
-            {roomInfo?.roomState !== 'roleChoice' && (
-              <div
-                onClick={handleClickReadyButton}
-                className={`font-semibold py-3 px-6 rounded-md hover:bg-animate-layout-border hover:text-black ${
-                  currentUsers.find(
+            {closeButtonHandler && (
+              <XIcon
+                onClick={closeButtonHandler}
+                className={`w-6 h-6 2xl:w-7 2x:h-7`}
+              />
+            )}
+            {roomInfo?.roomState !== 'roleChoice' &&
+              roomInfo?.roomState !== 'hintTime' && (
+                <div
+                  onClick={handleClickReadyButton}
+                  className={`font-semibold py-3 px-6 rounded-md hover:bg-animate-layout-border hover:text-black ${
+                    currentUsers.find(
+                      cUser => cUser.userId === userSession?.userId,
+                    )?.hintReady
+                      ? 'bg-animate-layout-border text-black'
+                      : 'bg-black text-animate-layout-border hover:cursor-pointer'
+                  }`}
+                >
+                  {currentUsers.find(
                     cUser => cUser.userId === userSession?.userId,
                   )?.hintReady
-                    ? 'bg-animate-layout-border text-black'
-                    : 'bg-black text-animate-layout-border hover:cursor-pointer'
-                }`}
-              >
-                {currentUsers.find(
-                  cUser => cUser.userId === userSession?.userId,
-                )?.hintReady
-                  ? 'Waiting...'
-                  : 'Ready'}
-              </div>
-            )}
+                    ? 'Waiting...'
+                    : 'Ready'}
+                </div>
+              )}
           </div>
         </div>
 

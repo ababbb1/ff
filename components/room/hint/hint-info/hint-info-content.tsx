@@ -5,7 +5,7 @@ import TriangleIcon from '../../../svg/room-form/triangle';
 interface Props {
   theme?: 'black' | 'white';
   items: HintInfoContentItem[];
-  savedIndex: number;
+  savedIndex?: number;
 }
 
 export default function HintInfoContent({ theme, items, savedIndex }: Props) {
@@ -88,58 +88,62 @@ export default function HintInfoContent({ theme, items, savedIndex }: Props) {
           </span>
         </div>
         <div className="w-full grow">
-          <div className="flex flex-col gap-1">
-            {items.map((item, index) => (
-              <button
-                key={`button${index}`}
-                onClick={makeButtonClickHandler(index)}
-                className={`font-semibold px-6 py-2 2xl:py-3 max-w-[90%] ${border} border-2 border-l-0 ${
-                  item.title === currentItem.title
-                    ? 'bg-black text-animate-layout-border'
-                    : ''
-                }`}
-              >
-                {item.title}
-              </button>
-            ))}
-          </div>
+          {items.length > 1 && (
+            <div className="flex flex-col gap-1">
+              {items.map((item, index) => (
+                <button
+                  key={`button${index}`}
+                  onClick={makeButtonClickHandler(index)}
+                  className={`font-semibold px-6 py-2 2xl:py-3 max-w-[90%] ${border} border-2 border-l-0 ${
+                    item.title === currentItem.title
+                      ? 'bg-black text-animate-layout-border'
+                      : ''
+                  }`}
+                >
+                  {item.title}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="w-full aspect-square flex justify-between items-center px-4 2xl:px-6">
-          {(isFirstItem && currentItem.prevButtonHandler) || !isFirstItem ? (
-            <button
-              onClick={currentItem.prevButtonHandler || handleClickPrevIndex}
-            >
+        {items.length > 1 && (
+          <div className="w-full aspect-square flex justify-between items-center px-4 2xl:px-6">
+            {(isFirstItem && currentItem.prevButtonHandler) || !isFirstItem ? (
+              <button
+                onClick={currentItem.prevButtonHandler || handleClickPrevIndex}
+              >
+                <div
+                  className={`flex justify-center items-center w-12 h-12 border ${border} rounded-full pr-1 hover:bg-black hover:text-animate-layout-border`}
+                >
+                  <TriangleIcon className="w-4 h-4 -rotate-90" />
+                </div>
+              </button>
+            ) : (
               <div
-                className={`flex justify-center items-center w-12 h-12 border ${border} rounded-full pr-1 hover:bg-black hover:text-animate-layout-border`}
+                className={`flex justify-center items-center w-12 h-12 border border-gray-300 text-gray-300 rounded-full pr-1`}
               >
                 <TriangleIcon className="w-4 h-4 -rotate-90" />
               </div>
-            </button>
-          ) : (
-            <div
-              className={`flex justify-center items-center w-12 h-12 border border-gray-300 text-gray-300 rounded-full pr-1`}
-            >
-              <TriangleIcon className="w-4 h-4 -rotate-90" />
-            </div>
-          )}
-          {(isLastItem && currentItem.nextButtonHandler) || !isLastItem ? (
-            <button
-              onClick={currentItem.nextButtonHandler || handleClickNextIndex}
-            >
+            )}
+            {(isLastItem && currentItem.nextButtonHandler) || !isLastItem ? (
+              <button
+                onClick={currentItem.nextButtonHandler || handleClickNextIndex}
+              >
+                <div
+                  className={`flex justify-center items-center w-12 h-12 border ${border} rounded-full pl-1 hover:bg-black hover:text-animate-layout-border`}
+                >
+                  <TriangleIcon className="w-4 h-4 rotate-90" />
+                </div>
+              </button>
+            ) : (
               <div
-                className={`flex justify-center items-center w-12 h-12 border ${border} rounded-full pl-1 hover:bg-black hover:text-animate-layout-border`}
+                className={`flex justify-center items-center w-12 h-12 border border-gray-300 text-gray-300 rounded-full pl-1`}
               >
                 <TriangleIcon className="w-4 h-4 rotate-90" />
               </div>
-            </button>
-          ) : (
-            <div
-              className={`flex justify-center items-center w-12 h-12 border border-gray-300 text-gray-300 rounded-full pl-1`}
-            >
-              <TriangleIcon className="w-4 h-4 rotate-90" />
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

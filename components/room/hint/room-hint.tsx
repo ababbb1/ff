@@ -32,6 +32,11 @@ import { ImageData } from '../../../libs/types/room';
 import HintImageLayout from './hint-image-layout';
 import HintInfoPreview from './hint-info/hint-preview';
 import dynamic from 'next/dynamic';
+import FlagIcon from '../../svg/hint/flag';
+import HintMotivation from './hint-info/hint-motivation';
+import HintCharacters from './hint-info/hint-characters';
+import HintInfoLayout from './hint-info/hint-info-layout';
+import HintOverview from './hint-info/hint-overview';
 
 export type SectionNameType =
   | 'map'
@@ -47,11 +52,19 @@ export type SectionNameType =
 
 export interface SectionComponentProps {
   setCurrentSection?: Dispatch<SetStateAction<Section>>;
+  setCurrentItem?: Dispatch<SetStateAction<HintItem | null>>;
+}
+export interface HintItemProps {
+  setCurrentItem: Dispatch<SetStateAction<HintItem | null>>;
 }
 
 export interface Section {
   name: SectionNameType;
   component: ComponentType<SectionComponentProps>;
+}
+export interface HintItem {
+  name: string;
+  component: ComponentType<HintItemProps>;
 }
 
 const HintMap = dynamic(
@@ -66,25 +79,47 @@ const BathRoomSection = dynamic(
     ssr: false,
   },
 );
+const JangSection = dynamic(
+  () => import('../../../components/room/hint/map/jang-section'),
+  {
+    ssr: false,
+  },
+);
+
+const ItemSpeaker = dynamic(
+  () => import('../../../components/room/hint/map/items/bathroom/item-speaker'),
+  {
+    ssr: false,
+  },
+);
 
 const sections: Section[] = [
   { name: 'map', component: HintMap },
   { name: 'bathroom', component: BathRoomSection },
+  { name: 'jangroom', component: JangSection },
 ];
+const items: HintItem[] = [{ name: 'speaker', component: ItemSpeaker }];
 
 export default function RoomHint() {
   const IMAGE_LIST_MAX_LENGTH = 10;
   const { data: userSession } = useSession();
 
-  const [{ roomInfo, roles }, dispatch] = useRoomContext();
+  const [{ roomInfo, roles, currentUsers }, dispatch] = useRoomContext();
 
   const [camera, toggleCamera] = useToggle();
   const [isLoading, toggleIsLoading] = useToggle();
   const [isOverview, setIsOverview] = useState(true);
+  const [currentInfo, setCurrentInfo] = useState<JSX.Element | null>(null);
+  const [currentItem, setCurrentItem] = useState<HintItem | null>(null);
   const [currentSection, setCurrentSection] = useState<Section>({
     name: 'map',
     component: HintMap,
   });
+  const myRole =
+    roles[
+      currentUsers.find(cUser => cUser.userId === userSession?.userId)
+        ?.episodeId || 6
+    ];
 
   const {
     array: currentImageList,
@@ -170,6 +205,10 @@ export default function RoomHint() {
     setIsOverview(false);
   };
 
+  const handleCloseHintInfo = () => {
+    setCurrentInfo(null);
+  };
+
   const handleGoNextPage = () => {
     const resultImageList = currentImageList.filter(x => x);
     dispatch({ type: 'IMAGE_LIST', payload: resultImageList as ImageData[] });
@@ -221,6 +260,10 @@ export default function RoomHint() {
     console.log(roles);
   }, [roles]);
 
+  useEffect(() => {
+    console.log(currentItem);
+  }, [currentItem]);
+
   return (
     <>
       <ModalLayout
@@ -229,6 +272,14 @@ export default function RoomHint() {
         handleClose={isHintTime ? handleCloseOverviewModal : undefined}
       >
         <HintInfoPreview />
+      </ModalLayout>
+
+      <ModalLayout
+        background="dark"
+        isActive={!!currentInfo}
+        handleClose={handleCloseHintInfo}
+      >
+        {currentInfo}
       </ModalLayout>
 
       <div className="w-full h-full flex flex-col disable-dragging">
@@ -302,7 +353,19 @@ export default function RoomHint() {
                 )}
               </div>
               <div className="w-full aspect-square flex justify-center items-center border-b-2 border-black p-2">
-                <div className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white">
+                <div
+                  onClick={() =>
+                    setCurrentInfo(
+                      <HintInfoLayout
+                        title="등장인물"
+                        closeButtonHandler={handleCloseHintInfo}
+                      >
+                        <HintCharacters />
+                      </HintInfoLayout>,
+                    )
+                  }
+                  className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white"
+                >
                   <ProfileIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
                   <span className="whitespace-nowrap text-xs 2xl:text-sm font-semibold">
                     등장인물
@@ -311,7 +374,16 @@ export default function RoomHint() {
               </div>
               <div className="w-full aspect-square flex justify-center items-center border-b-2 border-black p-2">
                 <div
-                  onClick={() => setIsOverview(true)}
+                  onClick={() =>
+                    setCurrentInfo(
+                      <HintInfoLayout
+                        title="사건개요"
+                        closeButtonHandler={handleCloseHintInfo}
+                      >
+                        <HintOverview />
+                      </HintInfoLayout>,
+                    )
+                  }
                   className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white"
                 >
                   <NoteIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
@@ -334,8 +406,18 @@ export default function RoomHint() {
                 </div>
               </div>
               <div className="w-full aspect-square flex justify-center items-center border-b-2 border-black p-2">
-                <div className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white">
-                  <ProfileIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
+                <div
+                  onClick={() =>
+                    setCurrentInfo(
+                      <HintMotivation
+                        roleInfo={myRole}
+                        closeButtonHandler={() => setCurrentInfo(null)}
+                      />,
+                    )
+                  }
+                  className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white"
+                >
+                  <FlagIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
                   <span className="whitespace-nowrap text-xs 2xl:text-sm font-semibold">
                     동기
                   </span>
@@ -345,18 +427,34 @@ export default function RoomHint() {
             <div className="w-full h-10 2xl:h-12 border-t-2 border-black"></div>
           </div>
           <div className="grow h-full flex flex-col">
-            <div ref={mapRef} className="w-full grow relative">
+            <div ref={mapRef} className="w-full grow relative overflow-hidden">
               {sections.map((section, i) => (
                 <div
                   key={`section${i}`}
                   className={`w-full h-full transition-all duration-1000 absolute top-0 left-0 ${
                     currentSection.name === section.name
-                      ? 'opacity-100'
+                      ? 'opacity-100 z-10'
                       : 'opacity-0 -z-10'
                   }`}
                 >
                   <Suspense>
-                    <section.component {...{ setCurrentSection }} />
+                    <section.component
+                      {...{ setCurrentSection, setCurrentItem }}
+                    />
+                  </Suspense>
+                </div>
+              ))}
+              {items.map((item, i) => (
+                <div
+                  key={`item${i}`}
+                  className={`w-full h-full transition-all duration-700 absolute top-0 left-0 ${
+                    currentItem?.name === item.name
+                      ? 'opacity-100 z-20'
+                      : 'opacity-0 -z-10 translate-y-6'
+                  }`}
+                >
+                  <Suspense>
+                    <item.component {...{ setCurrentItem }} />
                   </Suspense>
                 </div>
               ))}
