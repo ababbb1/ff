@@ -37,6 +37,9 @@ import HintMotivation from './hint-info/hint-motivation';
 import HintCharacters from './hint-info/hint-characters';
 import HintInfoLayout from './hint-info/hint-info-layout';
 import HintOverview from './hint-info/hint-overview';
+import PinIcon from '../../svg/hint/pin';
+import ItemParkPaper2 from './map/items/park/item-park-paper-2';
+import ItemParkDesk from './map/items/park/item-park-desk';
 
 export type SectionNameType =
   | 'map'
@@ -85,6 +88,48 @@ const JangSection = dynamic(
     ssr: false,
   },
 );
+const LibrarySection = dynamic(
+  () => import('../../../components/room/hint/map/library-section'),
+  {
+    ssr: false,
+  },
+);
+const LivingroomSection = dynamic(
+  () => import('../../../components/room/hint/map/livingroom-section'),
+  {
+    ssr: false,
+  },
+);
+const ParkSection = dynamic(
+  () => import('../../../components/room/hint/map/park-section'),
+  {
+    ssr: false,
+  },
+);
+const HongSection = dynamic(
+  () => import('../../../components/room/hint/map/hong-section'),
+  {
+    ssr: false,
+  },
+);
+const JungSection = dynamic(
+  () => import('../../../components/room/hint/map/jung-section'),
+  {
+    ssr: false,
+  },
+);
+const YangSection = dynamic(
+  () => import('../../../components/room/hint/map/yang-section'),
+  {
+    ssr: false,
+  },
+);
+const SonSection = dynamic(
+  () => import('../../../components/room/hint/map/son-section'),
+  {
+    ssr: false,
+  },
+);
 
 const ItemSpeaker = dynamic(
   () => import('../../../components/room/hint/map/items/bathroom/item-speaker'),
@@ -92,13 +137,84 @@ const ItemSpeaker = dynamic(
     ssr: false,
   },
 );
+const ItemParkDrawer = dynamic(
+  () => import('./map/items/park/item-park-drawer'),
+  {
+    ssr: false,
+  },
+);
+const ItemParkPaper1 = dynamic(
+  () => import('./map/items/park/item-park-paper-1'),
+  {
+    ssr: false,
+  },
+);
+const ItemParkSearchResult = dynamic(
+  () => import('./map/items/park/item-park-search-result'),
+  {
+    ssr: false,
+  },
+);
+const ItemParkDiary = dynamic(
+  () => import('./map/items/park/item-park-diary'),
+  {
+    ssr: false,
+  },
+);
+const ItemParkLicense = dynamic(
+  () => import('./map/items/park/item-park-license'),
+  {
+    ssr: false,
+  },
+);
+const ItemParkBriefCase = dynamic(
+  () => import('./map/items/park/item-park-briefcase'),
+  {
+    ssr: false,
+  },
+);
+const ItemParkResume = dynamic(
+  () => import('./map/items/park/item-park-resume'),
+  {
+    ssr: false,
+  },
+);
+const ItemParkWithDaughter = dynamic(
+  () => import('./map/items/park/item-park-with-daughter'),
+  {
+    ssr: false,
+  },
+);
+const ItemParkBin = dynamic(() => import('./map/items/park/item-park-bin'), {
+  ssr: false,
+});
 
 const sections: Section[] = [
   { name: 'map', component: HintMap },
   { name: 'bathroom', component: BathRoomSection },
   { name: 'jangroom', component: JangSection },
+  { name: 'library', component: LibrarySection },
+  { name: 'livingroom', component: LivingroomSection },
+  { name: 'parkroom', component: ParkSection },
+  { name: 'hongroom', component: HongSection },
+  { name: 'jungroom', component: JungSection },
+  { name: 'yangroom', component: YangSection },
+  { name: 'sonroom', component: SonSection },
 ];
-const items: HintItem[] = [{ name: 'speaker', component: ItemSpeaker }];
+const items: HintItem[] = [
+  { name: 'speaker', component: ItemSpeaker },
+  { name: 'park-drawer', component: ItemParkDrawer },
+  { name: 'park-paper-1', component: ItemParkPaper1 },
+  { name: 'park-paper-2', component: ItemParkPaper2 },
+  { name: 'park-desk', component: ItemParkDesk },
+  { name: 'park-search-result', component: ItemParkSearchResult },
+  { name: 'park-diary', component: ItemParkDiary },
+  { name: 'park-license', component: ItemParkLicense },
+  { name: 'park-briefcase', component: ItemParkBriefCase },
+  { name: 'park-resume', component: ItemParkResume },
+  { name: 'park-with-daughter', component: ItemParkWithDaughter },
+  { name: 'park-bin', component: ItemParkBin },
+];
 
 export default function RoomHint() {
   const IMAGE_LIST_MAX_LENGTH = 10;
@@ -394,12 +510,13 @@ export default function RoomHint() {
               </div>
               <div className="w-full aspect-square flex justify-center items-center border-b-2 border-black p-2">
                 <div
-                  onClick={() =>
-                    setCurrentSection({ name: 'map', component: HintMap })
-                  }
+                  onClick={() => {
+                    setCurrentSection({ name: 'map', component: HintMap });
+                    setCurrentItem(null);
+                  }}
                   className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white"
                 >
-                  <ProfileIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
+                  <PinIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
                   <span className="whitespace-nowrap text-xs 2xl:text-sm font-semibold">
                     지도
                   </span>
@@ -434,7 +551,7 @@ export default function RoomHint() {
                   className={`w-full h-full transition-all duration-1000 absolute top-0 left-0 ${
                     currentSection.name === section.name
                       ? 'opacity-100 z-10'
-                      : 'opacity-0 -z-10'
+                      : 'opacity-50 -z-10'
                   }`}
                 >
                   <Suspense>
@@ -450,7 +567,7 @@ export default function RoomHint() {
                   className={`w-full h-full transition-all duration-700 absolute top-0 left-0 ${
                     currentItem?.name === item.name
                       ? 'opacity-100 z-20'
-                      : 'opacity-0 -z-10 translate-y-6'
+                      : 'opacity-50 -z-10 translate-y-2'
                   }`}
                 >
                   <Suspense>
