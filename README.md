@@ -1,6 +1,6 @@
 # WHO ARE YOU
 
-<p align="center" width="100%"><img src="https://user-images.githubusercontent.com/70653334/182891518-7f322c1b-720d-4aed-806d-858b6357afa3.png"></p>
+<p align="center" width="100%" height="100%"><img src="https://user-images.githubusercontent.com/70653334/182891518-7f322c1b-720d-4aed-806d-858b6357afa3.png"></p>
 <br/>
 ## <a href="https://www.whoru.name/">링크</a>
 <br/>
@@ -18,3 +18,4 @@ chrome 외의 브라우저, 모바일 환경에서는 플레이가 불가합니�
 <hr/>
 
 <img width="728" alt="1" src="https://user-images.githubusercontent.com/70653334/182894913-e98e234d-8bb1-401c-80c2-c29c4cfbac70.png">
+<p align="center" width="100%" height="100%"><img src="https://user-images.githubusercontent.com/70653334/182894913-e98e234d-8bb1-401c-80c2-c29c4cfbac70.png"></p>
