@@ -2,7 +2,6 @@ import { Dispatch } from 'react';
 import { io } from 'socket.io-client';
 import {
   CurrentUser,
-  ImageData,
   IPeer,
   MessageInfo,
   RoomData,
@@ -32,8 +31,6 @@ const onlyMasterIsReady = (currentUsers: CurrentUser[], roomInfo: RoomData) =>
 
 export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
   socket.on('update_room', ({ roomInfo, currentUser }: UpdateRoomResponse) => {
-    console.log('socket update current user', currentUser);
-
     dispatch({ type: 'ROOM_INFO', payload: roomInfo });
 
     dispatch({
@@ -46,24 +43,20 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
     dispatch({ type: 'ADD_MESSAGE', payload: messageInfo });
   });
 
-  socket.on('hint_board', (imageInfo: ImageData) => {
-    console.log(imageInfo);
-    // dispatch({ type: 'BOARD_IMAGE_LIST_PUSH', payload: imageInfo });
-  });
+  // socket.on('hint_board', (imageInfo: ImageData) => {
+  //   // dispatch({ type: 'BOARD_IMAGE_LIST_PUSH', payload: imageInfo });
+  // });
 
   socket.on('role_info', (roles: RoleInfo[]) => {
-    console.log('roles', roles);
     dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
   });
 
   socket.on('board_image', (data: { imageUrlLists: ImageURlList[] }) => {
-    console.log('board image list', data);
     const tmp = data.imageUrlLists.flatMap(x =>
       x.imageUrlLists
         .split(',')
         .map((y: string) => ({ userId: x.userId, imageId: y })),
     );
-    console.log(tmp);
     dispatch({ type: 'BOARD_IMAGE_LIST', payload: tmp });
   });
 };
@@ -75,7 +68,6 @@ export const afterUpdateStream = (
   dispatch: Dispatch<RoomStateAction>,
 ) => {
   socket.on('peers', ({ currentUser }: UpdateRoomResponse) => {
-    console.log(`socket on peers: ${currentUser}`);
     if (myStream) {
       const peers = currentUser
         .filter(cUser => `${cUser.userId}` !== userId)
@@ -88,15 +80,11 @@ export const afterUpdateStream = (
   });
 
   socket.on('peer_join', ({ signal, callerId }) => {
-    console.log(
-      `socket on peer_join: signal: ${signal}, callerId: ${callerId}`,
-    );
     const peer = addPeer(signal, callerId, userId, myStream);
     dispatch({ type: 'ADD_PEER', payload: { userId: callerId, peer } });
   });
 
   socket.on('receive_signal', ({ signal, id }) => {
-    console.log(`socket on receive_signal: signal: ${signal}, id: ${id}`);
     const item = peers.find(p => p.userId === id);
     if (item) {
       item.peer.signal(signal);
@@ -105,8 +93,6 @@ export const afterUpdateStream = (
 };
 
 const emit = (e: string) => (data?: SocketEmitData) => {
-  console.log(`socket emit`, e);
-  console.dir(data);
   socket.emit(e, data);
 };
 

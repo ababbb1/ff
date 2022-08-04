@@ -725,7 +725,6 @@ export default function RoomHint() {
     if (roomInfo) {
       setTimeout(() => {
         setWaiting(true);
-        console.log('imageList', currentImageList);
       }, +roomInfo?.hintTime * 60 * 1000);
     }
   };

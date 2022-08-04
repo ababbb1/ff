@@ -12,7 +12,6 @@ export const emailCheck = (value: string) => {
 };
 
 export const nicknameCheck = (value: string) => {
-  console.log(value.length);
   // eslint-disable-next-line
   const regExp = /[^\w가-힣0-9]|[\_]/g;
   return !regExp.test(value) || '특수문자는 사용할 수 없습니다.';

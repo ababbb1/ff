@@ -48,7 +48,6 @@ export default function HintInfoLayout({
   };
 
   useEffect(() => {
-    console.log(currentTimeLimit);
     if (currentTimeLimit) {
       timeBarActive(currentTimeLimit);
     }

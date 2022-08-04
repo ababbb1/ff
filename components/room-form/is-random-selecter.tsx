@@ -12,7 +12,6 @@ export default function IsRandomSelecter({ setValue, getValues }: Props) {
   const isRandom = getValues('isRandom') === '1';
 
   const handleClick = () => {
-    console.log(getValues('isRandom'));
     setValue('isRandom', getValues('isRandom') === '1' ? '0' : '1');
   };
 

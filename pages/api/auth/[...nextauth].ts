@@ -19,14 +19,12 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         },
         name: 'Credentials',
         authorize: async credentials => {
-          console.log('credentials', credentials);
           const res = await API.post('local/login', {
             email: credentials?.email,
             password: credentials?.password,
           });
 
           const token = res.data.token;
-          console.log('jwt decode', jwt_decode(token));
           if (token) {
             return { ...jwt_decode(token), token };
           } else {
@@ -72,8 +70,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       // eslint-disable-next-line
       // @ts-ignore:next-line
       async session({ session, token }) {
-        console.log('session', session);
-        console.log('token', token);
         if (token) {
           if (token.provider !== 'credentials') {
             const data = {

@@ -46,7 +46,7 @@ const Room = ({ userSession }: Props) => {
   const roomState = router.query.state;
 
   const [state, dispatch] = useRoomContext();
-  const { roomInfo, peers, currentUsers, messageList, myStreamInfo } = state;
+  const { roomInfo, messageList, myStreamInfo } = state;
   const streamIntervalRef = useRef<NodeJS.Timer>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -143,32 +143,12 @@ const Room = ({ userSession }: Props) => {
   }, [myStreamInfo]);
 
   useUpdateEffect(() => {
-    console.log('peers updated:');
-    console.log(peers);
-  }, [peers]);
-
-  useUpdateEffect(() => {
-    // console.log(userSession);
-    console.log(currentUsers);
-    // if (
-    //   currentUsers.find(cUser => cUser.userId === userSession.userId)
-    //     ?.streamId &&
-    //   !peers.find(peer => +peer.userId === userSession.userId)
-    // ) {
-    //   if (myStreamInfo.stream) {
-    //     createPeer(`${userSession.userId}`, myStreamInfo.stream);
-    //   }
-    // }
-  }, [currentUsers]);
-
-  useUpdateEffect(() => {
     if (messageList.length > 150) {
       dispatch({ type: 'SHIFT_MESSAGE' });
     }
   }, [messageList]);
 
   useUpdateEffect(() => {
-    console.log(roomInfo);
     const banList = roomInfo?.banUsers.split(',');
     if (banList?.includes(`${userSession.userId}`)) {
       alert('방장에의해 추방 당했습니다.');
@@ -226,7 +206,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   }
 
   const referer = req.headers.referer;
-  console.log(referer);
   if (!referer) {
     return {
       redirect: {

@@ -8,7 +8,6 @@ import {
   hintRoleChoiceTime,
   hintTimeStart,
   SocketEmitData,
-  test,
 } from '../../../../libs/socket.io';
 import { splitByColon } from '../../../../libs/utils';
 import HintCharacters from './hint-characters';
@@ -59,10 +58,8 @@ export default function HintInfoPreview() {
       currentUsers.every(cUser => cUser.hintReady) &&
       roleChoiceTimeFxRef.current
     ) {
-      console.log('all ready');
       roleChoiceTimeFxRef.current({ roomId: roomInfo?.id });
       roleChoiceTimeFxRef.current = null;
-      test({ test: 'test' });
     }
   }, [currentUsers]);
 

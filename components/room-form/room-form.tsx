@@ -113,10 +113,6 @@ export default function RoomForm({
     }
   }, [setValue, watch('hintTime'), watch('reasoningTime')]);
 
-  useEffect(() => {
-    console.log(watch('isRandom'));
-  }, [watch('isRandom')]);
-
   return (
     <form
       onSubmit={handleSubmit(handleValid, onInvalid)}
