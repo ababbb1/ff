@@ -2,7 +2,7 @@
 
 <p align="center" width="100%" height="100%"><img width="100%" height="100%" src="https://user-images.githubusercontent.com/70653334/182891518-7f322c1b-720d-4aed-806d-858b6357afa3.png"></p>
 <br/>
-## <a href="https://www.whoru.name/">링크</a>
+<a href="https://www.whoru.name/">## 링크</a>
 <br/>
 범인은 이 안에 있어!
 
