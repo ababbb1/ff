@@ -2,7 +2,9 @@
 
 <p align="center" width="100%" height="100%"><img width="100%" height="100%" src="https://user-images.githubusercontent.com/70653334/182891518-7f322c1b-720d-4aed-806d-858b6357afa3.png"></p>
 <br/>
-### [링크](https://www.whoru.name/)
+
+### [https://www.whoru.name](https://www.whoru.name/)
+
 <br/>
 범인은 이 안에 있어!
 
@@ -14,7 +16,7 @@
 chrome 외의 브라우저, 모바일 환경에서는 플레이가 불가합니다.
 <br/>
 <br/>
+
 ## Architecture
-<hr/>
 
 <p align="center" width="100%" height="100%"><img width="100%" height="100%" src="https://user-images.githubusercontent.com/70653334/182894913-e98e234d-8bb1-401c-80c2-c29c4cfbac70.png"></p>
