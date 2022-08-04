@@ -217,13 +217,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  const roles = await API.get('roles', { headers: authHeaders(session.token) });
-  console.log('roles', roles);
+  API.get('roles', { headers: authHeaders(session.token) })
+    .then(console.log)
+    .catch(console.error);
 
   return {
     props: {
       userSession: session,
-      roles,
+      // roles: roles || [],
     },
   };
 };
