@@ -25,6 +25,9 @@ chrome 외의 브라우저, 모바일 환경에서는 플레이가 불가합니�
 <br/>
 <br/>
 
+## 주요 기술 스택
+<img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=Next.js&logoColor=white"><img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=Typescript&logoColor=white"><img src="https://img.shields.io/badge/Tailwind CSS-06B6D4?style=for-the-badge&logo=Tailwind CSS&logoColor=white">
+
 ## Architecture
 
 <p align="center" width="100%" height="100%"><img width="100%" height="100%" src="https://user-images.githubusercontent.com/70653334/182894913-e98e234d-8bb1-401c-80c2-c29c4cfbac70.png"></p>
