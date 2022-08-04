@@ -81,9 +81,16 @@ const Room = ({ userSession }: Props) => {
       setIsLoading(false);
     }
 
-    axios.get(`${API_DOMAIN}/roles`).then(console.log).catch(console.error);
-
-    // dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
+    axios
+      .get(`${API_DOMAIN}/roles`)
+      .then(res => {
+        const roles = res.data;
+        dispatch({
+          type: 'ROLE_INFO',
+          payload: [roles[5], ...roles.slice(0, 5)],
+        });
+      })
+      .catch(console.error);
 
     // getRoles();
     // reasoningTime({ roomId: 1 });
@@ -140,7 +147,7 @@ const Room = ({ userSession }: Props) => {
     console.log(peers);
   }, [peers]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     // console.log(userSession);
     console.log(currentUsers);
     // if (
