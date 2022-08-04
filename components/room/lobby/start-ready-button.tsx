@@ -27,8 +27,8 @@ export default function StartReadyButton({
   )?.readyState;
 
   const isAllReady =
-    currentUsersExeptMaster.every(cUser => cUser.readyState)
-    && currentUsers.length === 5;
+    currentUsersExeptMaster.every(cUser => cUser.readyState) &&
+    currentUsers.length === 5;
 
   return (
     <div className="flex w-full h-full">
