@@ -23,7 +23,6 @@ import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import ScrollObserver from '../../../components/scroll-observer';
 import DndProvider from '../../../components/dnd-provider';
 import API, { authHeaders } from '../../../libs/api';
-import { RoleInfo } from '../../../libs/types/game';
 
 const RoomHint = dynamic(
   () => import('../../../components/room/hint/room-hint'),
@@ -36,10 +35,9 @@ const RoomReasoning = dynamic(
 
 interface Props {
   userSession: Session;
-  roles: RoleInfo[];
 }
 
-const Room = ({ userSession, roles }: Props) => {
+const Room = ({ userSession }: Props) => {
   const router = useRouter();
   const roomId = router.query.id;
   const roomUniqueId = router.query.roomUniqueId;
@@ -71,7 +69,9 @@ const Room = ({ userSession, roles }: Props) => {
       }
     }
 
-    dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
+    API.get('roles', authHeaders(userSession.token)).then(alert);
+
+    // dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
 
     // getRoles();
     // reasoningTime({ roomId: 1 });
@@ -186,9 +186,9 @@ const Room = ({ userSession, roles }: Props) => {
   );
 };
 
-const RoomPage = ({ userSession, roles }: Props) => (
+const RoomPage = ({ userSession }: Props) => (
   <RoomStateProvider>
-    <Room {...{ userSession, roles }} />
+    <Room {...{ userSession }} />
   </RoomStateProvider>
 );
 
@@ -217,14 +217,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  API.get('roles', { headers: authHeaders(session.token) })
-    .then(console.log)
-    .catch(console.error);
-
   return {
     props: {
       userSession: session,
-      // roles: roles || [],
     },
   };
 };
