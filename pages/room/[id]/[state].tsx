@@ -44,6 +44,7 @@ const Room = ({ userSession }: { userSession: Session }) => {
   const streamIntervalRef = useRef<NodeJS.Timer>();
 
   const onBeforeUnload = () => {
+    console.log('before unload');
     console.log(userSession.userId);
     exitRoom({ roomId: router.query.id, userId: userSession.userId });
     socketRemoveAllListeners();
