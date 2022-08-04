@@ -22,7 +22,8 @@ import { Session } from 'next-auth';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import ScrollObserver from '../../../components/scroll-observer';
 import DndProvider from '../../../components/dnd-provider';
-import API, { authHeaders } from '../../../libs/api';
+import axios from 'axios';
+import { API_DOMAIN } from '../../../libs/api';
 
 const RoomHint = dynamic(
   () => import('../../../components/room/hint/room-hint'),
@@ -69,9 +70,7 @@ const Room = ({ userSession }: Props) => {
       }
     }
 
-    API.get('roles', authHeaders(userSession.token))
-      .then(console.log)
-      .catch(console.error);
+    axios.get(`${API_DOMAIN}/roles`).then(console.log).catch(console.error);
 
     // dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
 
