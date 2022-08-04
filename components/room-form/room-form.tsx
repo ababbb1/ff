@@ -72,8 +72,8 @@ export default function RoomForm({
       const index = Math.round(Math.random() * (EPISODES.length - 2));
       data.episode = EPISODES[index];
     }
-    // onValid({ ...data, hintTime: '0.5', reasoningTime: '0.5' });
-    onValid(data);
+    onValid({ ...data, hintTime: '0.1', reasoningTime: '0.1' });
+    // onValid(data);
   };
 
   const onInvalid: SubmitErrorHandler<RoomFormData> = errors => {

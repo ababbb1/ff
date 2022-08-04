@@ -1,37 +1,38 @@
-import { useCallback, useEffect, useState } from 'react';
-
-export function useLocalStorage(key: string, defaultValue: unknown) {
-  return useStorage(key, defaultValue, window.localStorage);
-}
-
-export function useSessionStorage(key: string, defaultValue: unknown) {
-  return useStorage(key, defaultValue, window.sessionStorage);
-}
-
-const useStorage = (
-  key: string,
-  defaultValue: unknown,
-  storageObject: Storage,
-) => {
-  const [value, setValue] = useState(() => {
-    const jsonValue = storageObject.getItem(key);
-    if (jsonValue != null) return JSON.parse(jsonValue);
-
-    if (typeof defaultValue === 'function') {
-      return defaultValue();
-    } else {
-      return defaultValue;
-    }
-  });
-
-  useEffect(() => {
-    if (value === undefined) return storageObject.removeItem(key);
-    storageObject.setItem(key, JSON.stringify(value));
-  }, [key, value, storageObject]);
-
-  const remove = useCallback(() => {
-    setValue(undefined);
-  }, []);
-
-  return [value, setValue, remove];
+type StorageType = 'session' | 'local';
+type UseStorageReturnValue = {
+  getItem: (key: string, type?: StorageType) => string;
+  setItem: (key: string, value: string, type?: StorageType) => boolean;
+  removeItem: (key: string, type?: StorageType) => void;
 };
+
+const useStorage = (): UseStorageReturnValue => {
+  const storageType = (type?: StorageType): 'localStorage' | 'sessionStorage' =>
+    `${type ?? 'session'}Storage`;
+
+  const isBrowser: boolean = ((): boolean => typeof window !== 'undefined')();
+
+  const getItem = (key: string, type?: StorageType): string => {
+    return isBrowser ? window[storageType(type)][key] : '';
+  };
+
+  const setItem = (key: string, value: string, type?: StorageType): boolean => {
+    if (isBrowser) {
+      window[storageType(type)].setItem(key, value);
+      return true;
+    }
+
+    return false;
+  };
+
+  const removeItem = (key: string, type?: StorageType): void => {
+    window[storageType(type)].removeItem(key);
+  };
+
+  return {
+    getItem,
+    setItem,
+    removeItem,
+  };
+};
+
+export default useStorage;

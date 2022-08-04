@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import RoomLobby from '../../../components/room/lobby/room-lobby';
 import dynamic from 'next/dynamic';
 import LoadingScreen from '../../../components/loading-screen';
@@ -24,6 +24,7 @@ import ScrollObserver from '../../../components/scroll-observer';
 import DndProvider from '../../../components/dnd-provider';
 import axios from 'axios';
 import { API_DOMAIN } from '../../../libs/api';
+import useStorage from '../../../libs/hooks/useStorage';
 
 const RoomHint = dynamic(
   () => import('../../../components/room/hint/room-hint'),
@@ -47,15 +48,24 @@ const Room = ({ userSession }: Props) => {
   const [state, dispatch] = useRoomContext();
   const { roomInfo, peers, currentUsers, messageList, myStreamInfo } = state;
   const streamIntervalRef = useRef<NodeJS.Timer>();
+  const [isLoading, setIsLoading] = useState(true);
 
   const onBeforeUnload = () => {
-    console.log('before unload');
-    console.log(userSession.userId);
     exitRoom({ roomId: router.query.id, userId: userSession.userId });
     socketRemoveAllListeners();
   };
 
+  const { getItem, setItem } = useStorage();
+
   useEffect(() => {
+    if (getItem('enter', 'session') === '1') {
+      onBeforeUnload();
+      router.replace('/');
+    } else {
+      setItem('enter', '1', 'session');
+      setIsLoading(false);
+    }
+
     connectRoomSocket(dispatch);
     if (!roomInfo) {
       if (router.query.roomUniqueId) {
@@ -69,7 +79,6 @@ const Room = ({ userSession }: Props) => {
         });
       }
     }
-
     axios.get(`${API_DOMAIN}/roles`).then(console.log).catch(console.error);
 
     // dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
@@ -129,7 +138,7 @@ const Room = ({ userSession }: Props) => {
     console.log(peers);
   }, [peers]);
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     // console.log(userSession);
     console.log(currentUsers);
     // if (
@@ -141,11 +150,6 @@ const Room = ({ userSession }: Props) => {
     //     createPeer(`${userSession.userId}`, myStreamInfo.stream);
     //   }
     // }
-
-    if (!currentUsers.find(cUser => cUser.userId === userSession.userId)) {
-      alert('방장에의해 추방 당했습니다.');
-      router.back();
-    }
   }, [currentUsers]);
 
   useUpdateEffect(() => {
@@ -156,12 +160,17 @@ const Room = ({ userSession }: Props) => {
 
   useUpdateEffect(() => {
     console.log(roomInfo);
+    const banList = roomInfo?.banUsers.split(',');
+    if (banList?.includes(`${userSession.userId}`)) {
+      alert('방장에의해 추방 당했습니다.');
+      router.replace('/');
+    }
   }, [roomInfo]);
 
-  if (!roomInfo) return <LoadingScreen fullScreen />;
+  if (isLoading) return <LoadingScreen fullScreen />;
 
   return (
-    <Layout title={roomInfo.title}>
+    <Layout title={roomInfo?.title}>
       <AnimatedTextLayout>
         <div className="w-full h-full bg-crumpled-paper object-cover">
           <TopbarLayout>

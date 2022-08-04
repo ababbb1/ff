@@ -13,6 +13,7 @@ import { useSession } from 'next-auth/react';
 import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
 import { CurrentUser } from '../../../libs/types/room';
 import { IMAGE_SIZE_HORIZONTAL } from '../../../libs/const';
+import Ending from './ending';
 
 export default function RoomReasoning() {
   const { data: userSession } = useSession();
@@ -24,6 +25,7 @@ export default function RoomReasoning() {
   const [votedRole, setVotedRole] = useState(0);
   const [isResult, setIsResult] = useState(false);
   const [result, setResult] = useState<'win' | 'lose' | null>(null);
+  const [ending, setEnding] = useState(false);
 
   const getUserFromRole = (roleId: number) =>
     currentUsers.find(cUser => cUser.episodeId === roleId);
@@ -97,6 +99,10 @@ export default function RoomReasoning() {
         }
       }
     }
+
+    setTimeout(() => {
+      setEnding(true);
+    }, 2000);
   }, [isResult]);
 
   // useUpdateEffect(() => {
@@ -274,14 +280,19 @@ export default function RoomReasoning() {
           </div>
 
           {result ? (
-            <div className="w-full h-full relative overflow-hidden">
-              <Image
-                src={result === 'win' ? '/assets/win.png' : '/assets/lose.png'}
-                layout="fill"
-                className="object-contain"
-                alt={result}
-              />
-            </div>
+            <>
+              <div className="w-full h-full relative overflow-hidden">
+                <Image
+                  src={
+                    result === 'win' ? '/assets/win.png' : '/assets/lose.png'
+                  }
+                  layout="fill"
+                  className="object-contain"
+                  alt={result}
+                />
+                <Ending visible={ending} />
+              </div>
+            </>
           ) : (
             <div className="w-full h-full bg-[#00000068] overflow-auto px-10 py-6">
               {/* <HintBoard boardImageList={boardImageList} /> */}

@@ -5,7 +5,7 @@ import AnimatedTextLayout from '../components/layout/animated-text-layout';
 import API, { authHeaders } from '../libs/api';
 import { useQuery } from 'react-query';
 import LoadingScreen from '../components/loading-screen';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MainpageInterface from '../components/mainpage/mainpage-interface';
 import ModalLayout from '../components/modal-layout';
 import { Session } from 'next-auth';
@@ -13,6 +13,7 @@ import RoomSearch from '../components/room/room-search/room-search';
 import Image from 'next/image';
 import { getBrowser } from '../libs/utils';
 import MobileDetect from 'mobile-detect';
+import useStorage from '../libs/hooks/useStorage';
 
 interface Props {
   userSession: Session;
@@ -28,6 +29,8 @@ export default function Home({ userSession }: Props) {
     },
   );
 
+  const { removeItem } = useStorage();
+
   const roomList = data?.data.result?.roomList || [];
   const [searchModal, setSearchModal] = useState(false);
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -39,6 +42,10 @@ export default function Home({ userSession }: Props) {
   const handleLogoLoaded = () => {
     setLogoLoaded(true);
   };
+
+  useEffect(() => {
+    removeItem('enter', 'session');
+  }, []);
 
   if (isLoading) return <LoadingScreen fullScreen />;
 
