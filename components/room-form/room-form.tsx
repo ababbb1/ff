@@ -72,7 +72,7 @@ export default function RoomForm({
       const index = Math.round(Math.random() * (EPISODES.length - 2));
       data.episode = EPISODES[index];
     }
-    onValid({ ...data, hintTime: '0.5', reasoningTime: '0.5' });
+    onValid({ ...data, hintTime: '3', reasoningTime: '0.5' });
     // onValid(data);
   };
 
