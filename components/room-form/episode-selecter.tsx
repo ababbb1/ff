@@ -72,6 +72,7 @@ export default function EpisodeSelecter({
             src="/assets/episode-image1.webp"
             layout="fill"
             alt="episode1"
+            priority
           />
         </SwiperSlide>
 

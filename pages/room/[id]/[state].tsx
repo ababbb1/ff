@@ -26,13 +26,11 @@ import DndProvider from '../../../components/dnd-provider';
 
 const RoomHint = dynamic(
   () => import('../../../components/room/hint/room-hint'),
-  {
-    ssr: false,
-  },
+  { suspense: true },
 );
 const RoomReasoning = dynamic(
   () => import('../../../components/room/reasoning/room-reasoning'),
-  { ssr: false },
+  { suspense: true },
 );
 
 const Room = ({ userSession }: { userSession: Session }) => {

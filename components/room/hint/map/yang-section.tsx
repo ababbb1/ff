@@ -1,15 +1,38 @@
 import Image from 'next/image';
 import { SectionComponentProps } from '../room-hint';
+import ItemYangCloset from './items/yang/item-yang-closet';
+import ItemYangDesk from './items/yang/item-yang-desk';
 import SectionLayout from './section-layout';
 
 export default function YangSection({ setCurrentItem }: SectionComponentProps) {
   return (
     <SectionLayout>
       <div className="w-full h-full relative z-[3]">
-        <div className="w-[22%] h-[58%] absolute z-[4] left-[12%] top-[8%]">
+        <div
+          onClick={() => {
+            if (setCurrentItem) {
+              setCurrentItem({
+                name: 'yang-closet',
+                component: ItemYangCloset,
+              });
+            }
+          }}
+          className="w-[22%] h-[58%] absolute z-[4] left-[12%] top-[8%] hover:cursor-pointer"
+        >
           <Image src="/assets/map/closet.png" layout="fill" alt="closet" />
         </div>
-        <div className="w-[25%] h-[43%] absolute z-[4] left-[40%] top-[22%]">
+
+        <div
+          onClick={() => {
+            if (setCurrentItem) {
+              setCurrentItem({
+                name: 'yang-desk',
+                component: ItemYangDesk,
+              });
+            }
+          }}
+          className="w-[25%] h-[43%] absolute z-[4] left-[40%] top-[22%] hover:cursor-pointer"
+        >
           <Image
             src="/assets/map/desk-with-computer.png"
             layout="fill"

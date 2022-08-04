@@ -14,6 +14,11 @@ import { addPeer, createPeer } from './peer';
 import { RoleInfo } from './types/game';
 
 export type SocketEmitData = { [k: string | number]: unknown };
+interface ImageURlList {
+  userId: number;
+  imageUrlLists: string;
+  roomId: number;
+}
 
 const socket = io(API_DOMAIN, {
   transports: ['websocket'],
@@ -28,7 +33,9 @@ const onlyMasterIsReady = (currentUsers: CurrentUser[], roomInfo: RoomData) =>
 export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
   socket.on('update_room', ({ roomInfo, currentUser }: UpdateRoomResponse) => {
     console.log('socket update current user', currentUser);
+
     dispatch({ type: 'ROOM_INFO', payload: roomInfo });
+
     dispatch({
       type: 'CURRENT_USERS',
       payload: onlyMasterIsReady(currentUser, roomInfo),
@@ -47,6 +54,17 @@ export const connectRoomSocket = (dispatch: Dispatch<RoomStateAction>) => {
   socket.on('role_info', (roles: RoleInfo[]) => {
     console.log('roles', roles);
     dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
+  });
+
+  socket.on('board_image', (data: { imageUrlLists: ImageURlList[] }) => {
+    console.log('board image list', data);
+    const tmp = data.imageUrlLists.flatMap(x =>
+      x.imageUrlLists
+        .split(',')
+        .map((y: string) => ({ userId: x.userId, imageId: y })),
+    );
+    console.log(tmp);
+    dispatch({ type: 'BOARD_IMAGE_LIST', payload: tmp });
   });
 };
 
@@ -110,6 +128,9 @@ export const kickUser = emit('kick_user');
 export const reasoningTime = emit('reasoning_time');
 export const forceQuit = emit('force_quit');
 export const gameEnd = emit('game_end');
+export const imageList = emit('image_list');
+export const boardImage = emit('board_image');
+export const vote = emit('vote');
 
 export const streamEmit = emit('stream');
 export const peerJoin = emit('peer_join');

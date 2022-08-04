@@ -20,7 +20,11 @@ import { useRouter } from 'next/router';
 import ModalLayout from '../../modal-layout';
 import useToggle from '../../../libs/hooks/useToggle';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
-import { hintRegister, reasoningTime } from '../../../libs/socket.io';
+import {
+  imageList,
+  reasoningTime,
+  SocketEmitData,
+} from '../../../libs/socket.io';
 import { useSession } from 'next-auth/react';
 import CameraIcon from '../../svg/hint/camera';
 import ProfileIcon from '../../svg/hint/profile';
@@ -40,6 +44,8 @@ import HintOverview from './hint-info/hint-overview';
 import PinIcon from '../../svg/hint/pin';
 import ItemParkPaper2 from './map/items/park/item-park-paper-2';
 import ItemParkDesk from './map/items/park/item-park-desk';
+import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
+import ItemJungDiary from './map/items/jung/item-jung-diary';
 
 export type SectionNameType =
   | 'map'
@@ -73,149 +79,149 @@ export interface HintItem {
 const HintMap = dynamic(
   () => import('../../../components/room/hint/map/hint-map'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const BathRoomSection = dynamic(
   () => import('../../../components/room/hint/map/bathroom-section'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const JangSection = dynamic(
   () => import('../../../components/room/hint/map/jang-section'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const LibrarySection = dynamic(
   () => import('../../../components/room/hint/map/library-section'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const LivingroomSection = dynamic(
   () => import('../../../components/room/hint/map/livingroom-section'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ParkSection = dynamic(
   () => import('../../../components/room/hint/map/park-section'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const HongSection = dynamic(
   () => import('../../../components/room/hint/map/hong-section'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const JungSection = dynamic(
   () => import('../../../components/room/hint/map/jung-section'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const YangSection = dynamic(
   () => import('../../../components/room/hint/map/yang-section'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const SonSection = dynamic(
   () => import('../../../components/room/hint/map/son-section'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 
 const ItemParkDrawer = dynamic(
   () => import('./map/items/park/item-park-drawer'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemParkPaper1 = dynamic(
   () => import('./map/items/park/item-park-paper-1'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemParkSearchResult = dynamic(
   () => import('./map/items/park/item-park-search-result'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemParkDiary = dynamic(
   () => import('./map/items/park/item-park-diary'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemParkLicense = dynamic(
   () => import('./map/items/park/item-park-license'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemParkBriefCase = dynamic(
   () => import('./map/items/park/item-park-briefcase'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemParkResume = dynamic(
   () => import('./map/items/park/item-park-resume'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemParkWithDaughter = dynamic(
   () => import('./map/items/park/item-park-with-daughter'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemParkBin = dynamic(() => import('./map/items/park/item-park-bin'), {
-  ssr: false,
+  suspense: true,
 });
 const ItemLivingRoomRC = dynamic(
   () => import('./map/items/livingroom/item-livingroom-RC'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemLivingRoomDailySchedule = dynamic(
   () => import('./map/items/livingroom/item-livingroom-daily-schedule'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemJangBriefcase = dynamic(
   () => import('./map/items/jang/item-jang-briefcase'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemJangBriefcasePaper1 = dynamic(
   () => import('./map/items/jang/item-jang-briefcase-paper1'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemJangBriefcasePaper2 = dynamic(
   () => import('./map/items/jang/item-jang-briefcase-paper2'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemBathroomCorpse = dynamic(
   () => import('./map/items/bathroom/item-bathroom-corpse'),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemBathroomSpeaker = dynamic(
@@ -224,7 +230,7 @@ const ItemBathroomSpeaker = dynamic(
       '../../../components/room/hint/map/items/bathroom/item-bathroom-speaker'
     ),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemBathroomWrist = dynamic(
@@ -233,7 +239,7 @@ const ItemBathroomWrist = dynamic(
       '../../../components/room/hint/map/items/bathroom/item-bathroom-wrist'
     ),
   {
-    ssr: false,
+    suspense: true,
   },
 );
 const ItemBathroomTowel = dynamic(
@@ -242,7 +248,278 @@ const ItemBathroomTowel = dynamic(
       '../../../components/room/hint/map/items/bathroom/item-bathroom-towel'
     ),
   {
-    ssr: false,
+    suspense: true,
+  },
+);
+const ItemLibraryValidate = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/library/item-library-validate'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemLibrarySafe = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/library/item-library-safe'),
+  {
+    suspense: true,
+  },
+);
+const ItemLibraryDesk = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/library/item-library-desk'),
+  {
+    suspense: true,
+  },
+);
+const ItemLibraryDeskComputer = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/library/item-library-desk-computer'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemLibraryDeskPill = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/library/item-library-desk-pill'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemLibraryDeskPaper1 = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/library/item-library-desk-paper-1'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemLibraryDeskHongPark = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/library/item-library-desk-hong-park'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemLibraryBookshelf = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/library/item-library-bookshelf'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemLibraryBookshelf1 = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/library/item-library-bookshelf-1'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemLibraryBookshelf2 = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/library/item-library-bookshelf-2'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemLibrarySecret = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/library/item-library-secret'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemHongBriefcase = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/hong/item-hong-briefcase'),
+  {
+    suspense: true,
+  },
+);
+const ItemHongBriefcasePaper1 = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/hong/item-hong-briefcase-paper-1'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemHongBriefcasePaper2 = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/hong/item-hong-briefcase-paper-2'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemHongBookshelf = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/hong/item-hong-bookshelf'),
+  {
+    suspense: true,
+  },
+);
+const ItemHongBookshelfNewspaper = dynamic(
+  () =>
+    import(
+      '../../../components/room/hint/map/items/hong/item-hong-bookshelf-newspaper'
+    ),
+  {
+    suspense: true,
+  },
+);
+const ItemHongBox = dynamic(
+  () => import('../../../components/room/hint/map/items/hong/item-hong-box'),
+  {
+    suspense: true,
+  },
+);
+const ItemHongGlove = dynamic(
+  () => import('../../../components/room/hint/map/items/hong/item-hong-glove'),
+  {
+    suspense: true,
+  },
+);
+const ItemHongDesk = dynamic(
+  () => import('../../../components/room/hint/map/items/hong/item-hong-desk'),
+  {
+    suspense: true,
+  },
+);
+const ItemHongRCPaper = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/hong/item-hong-RC-paper'),
+  {
+    suspense: true,
+  },
+);
+const ItemHongVitamin = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/hong/item-hong-vitamin'),
+  {
+    suspense: true,
+  },
+);
+const ItemJungBag = dynamic(
+  () => import('../../../components/room/hint/map/items/jung/item-jung-bag'),
+  {
+    suspense: true,
+  },
+);
+const ItemJungPaper1 = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/jung/item-jung-paper-1'),
+  {
+    suspense: true,
+  },
+);
+const ItemJungCalendar1 = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/jung/item-jung-calendar-1'),
+  {
+    suspense: true,
+  },
+);
+const ItemJungDesk = dynamic(
+  () => import('../../../components/room/hint/map/items/jung/item-jung-desk'),
+  {
+    suspense: true,
+  },
+);
+const ItemJungPaper2 = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/jung/item-jung-paper-2'),
+  {
+    suspense: true,
+  },
+);
+const ItemJungCalendar2 = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/jung/item-jung-calendar-2'),
+  {
+    suspense: true,
+  },
+);
+const ItemSonRC = dynamic(
+  () => import('../../../components/room/hint/map/items/son/item-son-RC'),
+  {
+    suspense: true,
+  },
+);
+const ItemSonDesk = dynamic(
+  () => import('../../../components/room/hint/map/items/son/item-son-desk'),
+  {
+    suspense: true,
+  },
+);
+const ItemSonPaper1 = dynamic(
+  () => import('../../../components/room/hint/map/items/son/item-son-paper-1'),
+  {
+    suspense: true,
+  },
+);
+const ItemSonPicture1 = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/son/item-son-picture-1'),
+  {
+    suspense: true,
+  },
+);
+const ItemSonPicture2 = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/son/item-son-picture-2'),
+  {
+    suspense: true,
+  },
+);
+const ItemSonDiary = dynamic(
+  () => import('../../../components/room/hint/map/items/son/item-son-diary'),
+  {
+    suspense: true,
+  },
+);
+const ItemYangCloset = dynamic(
+  () => import('../../../components/room/hint/map/items/yang/item-yang-closet'),
+  {
+    suspense: true,
+  },
+);
+const ItemYangPicture = dynamic(
+  () =>
+    import('../../../components/room/hint/map/items/yang/item-yang-picture'),
+  {
+    suspense: true,
+  },
+);
+const ItemYangDesk = dynamic(
+  () => import('../../../components/room/hint/map/items/yang/item-yang-desk'),
+  {
+    suspense: true,
+  },
+);
+const ItemYangSecret = dynamic(
+  () => import('../../../components/room/hint/map/items/yang/item-yang-secret'),
+  {
+    suspense: true,
   },
 );
 
@@ -279,6 +556,44 @@ const items: HintItem[] = [
   { name: 'bathroom-speaker', component: ItemBathroomSpeaker },
   { name: 'bathroom-wrist', component: ItemBathroomWrist },
   { name: 'bathroom-towel', component: ItemBathroomTowel },
+  { name: 'library-validate', component: ItemLibraryValidate },
+  { name: 'library-safe', component: ItemLibrarySafe },
+  { name: 'library-desk', component: ItemLibraryDesk },
+  { name: 'library-desk-computer', component: ItemLibraryDeskComputer },
+  { name: 'library-desk-pill', component: ItemLibraryDeskPill },
+  { name: 'library-desk-paper-1', component: ItemLibraryDeskPaper1 },
+  { name: 'library-desk-hong-park', component: ItemLibraryDeskHongPark },
+  { name: 'library-bookshelf', component: ItemLibraryBookshelf },
+  { name: 'library-bookshelf-1', component: ItemLibraryBookshelf1 },
+  { name: 'library-bookshelf-2', component: ItemLibraryBookshelf2 },
+  { name: 'library-secret', component: ItemLibrarySecret },
+  { name: 'hong-briefcase', component: ItemHongBriefcase },
+  { name: 'hong-briefcase-paper-1', component: ItemHongBriefcasePaper1 },
+  { name: 'hong-briefcase-paper-2', component: ItemHongBriefcasePaper2 },
+  { name: 'hong-bookshelf', component: ItemHongBookshelf },
+  { name: 'hong-bookshelf-newspaper', component: ItemHongBookshelfNewspaper },
+  { name: 'hong-box', component: ItemHongBox },
+  { name: 'hong-glove', component: ItemHongGlove },
+  { name: 'hong-desk', component: ItemHongDesk },
+  { name: 'hong-RC-paper', component: ItemHongRCPaper },
+  { name: 'hong-vitamin', component: ItemHongVitamin },
+  { name: 'jung-bag', component: ItemJungBag },
+  { name: 'jung-paper-1', component: ItemJungPaper1 },
+  { name: 'jung-calendar-1', component: ItemJungCalendar1 },
+  { name: 'jung-desk', component: ItemJungDesk },
+  { name: 'jung-paper-2', component: ItemJungPaper2 },
+  { name: 'jung-diary', component: ItemJungDiary },
+  { name: 'jung-calendar-2', component: ItemJungCalendar2 },
+  { name: 'son-RC', component: ItemSonRC },
+  { name: 'son-desk', component: ItemSonDesk },
+  { name: 'son-paper-1', component: ItemSonPaper1 },
+  { name: 'son-picture-1', component: ItemSonPicture1 },
+  { name: 'son-picture-2', component: ItemSonPicture2 },
+  { name: 'son-diary', component: ItemSonDiary },
+  { name: 'yang-closet', component: ItemYangCloset },
+  { name: 'yang-picture', component: ItemYangPicture },
+  { name: 'yang-desk', component: ItemYangDesk },
+  { name: 'yang-secret', component: ItemYangSecret },
 ];
 
 export default function RoomHint() {
@@ -292,6 +607,7 @@ export default function RoomHint() {
   const [isOverview, setIsOverview] = useState(true);
   const [currentInfo, setCurrentInfo] = useState<JSX.Element | null>(null);
   const [currentItem, setCurrentItem] = useState<HintItem | null>(null);
+  const [waiting, setWaiting] = useState(false);
   const [currentSection, setCurrentSection] = useState<Section>({
     name: 'map',
     component: HintMap,
@@ -316,7 +632,9 @@ export default function RoomHint() {
   const timeBarRef = useRef<HTMLDivElement>(null);
   const lastImageRef = useRef<HTMLDivElement>(null);
   const preScrollRef = useRef<HTMLDivElement>(null);
-
+  const reasoningTimeFxRef = useRef<((data?: SocketEmitData) => void) | null>(
+    reasoningTime,
+  );
   const isHintTime = roomInfo?.roomState === 'hintTime';
 
   const { isScrollbarVisible, scrollTargetRef, scrollbarRef, scrollThumbRef } =
@@ -324,7 +642,6 @@ export default function RoomHint() {
 
   const onCapture = async (imgURL: string) => {
     toggleCamera(false);
-
     if (imgURL) {
       toggleIsLoading(true);
 
@@ -346,12 +663,6 @@ export default function RoomHint() {
       } = res.data;
 
       if (success && userSession) {
-        hintRegister({
-          userId: userSession.userId,
-          roomId: roomInfo?.id,
-          imageId: id,
-        });
-
         imageInsert(imageCount, {
           id,
           userId: userSession.userId,
@@ -360,7 +671,7 @@ export default function RoomHint() {
           isDropped: false,
           previewUrl: getImageUrl(id),
         });
-      } else alert('이미지 등록에 실패했습니다.');
+      }
 
       toggleIsLoading(false);
     }
@@ -390,43 +701,50 @@ export default function RoomHint() {
     setCurrentInfo(null);
   };
 
-  const handleGoNextPage = () => {
-    const resultImageList = currentImageList.filter(x => x);
-    dispatch({ type: 'IMAGE_LIST', payload: resultImageList as ImageData[] });
-    dispatch({ type: 'CLEAR_MESSAGE', payload: [] });
+  // const handleGoNextPage = () => {
+  //   dispatch({ type: 'CLEAR_MESSAGE', payload: [] });
+  //   const resultImageList = currentImageList.filter(x => x);
+  //   // dispatch({ type: 'IMAGE_LIST', payload: resultImageList as ImageData[] });
 
-    if (roomInfo) {
-      reasoningTime({ roomId: roomInfo.id });
-      router.replace(`/room/${roomInfo.id}/reasoning`);
-    }
-  };
+  //   if (roomInfo) {
+  //     reasoningTime({ roomId: roomInfo.id });
+  //   }
+  // };
 
   const handleClickDeleteAll = () => {
     setCurrentImageList(Array(IMAGE_LIST_MAX_LENGTH).fill(null));
   };
+
+  const initHintTime = () => {
+    setIsOverview(false);
+
+    if (timeBarRef.current) {
+      timeBarRef.current.style.width = '0';
+    }
+
+    if (roomInfo) {
+      setTimeout(() => {
+        setWaiting(true);
+        console.log('imageList', currentImageList);
+      }, +roomInfo?.hintTime * 60 * 1000);
+    }
+  };
+
+  const initHintTimeFxRef = useRef<(() => void) | null>(initHintTime);
 
   useEffect(() => {
     if (roomInfo && timeBarRef.current) {
       const convertedHintTime = +roomInfo.hintTime * 60;
       timeBarRef.current.style.transition = `width linear ${convertedHintTime}s`;
     }
-
-    // if (roomInfo) {
-    //   setTimeout(() => {
-    //     router.replace(`/room/${roomInfo.id}/reasoning`);
-    //   }, +roomInfo.hintTime * 60 * 1000);
-    // }
   }, []);
 
   useEffect(() => {
-    if (roomInfo?.roomState === 'hintTime') {
-      setIsOverview(false);
-
-      if (timeBarRef.current) {
-        timeBarRef.current.style.width = '0';
-      }
+    if (roomInfo?.roomState === 'hintTime' && initHintTimeFxRef.current) {
+      initHintTimeFxRef.current();
+      initHintTimeFxRef.current = null;
     }
-  }, [roomInfo, userSession?.userId]);
+  }, [roomInfo]);
 
   useEffect(() => {
     if (preScrollRef.current && isLoading) {
@@ -437,13 +755,35 @@ export default function RoomHint() {
     }
   }, [isLoading]);
 
-  useEffect(() => {
-    console.log(roles);
-  }, [roles]);
+  useUpdateEffect(() => {
+    if (waiting) {
+      imageList({
+        roomId: roomInfo?.id,
+        userId: userSession?.userId,
+        imageUrlLists: currentImageList.map(imageData => imageData?.id),
+      });
+    }
+  }, [waiting]);
 
-  useEffect(() => {
-    console.log(currentItem);
-  }, [currentItem]);
+  useUpdateEffect(() => {
+    if (
+      currentUsers.every(cUser => cUser.imageReady) &&
+      reasoningTimeFxRef.current &&
+      roomInfo?.master === userSession?.nickname
+    ) {
+      reasoningTimeFxRef.current({ roomId: roomInfo?.id });
+      reasoningTimeFxRef.current = null;
+    }
+  }, [currentUsers]);
+
+  useUpdateEffect(() => {
+    if (roomInfo?.roomState === 'reasoningTime') {
+      dispatch({ type: 'CLEAR_MESSAGE', payload: [] });
+      router.replace(`/room/${roomInfo?.id}/reasoning`);
+    }
+  }, [roomInfo]);
+
+  if (waiting) return <LoadingScreen fullScreen />;
 
   return (
     <>
@@ -483,10 +823,7 @@ export default function RoomHint() {
                 className="text-[#a11111]"
               />
             </div>
-            <span
-              onClick={handleGoNextPage}
-              className="font-semibold opacity-0"
-            >
+            <span className="font-semibold opacity-0">
               {getSectionTitle(currentSection)}
             </span>
           </div>
@@ -587,7 +924,9 @@ export default function RoomHint() {
                   </span>
                 </div>
               </div>
-              <div className="w-full aspect-square flex justify-center items-center border-b-2 border-black p-2">
+              <div
+                className={`w-full aspect-square flex justify-center items-center border-b-2 border-black p-2`}
+              >
                 <div
                   onClick={() =>
                     setCurrentInfo(
@@ -597,7 +936,7 @@ export default function RoomHint() {
                       />,
                     )
                   }
-                  className="flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white"
+                  className={`flex flex-col justify-center items-center gap-2 w-full h-full hover:cursor-pointer hover:bg-[#323232] hover:text-white`}
                 >
                   <FlagIcon className="w-7 h-7 2xl:w-8 2xl:h-8" />
                   <span className="whitespace-nowrap text-xs 2xl:text-sm font-semibold">
@@ -629,10 +968,10 @@ export default function RoomHint() {
               {items.map((item, i) => (
                 <div
                   key={`item${i}`}
-                  className={`w-full h-full transition-all duration-700 absolute top-0 left-0 ${
+                  className={`w-full h-full absolute top-0 left-0 ${
                     currentItem?.name === item.name
                       ? 'opacity-100 z-20'
-                      : 'opacity-50 -z-10 translate-y-2'
+                      : 'hiddden -z-10'
                   }`}
                 >
                   <Suspense>

@@ -37,10 +37,10 @@ export default function RoomProvider({ children }: { children: JSX.Element }) {
       case 'IMAGE_LIST':
         return { ...state, imageList: action.payload };
 
-      case 'BOARD_IMAGE_LIST_PUSH':
+      case 'BOARD_IMAGE_LIST':
         return {
           ...state,
-          boardImageList: [...state.boardImageList, action.payload],
+          boardImageList: action.payload,
         };
 
       case 'MY_STREAM_INFO':

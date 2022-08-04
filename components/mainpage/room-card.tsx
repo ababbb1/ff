@@ -1,4 +1,5 @@
 import { ClockIcon } from '@heroicons/react/outline';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { RoomData } from '../../libs/types/room';
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export default function RoomCard({ roomData, setIsModalActive, index }: Props) {
+  const { data: userSession } = useSession();
   const router = useRouter();
   const isProgress = roomData.roomState !== 'standby';
   const bgImage =
@@ -25,14 +27,24 @@ export default function RoomCard({ roomData, setIsModalActive, index }: Props) {
       : 'bg-room-card1';
 
   const handleStartButton = () => {
-    if (roomData.password) {
-      setIsModalActive({
-        roomData,
-        isActive: true,
-      });
-      return;
+    if (userSession) {
+      const banUserIdList = roomData.banUsers.split(',');
+      const amIbaned = banUserIdList.find(id => +id === userSession.userId);
+
+      if (amIbaned) {
+        alert('강퇴당한 방에 입장할 수 없습니다.');
+        return;
+      }
+
+      if (roomData.password) {
+        setIsModalActive({
+          roomData,
+          isActive: true,
+        });
+        return;
+      }
+      router.push(`/room/${roomData.id}/lobby`);
     }
-    router.push(`/room/${roomData.id}/lobby`);
   };
 
   return (

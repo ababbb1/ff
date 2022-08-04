@@ -1,26 +1,116 @@
 import Timer from '../../timer';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import ModalLayout from '../../modal-layout';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import MessageInterface from '../message_interface';
 import useToggle from '../../../libs/hooks/useToggle';
 import RoundedTriangleIcon from '../../svg/reasoning/rounded-triangle';
-import HintImage from './hint-image';
-import HintBoard from './hint-board';
-import { DndContext } from '../../dnd-provider';
+import { vote } from '../../../libs/socket.io';
+import Image from 'next/image';
+import { getImageUrl, splitByColon } from '../../../libs/utils';
+import HintInfoLayout from '../hint/hint-info/hint-info-layout';
+import { useSession } from 'next-auth/react';
+import useUpdateEffect from '../../../libs/hooks/useUpdateEffect';
+import { CurrentUser } from '../../../libs/types/room';
+import { IMAGE_SIZE_HORIZONTAL } from '../../../libs/const';
 
 export default function RoomReasoning() {
-  const [{ roomInfo, imageList, boardImageList }] = useRoomContext();
-  const [isVoteModal, setIsVoteModal] = useState(false);
-  const [hintListVisible, toggleHintListVisible] = useToggle();
+  const { data: userSession } = useSession();
+  const [{ roomInfo, boardImageList, roles, currentUsers }] = useRoomContext();
   const [camVisible, toggleCamVisible] = useToggle();
+  const [selectedImage, setSelectedImage] = useState('');
+  const [isVoteTime, setIsVoteTime] = useState(false);
+  const [isVoted, setIsVoted] = useState(false);
+  const [votedRole, setVotedRole] = useState(0);
+  const [isResult, setIsResult] = useState(false);
+  const [result, setResult] = useState<'win' | 'lose' | null>(null);
+
+  const getUserFromRole = (roleId: number) =>
+    currentUsers.find(cUser => cUser.episodeId === roleId);
+
+  const getRoleFromUser = (cUser: CurrentUser) =>
+    roles.find(role => role.id === cUser.episodeId);
+
+  const handleClickVote = (roleId: number) => () => {
+    const user = getUserFromRole(roleId);
+
+    if (user && roomInfo) {
+      setIsVoted(true);
+      setVotedRole(roleId);
+      vote({ roomId: roomInfo.id, userId: user.userId });
+    }
+  };
+
+  const getMostVotedUsers = () => {
+    const max = Math.max(...currentUsers.map(cUser => cUser.vote));
+    const mostVotedUser = currentUsers.filter(cUser => cUser.vote === max);
+    return mostVotedUser;
+  };
+
+  useEffect(() => {
+    if (roomInfo) {
+      setTimeout(() => {
+        setIsVoteTime(true);
+      }, +roomInfo.reasoningTime * 60 * 1000);
+    }
+  }, []);
+
+  useUpdateEffect(() => {
+    if (isVoteTime) {
+      setTimeout(() => {
+        setIsVoteTime(false);
+        setIsResult(true);
+      }, 30 * 1000);
+    }
+  }, [isVoteTime]);
+
+  useUpdateEffect(() => {
+    const isCriminalMostVoted = getMostVotedUsers().find(
+      user => user.episodeId === 4,
+    );
+    const isCriminal =
+      currentUsers.find(cUser => cUser.userId === userSession?.userId)
+        ?.episodeId === 4;
+
+    if (isResult) {
+      if (isCriminalMostVoted) {
+        if (getMostVotedUsers().length > 1) {
+          if (isCriminal) {
+            setResult('win');
+          } else {
+            setResult('lose');
+          }
+        } else if (getMostVotedUsers().length === 1) {
+          if (isCriminal) {
+            setResult('lose');
+          } else {
+            setResult('win');
+          }
+        } else {
+          setResult('lose');
+        }
+      } else {
+        if (isCriminal) {
+          setResult('win');
+        } else {
+          setResult('lose');
+        }
+      }
+    }
+  }, [isResult]);
+
+  // useUpdateEffect(() => {
+  //   if (isResult) {
+
+  //   }
+  // }, [isResult]);
+  // const [hintListVisible, toggleHintListVisible] = useToggle();
   // const [boardScrollX, setBoardScrollX] = useState(0);
   // const [boardScrollY, setBoardScrollY] = useState(0);
   // const [documentDragEndX, setDocumentDragEndX] = useState(0);
   // const [documentDragEndY, setDocumentDragEndY] = useState(0);
 
-  const { draggable, onDropHandler, isDragging } = useContext(DndContext);
-  const boardRef = useRef<HTMLDivElement>(null);
+  // const { draggable, onDropHandler, isDragging } = useContext(DndContext);
   // const imageRefs = useRef<HTMLDivElement[]>([]);
 
   // const handleDrop = (item: ImageData, monitor: DropTargetMonitor) => {
@@ -95,62 +185,77 @@ export default function RoomReasoning() {
   //   };
   // }, []);
 
-  const isOnBoard = (pageX: number, pageY: number): boolean => {
-    if (boardRef.current) {
-      const targetTop =
-        boardRef.current.getBoundingClientRect().top +
-        boardRef.current.scrollTop;
-      const targetLeft =
-        boardRef.current.getBoundingClientRect().left +
-        boardRef.current.scrollLeft;
-      const targetRight =
-        targetLeft + boardRef.current.offsetWidth - window.scrollX;
-      const targetBottom =
-        targetTop + boardRef.current.offsetHeight - window.scrollY;
+  // const isOnBoard = (pageX: number, pageY: number): boolean => {
+  //   if (boardRef.current) {
+  //     const targetTop = boardRef.current.offsetTop;
+  //     const targetRight =
+  //       boardRef.current.offsetLeft +
+  //       boardRef.current.offsetWidth -
+  //       window.scrollX;
+  //     const targetBottom =
+  //       boardRef.current.offsetTop +
+  //       boardRef.current.offsetHeight -
+  //       window.scrollY;
+  //     const targetLeft = boardRef.current.offsetLeft;
 
-      console.log('board_top', targetTop);
-      console.log('board_right', targetRight);
-      console.log('board_bottom', targetBottom);
-      console.log('board_left', targetLeft);
+  //     console.log('board_top', targetTop);
+  //     console.log('board_right', targetRight);
+  //     console.log('board_bottom', targetBottom);
+  //     console.log('board_left', targetLeft);
 
-      return (
-        pageX > targetLeft &&
-        pageX < targetRight &&
-        pageY > targetTop &&
-        pageY < targetBottom
-      );
-    } else return false;
-  };
+  //     return (
+  //       pageX > targetLeft &&
+  //       pageX < targetRight &&
+  //       pageY > targetTop &&
+  //       pageY < targetBottom
+  //     );
+  //   } else return false;
+  // };
 
-  useEffect(() => {
-    if (onDropHandler) {
-      onDropHandler.current = (pageX: number, pageY: number) => {
-        if (boardRef.current) {
-          console.log(
-            'board top',
-            boardRef.current.getBoundingClientRect().top,
-          );
-          console.log(pageX, pageY);
-          console.log(isOnBoard(pageX, pageY));
-        }
-      };
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (onDropHandler) {
+  //     onDropHandler.current = (pageX: number, pageY: number) => {
+  //       console.log(pageX, pageY);
+  //       if (boardRef.current) {
+  //         console.log(pageX, pageY + boardRef.current.scrollTop);
+  //         console.log(isOnBoard(pageX, pageY));
+  //       }
+  //     };
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (isDragging) {
-      toggleHintListVisible(false);
-    } else {
-      toggleHintListVisible(true);
-    }
-  }, [isDragging]);
+  // useEffect(() => {
+  //   if (isDragging) {
+  //     toggleHintListVisible(false);
+  //   } else {
+  //     toggleHintListVisible(true);
+  //   }
+  // }, [isDragging]);
+
+  // if (!imagesLoaded) return <LoadingScreen fullScreen />;
 
   return (
     <>
+      <ModalLayout
+        isActive={selectedImage !== ''}
+        handleClose={() => setSelectedImage('')}
+        background="dark"
+      >
+        <div className="">
+          <Image
+            key={`imagedetail${selectedImage}`}
+            src={getImageUrl(selectedImage)}
+            width={IMAGE_SIZE_HORIZONTAL[0]}
+            height={IMAGE_SIZE_HORIZONTAL[1]}
+            alt={`imagedetail${selectedImage}`}
+          />
+        </div>
+      </ModalLayout>
+
       <div className="w-full h-full flex">
         <div className="w-3/4 h-full flex flex-col disable-dragging relative pt-10 2xl:pt-12 pb-10 2xl:pb-12">
-          <div className="absolute top-0 bg-crumpled-paper w-full z-30 h-10 2xl:h-12 border-b-2 border-black flex justify-between items-center">
-            <span className="px-8 font-hanson-bold pt-1 text-xl">GAME</span>
+          <div className="absolute top-0 bg-crumpled-paper w-full px-8 z-30 h-10 2xl:h-12 border-b-2 border-black flex justify-between items-center">
+            <span className="font-hanson-bold pt-1 text-xl">GAME</span>
             <div className="flex gap-6">
               <span className="font-semibold">추리시간</span>
               <Timer
@@ -160,22 +265,74 @@ export default function RoomReasoning() {
                 className="text-[#a11111]"
               />
             </div>
-            <button
+            {/* <button
               onClick={() => setIsVoteModal(true)}
               className="font-semibold text-[#a11111] px-8 bg-[#f5f5f5] h-full border-l-2 border-black hover:bg-black hover:text-white"
             >
               투표하기
-            </button>
+            </button> */}
           </div>
 
-          <div
-            // ref={boardContainerRef}
-            className="w-full h-full bg-black overflow-auto"
-          >
-            <HintBoard boardRef={boardRef} boardImageList={boardImageList} />
-          </div>
+          {result ? (
+            <div className="w-full h-full relative overflow-hidden">
+              <Image
+                src={result === 'win' ? '/assets/win.png' : '/assets/lose.png'}
+                layout="fill"
+                className="object-contain"
+                alt={result}
+              />
+            </div>
+          ) : (
+            <div className="w-full h-full bg-[#00000068] overflow-auto px-10 py-6">
+              {/* <HintBoard boardImageList={boardImageList} /> */}
+              <div className="flex flex-col w-full gap-8">
+                {currentUsers.map((cUser, index) => (
+                  <div
+                    key={`${cUser.userId}${index}`}
+                    className="flex flex-col w-full gap-2"
+                  >
+                    <div className="flex gap-3 items-center">
+                      <span
+                        className={`text-xl ${
+                          cUser.userId === userSession?.userId
+                            ? 'text-animate-layout-border'
+                            : 'text-white'
+                        }`}
+                      >
+                        {splitByColon(cUser.nickname, 'name')}
+                      </span>
+                      <span className="text-xl font-semibold text-gray-200">
+                        {getRoleFromUser(cUser)?.name}
+                      </span>
+                    </div>
+                    <div className="flex w-full gap-3 flex-wrap">
+                      {boardImageList
+                        .filter(x => x.userId === cUser.userId)
+                        .map(
+                          (y, i) =>
+                            y.imageId && (
+                              <div
+                                key={`image${y.imageId}${i}`}
+                                className="w-52 aspect-square relative p-2 bg-[#000000a7]"
+                              >
+                                <Image
+                                  src={getImageUrl(y.imageId)}
+                                  layout="fill"
+                                  alt={y.imageId}
+                                  className="object-contain hover:cursor-pointer"
+                                  onClick={() => setSelectedImage(y.imageId)}
+                                />
+                              </div>
+                            ),
+                        )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-          <div
+          {/* <div
             className={`absolute bottom-0 bg-crumpled-paper w-full border-t-2 border-black z-30`}
           >
             <div
@@ -220,7 +377,7 @@ export default function RoomReasoning() {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
           {/* <div
               ref={boardRef}
               className="w-full h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
@@ -288,12 +445,91 @@ export default function RoomReasoning() {
       ))} */}
       </div>
 
-      <ModalLayout
-        background="dark"
-        isActive={isVoteModal}
-        handleClose={() => setIsVoteModal(false)}
-      >
-        <div className="w-48 h-48 bg-white"></div>
+      <ModalLayout background="dark" isActive={isVoteTime}>
+        <HintInfoLayout
+          title="투표"
+          timer
+          currentTimeLimit={isVoteTime ? 30 : 0}
+        >
+          <div className="w-full h-full pt-10 pb-12 2xl:pt-12 2xl:pb-14 px-6 flex flex-col items-center gap-6 2xl:gap-8">
+            <span className="font-semibold">
+              {isVoted
+                ? `${roles[votedRole].name}를 선택하셨습니다.`
+                : '범인을 선택해주세요.'}
+            </span>
+            <div className="w-full h-full flex gap-4 pt-2 pb-8 2x:pb-10">
+              {roles &&
+                roles
+                  .filter(role => role.id !== 6)
+                  .map(role => (
+                    <div
+                      key={role.id}
+                      onClick={
+                        isVoted ||
+                        getUserFromRole(role.id)?.userId === userSession?.userId
+                          ? () => {
+                              return;
+                            }
+                          : handleClickVote(role.id)
+                      }
+                      className={`grow h-full p-2 hover:bg-[#adadad] flex flex-col ${
+                        isVoted ||
+                        getUserFromRole(role.id)?.userId === userSession?.userId
+                          ? ''
+                          : 'hover:cursor-pointer'
+                      } ${
+                        getMostVotedUsers().some(
+                          user => user.episodeId === role.id,
+                        ) && getUserFromRole(role.id)?.vote
+                          ? 'bg-black text-white'
+                          : 'bg-[#e6e6e6]'
+                      }`}
+                    >
+                      <div className="w-full aspect-square relative">
+                        <img
+                          src={role.imageSrc}
+                          className="w-full h-full"
+                          alt={role.name}
+                        />
+                      </div>
+                      <div className="w-full flex flex-col items-center py-4 2xl:py-6 gap-10 2xl:gap-16 grow">
+                        <div className="flex flex-col h-full items-center gap-3 justify-between">
+                          <span className="font-semibold text-xl 2xl:text-2xl">
+                            {role.name}
+                          </span>
+                          <span>
+                            {splitByColon(
+                              getUserFromRole(role.id)?.nickname || '',
+                              'name',
+                            )}
+                          </span>
+                          <div className="flex gap-1 h-4 w-24">
+                            {getUserFromRole(role.id) &&
+                              Array(getUserFromRole(role.id)?.vote)
+                                .fill(null)
+                                .map((_, i) => (
+                                  <div
+                                    key={i}
+                                    className={`h-full aspect-square ${
+                                      getMostVotedUsers().some(
+                                        user => user.episodeId === role.id,
+                                      ) && getUserFromRole(role.id)?.vote
+                                        ? 'bg-[#d9d9d9]'
+                                        : 'bg-black'
+                                    }`}
+                                  />
+                                ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+            </div>
+            <span>
+              최다 득표자가 여러 명일 때 범인이 포함된 경우 범인이 승리합니다.
+            </span>
+          </div>
+        </HintInfoLayout>
       </ModalLayout>
     </>
   );

@@ -126,17 +126,18 @@ export default function DndProvider({ children }: Props) {
     document.addEventListener('mouseleave', replace);
     document.addEventListener('contextmenu', replace);
 
-    target.onmouseup = () => {
+    target.onmouseup = (event: any) => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', replace);
       document.removeEventListener('contextmenu', replace);
 
-      const elemBelow = document.elementFromPoint(e.pageX, e.pageY);
+      console.log(event);
+
+      const elemBelow = document.elementFromPoint(event.pageX, event.pageY);
       const onTarget = elemBelow?.closest('.droppable');
-      console.log(onTarget);
       if (onTarget) {
         console.log('droppable');
-        onDropHandler.current(e.pageX, e.pageY);
+        onDropHandler.current(event.pageX, event.pageY);
         replace();
       } else {
         console.log('not droppable');

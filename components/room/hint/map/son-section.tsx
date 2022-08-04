@@ -1,12 +1,24 @@
 import Image from 'next/image';
 import { SectionComponentProps } from '../room-hint';
+import ItemSonDesk from './items/son/item-son-desk';
+import ItemSonRC from './items/son/item-son-RC';
 import SectionLayout from './section-layout';
 
 export default function SonSection({ setCurrentItem }: SectionComponentProps) {
   return (
     <SectionLayout>
       <div className="w-full h-full relative z-[3]">
-        <div className="w-[25%] h-[54%] absolute z-[4] left-[9%] top-[14%]">
+        <div
+          onClick={() => {
+            if (setCurrentItem) {
+              setCurrentItem({
+                name: 'son-RC',
+                component: ItemSonRC,
+              });
+            }
+          }}
+          className="w-[25%] h-[54%] absolute z-[4] left-[9%] top-[14%] hover:cursor-pointer"
+        >
           <Image
             src="/assets/map/RC-showcase.png"
             layout="fill"
@@ -14,7 +26,17 @@ export default function SonSection({ setCurrentItem }: SectionComponentProps) {
           />
         </div>
 
-        <div className="w-[25%] h-[43%] absolute z-[4] left-[40%] top-[22%]">
+        <div
+          onClick={() => {
+            if (setCurrentItem) {
+              setCurrentItem({
+                name: 'son-desk',
+                component: ItemSonDesk,
+              });
+            }
+          }}
+          className="w-[25%] h-[43%] absolute z-[4] left-[40%] top-[22%] hover:cursor-pointer"
+        >
           <Image
             src="/assets/map/desk-with-computer.png"
             layout="fill"

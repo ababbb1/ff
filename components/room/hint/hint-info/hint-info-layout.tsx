@@ -80,7 +80,8 @@ export default function HintInfoLayout({
               />
             )}
             {roomInfo?.roomState !== 'roleChoice' &&
-              roomInfo?.roomState !== 'hintTime' && (
+              roomInfo?.roomState !== 'hintTime' &&
+              roomInfo?.roomState !== 'reasoningTime' && (
                 <div
                   onClick={handleClickReadyButton}
                   className={`font-semibold py-3 px-6 rounded-md hover:bg-animate-layout-border hover:text-black ${

@@ -10,7 +10,7 @@ export const EPISODES: EpisodeInfo[] = [
   { title: 'Random', description: '' },
 ];
 
-export const IMAGE_SIZE_HORIZONTAL = [580, 460];
+export const IMAGE_SIZE_HORIZONTAL = [600, 480];
 export const IMAGE_SIZE_VERTICAL = [400, 520];
 
 export const ROLES: RoleInfo[] = [

@@ -46,7 +46,7 @@ export default function ItemParkDesk({ setCurrentItem }: HintItemProps) {
           className="w-[12%] h-[20%] absolute z-[5] left-[37%] top-[67%] hover:cursor-pointer"
         >
           <Image
-            src="/assets/map/park-desk-paper-1.png"
+            src="/assets/map/nurse-license.png"
             layout="fill"
             alt="park-desk-paper"
           />
@@ -63,7 +63,7 @@ export default function ItemParkDesk({ setCurrentItem }: HintItemProps) {
           className="w-[12%] h-[20%] absolute z-[5] left-[51%] top-[67%] hover:cursor-pointer"
         >
           <Image
-            src="/assets/map/park-desk-paper-2.png"
+            src="/assets/map/park-diary.png"
             layout="fill"
             alt="park-desk-paper"
           />

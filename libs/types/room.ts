@@ -21,6 +21,7 @@ export interface RoomData {
   title: string;
   userId: number;
   episode: EpisodeInfo;
+  banUsers: string;
 }
 
 export interface CurrentUser {
@@ -36,6 +37,8 @@ export interface CurrentUser {
   streamId: string;
   userId: number;
   episodeId: number;
+  imageReady: boolean;
+  vote: number;
 }
 
 export interface MessageInfo {
@@ -71,12 +74,17 @@ export interface StreamInfo {
   audioTrackconstraints: MediaTrackConstraints;
 }
 
+export interface BoardImage {
+  userId: number;
+  imageId: string;
+}
+
 export interface RoomState {
   roomInfo: RoomData | null;
   currentUsers: CurrentUser[];
   messageList: MessageInfo[];
   imageList: ImageData[];
-  boardImageList: ImageData[];
+  boardImageList: BoardImage[];
   myStreamInfo: StreamInfo;
   peers: IPeer[];
   roles: RoleInfo[];
@@ -107,8 +115,8 @@ export type RoomStateAction =
       payload: ImageData[];
     }
   | {
-      type: 'BOARD_IMAGE_LIST_PUSH';
-      payload: ImageData;
+      type: 'BOARD_IMAGE_LIST';
+      payload: BoardImage[];
     }
   | {
       type: 'MY_STREAM_INFO';

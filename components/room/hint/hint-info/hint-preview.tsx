@@ -33,6 +33,7 @@ export default function HintInfoPreview() {
   const [currentTimeLimit, setCurrentTimeLimit] = useState(2 * 60);
 
   const roleChoiceTimeFxRef = useRef<RoleChoiceTime | null>(hintRoleChoiceTime);
+  const hintTimeStartFxRef = useRef<RoleChoiceTime | null>(hintTimeStart);
 
   const timeout = useTimeout(() => {
     if (roomInfo && roleChoiceTimeFxRef.current) {
@@ -71,7 +72,10 @@ export default function HintInfoPreview() {
       setCurrentTimeLimit(20);
       setContent({ name: 'roleChoice', index: 0 });
       setTimeout(() => {
-        hintTimeStart({ roomId: roomInfo.id });
+        if (hintTimeStartFxRef.current) {
+          hintTimeStartFxRef.current({ roomId: roomInfo.id });
+          hintTimeStartFxRef.current = null;
+        }
       }, 20 * 1000);
     }
   }, [roomInfo]);
@@ -113,8 +117,12 @@ export default function HintInfoPreview() {
                         : 'hover:cursor-pointer border-[#00000000]'
                     }`}
                   >
-                    <div className="w-full aspect-square">
-                      <img src={role.imageSrc} className="w-full h-full" />
+                    <div className="w-full aspect-square relative">
+                      <img
+                        src={role.imageSrc}
+                        className="w-full h-full"
+                        alt={role.name}
+                      />
                     </div>
                     <div className="w-full flex flex-col items-center py-4 2xl:py-6 gap-10 2xl:gap-16">
                       <div className="w-full flex flex-col items-center gap-3">

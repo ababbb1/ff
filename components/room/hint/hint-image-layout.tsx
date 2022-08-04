@@ -2,7 +2,6 @@ import { XIcon } from '@heroicons/react/outline';
 import { useState } from 'react';
 import { UseArrayPush, UseArrayRemove } from '../../../libs/hooks/useArray';
 import { ImageData } from '../../../libs/types/room';
-import { getImageUrl } from '../../../libs/utils';
 import LoadingScreen from '../../loading-screen';
 import ModalLayout from '../../modal-layout';
 
@@ -55,8 +54,8 @@ export default function HintImageLayout({
             imageData ? 'hover:cursor-pointer' : ''
           }`}
         >
-          {imageData?.id ? (
-            <img src={getImageUrl(imageData.id)} className="object-contain" />
+          {imageData ? (
+            <img src={imageData.previewUrl} className="object-contain" />
           ) : index === imageCount && isLoading ? (
             <LoadingScreen size={20} />
           ) : null}
@@ -67,9 +66,9 @@ export default function HintImageLayout({
         isActive={isEnlarged}
         handleClose={() => setIsEnlarged(false)}
       >
-        {imageData?.id && (
+        {imageData && (
           <img
-            src={getImageUrl(imageData.id)}
+            src={imageData.previewUrl}
             className="min-w-[50vw] min-h-[50vh] max-w-[70vw] max-h-[70vh]"
           />
         )}
