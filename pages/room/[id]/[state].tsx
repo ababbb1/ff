@@ -60,25 +60,27 @@ const Room = ({ userSession }: Props) => {
   useEffect(() => {
     if (getItem('enter', 'session') === '1') {
       onBeforeUnload();
-      router.replace('/');
+      setTimeout(() => {
+        router.replace('/');
+      }, 500);
     } else {
       setItem('enter', '1', 'session');
+      connectRoomSocket(dispatch);
+      if (!roomInfo) {
+        if (router.query.roomUniqueId) {
+          createRoom({ roomId, roomUniqueId });
+        } else {
+          joinRoom({
+            roomId,
+            userId: userSession.userId,
+            email: userSession.email,
+            nickname: userSession.nickname,
+          });
+        }
+      }
       setIsLoading(false);
     }
 
-    connectRoomSocket(dispatch);
-    if (!roomInfo) {
-      if (router.query.roomUniqueId) {
-        createRoom({ roomId, roomUniqueId });
-      } else {
-        joinRoom({
-          roomId,
-          userId: userSession.userId,
-          email: userSession.email,
-          nickname: userSession.nickname,
-        });
-      }
-    }
     axios.get(`${API_DOMAIN}/roles`).then(console.log).catch(console.error);
 
     // dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
