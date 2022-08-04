@@ -69,7 +69,9 @@ const Room = ({ userSession }: Props) => {
       }
     }
 
-    API.get('roles', authHeaders(userSession.token)).then(alert);
+    API.get('roles', authHeaders(userSession.token))
+      .then(console.log)
+      .catch(console.error);
 
     // dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
 
