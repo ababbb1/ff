@@ -117,3 +117,27 @@ export const getSectionTitle = (section: Section) => {
       return '별채 홍변호 방';
   }
 };
+
+export function getBrowser(agent: string) {
+  const userAgent = agent.toLowerCase();
+  switch (true) {
+    case userAgent.indexOf('edge') > -1:
+      return 'edge';
+    case userAgent.indexOf('edg') > -1:
+      return 'chromium based edge (dev or canary)';
+    case userAgent.indexOf('opr') > -1:
+      return 'opera';
+    // case userAgent.indexOf('opr') > -1 && !!window.opr: return 'opera'
+    case userAgent.indexOf('chrome') > -1:
+      return 'chrome';
+    // case userAgent.indexOf('chrome') > -1 && !!window.chrome: return 'chrome'
+    case userAgent.indexOf('trident') > -1:
+      return 'ie';
+    case userAgent.indexOf('firefox') > -1:
+      return 'firefox';
+    case userAgent.indexOf('safari') > -1:
+      return 'safari';
+    default:
+      return 'other';
+  }
+}

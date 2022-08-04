@@ -11,6 +11,8 @@ import ModalLayout from '../components/modal-layout';
 import { Session } from 'next-auth';
 import RoomSearch from '../components/room/room-search/room-search';
 import Image from 'next/image';
+import { getBrowser } from '../libs/utils';
+import MobileDetect from 'mobile-detect';
 
 interface Props {
   userSession: Session;
@@ -99,6 +101,27 @@ export default function Home({ userSession }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req });
+  const userAgent = req.headers['user-agent'];
+  const md = new MobileDetect(userAgent || '');
+  const isChrome = getBrowser(userAgent || '') === 'chrome';
+
+  if (userAgent && md.phone() !== null) {
+    return {
+      redirect: {
+        destination: '/mobilewarning',
+        permanent: false,
+      },
+    };
+  }
+  if (userAgent && !isChrome) {
+    return {
+      props: {},
+      redirect: {
+        destination: '/chromewarning',
+        permanent: false,
+      },
+    };
+  }
 
   if (!session) {
     return {
