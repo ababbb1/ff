@@ -21,16 +21,21 @@
 살인사건 속에서 플레이어들이 직접 사건과 관련된 인물이 되어 범인을 추리하는 온라인 롤플레잉 추리게임 사이트 입니다.
 <br/>
 <br/>
-chrome 외의 브라우저, 모바일 환경에서는 플레이가 불가합니다.
+### chrome 외의 브라우저, 모바일 환경에서는 플레이가 불가합니다.
+<br/>
 <br/>
 <br/>
 
 ## 주요 기술 스택
 <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=Next.js&logoColor=white"><img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=Typescript&logoColor=white"><img src="https://img.shields.io/badge/Tailwind CSS-06B6D4?style=for-the-badge&logo=Tailwind CSS&logoColor=white">
+<br/>
+<br/>
 
 ## Architecture
 
 <p align="center" width="100%" height="100%"><img width="100%" height="100%" src="https://user-images.githubusercontent.com/70653334/182894913-e98e234d-8bb1-401c-80c2-c29c4cfbac70.png"></p>
+<br/>
+<br/>
 
 ### Front end
 노희준
