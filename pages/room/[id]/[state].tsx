@@ -11,7 +11,6 @@ import {
   connectRoomSocket,
   createRoom,
   exitRoom,
-  getRoles,
   joinRoom,
   socketRemoveAllListeners,
 } from '../../../libs/socket.io';
@@ -23,6 +22,8 @@ import { Session } from 'next-auth';
 import useRoomContext from '../../../libs/hooks/room/useRoomContext';
 import ScrollObserver from '../../../components/scroll-observer';
 import DndProvider from '../../../components/dnd-provider';
+import API, { authHeaders } from '../../../libs/api';
+import { RoleInfo } from '../../../libs/types/game';
 
 const RoomHint = dynamic(
   () => import('../../../components/room/hint/room-hint'),
@@ -33,7 +34,12 @@ const RoomReasoning = dynamic(
   { suspense: true },
 );
 
-const Room = ({ userSession }: { userSession: Session }) => {
+interface Props {
+  userSession: Session;
+  roles: RoleInfo[];
+}
+
+const Room = ({ userSession, roles }: Props) => {
   const router = useRouter();
   const roomId = router.query.id;
   const roomUniqueId = router.query.roomUniqueId;
@@ -65,7 +71,9 @@ const Room = ({ userSession }: { userSession: Session }) => {
       }
     }
 
-    getRoles();
+    dispatch({ type: 'ROLE_INFO', payload: [roles[5], ...roles.slice(0, 5)] });
+
+    // getRoles();
     // reasoningTime({ roomId: 1 });
     // hintPostOnBoard({ imageInfo: { id: '111', x: 1, y: 1 }, roomId: 1 });
     // choiceRole({ roomId: 1, selectedUserId: 1, role: 1 });
@@ -178,9 +186,9 @@ const Room = ({ userSession }: { userSession: Session }) => {
   );
 };
 
-const RoomPage = ({ userSession }: { userSession: Session }) => (
+const RoomPage = ({ userSession, roles }: Props) => (
   <RoomStateProvider>
-    <Room {...{ userSession }} />
+    <Room {...{ userSession, roles }} />
   </RoomStateProvider>
 );
 
@@ -209,9 +217,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
+  const roles = await API.get('roles', { headers: authHeaders(session.token) });
+  console.log('roles', roles);
+
   return {
     props: {
       userSession: session,
+      roles,
     },
   };
 };
