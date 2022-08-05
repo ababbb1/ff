@@ -24,12 +24,12 @@ export default function TimeCard({
   setValue,
 }: Props) {
   const handleIncreaseButton = () => {
-    if (+watch(kind) < 30) {
+    if (+watch(kind) < 20) {
       setValue(kind, `${+watch(kind) + 1}`);
     }
   };
   const handleDecreaseButton = () => {
-    if (+watch(kind) > 10) {
+    if (+watch(kind) > 5) {
       setValue(kind, `${+watch(kind) - 1}`);
     }
   };
