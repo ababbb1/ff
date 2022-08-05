@@ -63,6 +63,7 @@ export default function TimeCard({
               maxLength={2}
               className="font-hanson-bold text-3xl bg-transparent border-none focus:outline-none w-[4rem] text-right"
               autoComplete="off"
+              readOnly
             />
             <span className="font-hanson-bold text-3xl">:00</span>
           </div>
