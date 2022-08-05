@@ -84,8 +84,8 @@ export default function RoomForm({
   useEffect(() => {
     setValue('title', initData?.title || '');
     setValue('password', initData?.password || '');
-    setValue('hintTime', initData?.hintTime || '30');
-    setValue('reasoningTime', initData?.reasoningTime || '30');
+    setValue('hintTime', initData?.hintTime || '10');
+    setValue('reasoningTime', initData?.reasoningTime || '10');
     setValue('master', master || '');
     setValue('isRandom', initData?.isRandom || '0');
   }, []);
@@ -104,12 +104,12 @@ export default function RoomForm({
 
   useEffect(() => {
     // eslint-disable-next-line
-    const regExp = /^[1-2][0-9]*$|^[3][0]*$/;
+    const regExp = /^[5-9]*$|^[1][0-9]*$|^[2][0]*$/;
     if (!regExp.test(watch('hintTime')) && watch('hintTime') !== '') {
-      setValue('hintTime', '30');
+      setValue('hintTime', '10');
     }
     if (!regExp.test(watch('reasoningTime')) && watch('reasoningTime') !== '') {
-      setValue('reasoningTime', '30');
+      setValue('reasoningTime', '10');
     }
   }, [setValue, watch('hintTime'), watch('reasoningTime')]);
 
@@ -165,7 +165,7 @@ export default function RoomForm({
                 required: true,
               })}
               kind="hintTime"
-              difficulty={+watch('hintTime') > 15 ? 'Easy' : 'Hard'}
+              difficulty={+watch('hintTime') > 9 ? 'Easy' : 'Hard'}
               description={
                 +watch('hintTime') > 15
                   ? difficultyDescriptions.hintTime.easy
