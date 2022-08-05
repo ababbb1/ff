@@ -167,7 +167,7 @@ export default function RoomForm({
               kind="hintTime"
               difficulty={+watch('hintTime') > 9 ? 'Easy' : 'Hard'}
               description={
-                +watch('hintTime') > 15
+                +watch('hintTime') > 9
                   ? difficultyDescriptions.hintTime.easy
                   : difficultyDescriptions.hintTime.hard
               }
@@ -181,9 +181,9 @@ export default function RoomForm({
                 required: true,
               })}
               kind="reasoningTime"
-              difficulty={+watch('reasoningTime') > 15 ? 'Easy' : 'Hard'}
+              difficulty={+watch('reasoningTime') > 9 ? 'Easy' : 'Hard'}
               description={
-                +watch('reasoningTime') > 15
+                +watch('reasoningTime') > 9
                   ? difficultyDescriptions.reasoningTime.easy
                   : difficultyDescriptions.reasoningTime.hard
               }
