@@ -34,15 +34,16 @@ export default function StartReadyButton({
   return (
     <div className="flex w-full h-full">
       <div
-        onClick={
-          isMaster
-            ? isAllReady
-              ? handleStartButton
-              : () => {
-                  return;
-                }
-            : handleReadyButton
-        }
+        // onClick={
+        //   isMaster
+        //     ? isAllReady
+        //       ? handleStartButton
+        //       : () => {
+        //           return;
+        //         }
+        //     : handleReadyButton
+        // }
+        onClick={isMaster ? handleStartButton : handleReadyButton}
         className={`h-full pt-2 flex justify-center items-center ${
           isMaster ? 'grow' : 'w-full'
         } ${
