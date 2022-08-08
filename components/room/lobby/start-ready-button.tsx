@@ -16,19 +16,20 @@ export default function StartReadyButton({
   handleReadyButton,
 }: Props) {
   const { data: userSession } = useSession();
-  const [{ currentUsers, roomInfo }] = useRoomContext();
+  const [{ currentUsers }] = useRoomContext();
 
-  const currentUsersExeptMaster = currentUsers.filter(
-    cUser => cUser.nickname !== roomInfo?.master,
-  );
+  // const currentUsersExeptMaster = currentUsers.filter(
+  //   cUser => cUser.nickname !== roomInfo?.master,
+  // );
 
   const amIReady = currentUsers.find(
     cUser => cUser.userId === userSession?.userId,
   )?.readyState;
 
-  const isAllReady =
-    currentUsersExeptMaster.every(cUser => cUser.readyState) &&
-    currentUsers.length === 5;
+  // const isAllReady =
+  //   currentUsersExeptMaster.every(cUser => cUser.readyState) &&
+  //   currentUsers.length === 5;
+  const isAllReady = currentUsers.every(cUser => cUser.readyState);
 
   return (
     <div className="flex w-full h-full">

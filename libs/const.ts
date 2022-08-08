@@ -1,6 +1,6 @@
 import { EpisodeInfo, RoleInfo } from './types/game';
 
-export const ROOM_USER_COUNT_LIMIT = 5;
+export const ROOM_USER_COUNT_LIMIT = 1;
 export const EPISODES: EpisodeInfo[] = [
   {
     title: '대저택 살인사건',
