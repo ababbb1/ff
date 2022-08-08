@@ -55,7 +55,8 @@ export default function StartReadyButton({
             : 'bg-black text-[#17EF46] hover:bg-[#17EF46] hover:text-black hover:cursor-pointer hover:black text-3xl 2xl:text-4xl'
         } border-r-2 border-black font-hanson-bold`}
       >
-        {isMaster ? (isAllReady ? 'START' : 'WAITING...') : 'READY'}
+        {/* {isMaster ? (isAllReady ? 'START' : 'WAITING...') : 'READY'} */}
+        {isMaster ? 'START' : 'READY'}
       </div>
       {isMaster && (
         <div className="aspect-square h-full hover:cursor-pointer hover:bg-black hover:text-white relative">
