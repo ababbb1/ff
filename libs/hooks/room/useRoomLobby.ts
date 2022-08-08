@@ -2,7 +2,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { RoomFormData } from '../../../components/room-form/room-form';
-import { ROOM_USER_COUNT_LIMIT } from '../../const';
 import { getMedia } from '../../peer';
 import {
   afterUpdateStream,
@@ -16,18 +15,18 @@ import useRoomContext from './useRoomContext';
 export default function useRoomLobby() {
   const router = useRouter();
   const { data: userSession } = useSession();
-  const [{ roomInfo, currentUsers, peers }, dispatch] = useRoomContext();
+  const [{ roomInfo, peers }, dispatch] = useRoomContext();
 
   const [isSetting, setIsSetting] = useState(false);
 
-  const isAllReady = currentUsers.every(currentUser => currentUser.readyState);
+  // const isAllReady = currentUsers.every(currentUser => currentUser.readyState);
   const isMaster = roomInfo?.master === userSession?.nickname;
 
   const handleStartButton = () => {
-    if (!isAllReady || currentUsers.length < ROOM_USER_COUNT_LIMIT) {
-      alert('모두 준비 완료 상태여야 시작할 수 있습니다.');
-      return;
-    }
+    // if (!isAllReady || currentUsers.length < ROOM_USER_COUNT_LIMIT) {
+    //   alert('모두 준비 완료 상태여야 시작할 수 있습니다.');
+    //   return;
+    // }
     gameStart({
       roomId: roomInfo?.id,
       userId: userSession?.userId,
